@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IAprofEPT · Plataforma (PDF)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="entry.css" />
+  <style>
+    html, body { background: #fff; }
+    #root * { pointer-events: none; }
+
+    /* Each screen starts on a new printed page */
+    .print-section { break-before: page; }
+    .print-section:first-child { break-before: auto; }
+
+    /* Static, non-interactive layout for capture */
+    .lnav, .topbar { position: static !important; backdrop-filter: none !important; }
+
+    /* App shell: let the grid stretch the sidebar to match content height */
+    .print-section .app { min-height: auto; }
+    .print-section .sidebar { position: static !important; height: auto; }
+    .print-section .view { min-height: 0; }
+
+    /* Login: give it a comfortable single-page height */
+    .print-section.login-wrap .login { min-height: 1040px; }
+
+    /* Avoid splitting key blocks across pages */
+    .amb-show, .principle, .ethics-inner, .preview, .lsection-head, .login-card,
+    .card, .amb-card, .tool-card, .row-item, .ai-validation { break-inside: avoid; }
+
+    @media print {
+      @page { size: A4 landscape; margin: 0; }
+      *, *::before, *::after {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+      .lnav, .topbar { position: static !important; }
+      /* Landing & login read better as portrait pages */
+    }
+  </style>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" src="icons.jsx"></script>
+  <script type="text/babel" src="data.jsx"></script>
+  <script type="text/babel" src="components.jsx"></script>
+  <script type="text/babel" src="lab.jsx"></script>
+  <script type="text/babel" src="views.jsx"></script>
+  <script type="text/babel" src="maicon.jsx"></script>
+  <script type="text/babel" src="entry.jsx"></script>
+  <script type="text/babel">
+    const noop = () => {};
+    const TITLES = {
+      inicio: 'Início', formativo: 'Ambiente Formativo', laboratorio: 'Laboratório de IA',
+      repositorio: 'Repositório', reflexao: 'Reflexão Crítica', suporte: 'Suporte',
+    };
+
+    // App chrome (sidebar + topbar) replicated for static print, with `route` active.
+    function Shell({ route, children }) {
+      const groups = [
+        { label: null, items: MODULES.filter((m) => m.group === 0) },
+        { label: 'Ambientes', items: MODULES.filter((m) => m.group === 1) },
+      ];
+      return (
+        <div className="app">
+          <aside className="sidebar">
+            <Logo size={32} />
+            <nav className="nav">
+              {groups.map((g, gi) => (
+                <React.Fragment key={gi}>
+                  {g.label && <div className="nav-label">{g.label}</div>}
+                  {g.items.map((m) => {
+                    const Ic = Icon[m.icon];
+                    return (
+                      <div key={m.id} className={`nav-item${route === m.id ? ' active' : ''}`}>
+                        <Ic /><span>{m.label}</span>
+                        {m.badge && <span className="nav-badge">{m.badge}</span>}
+                      </div>
+                    );
+                  })}
+                </React.Fragment>
+              ))}
+            </nav>
+            <div className="sidebar-foot">
+              <div className="user-card">
+                <div className="avatar">{USER.initials}</div>
+                <div className="u-meta">
+                  <div className="u-name">{USER.name}</div>
+                  <div className="u-role">{USER.role}</div>
+                </div>
+              </div>
+              <div className="btn-sair"><Icon.logout /><span>Sair</span></div>
+            </div>
+          </aside>
+          <div className="main">
+            <header className="topbar">
+              <div className="crumb">IAprofEPT <span style={{ margin: '0 6px' }}>/</span> <b>{TITLES[route]}</b></div>
+              <div className="search"><Icon.search /><input placeholder="Buscar na plataforma…" readOnly /></div>
+              <div className="icon-btn"><Icon.bell /><span className="dot" /></div>
+            </header>
+            {children}
+          </div>
+        </div>
+      );
+    }
+
+    function PrintDoc() {
+      return (
+        <div>
+          <div className="print-section print-page"><Landing onEnter={noop} /></div>
+          <div className="print-section login-wrap print-page"><Login onSuccess={noop} onBack={noop} /></div>
+          <div className="print-section"><Shell route="inicio"><Inicio go={noop} /></Shell></div>
+          <div className="print-section"><Shell route="formativo"><Formativo /></Shell></div>
+          <div className="print-section"><Shell route="laboratorio"><Laboratorio /></Shell></div>
+          <div className="print-section"><Shell route="repositorio"><Repositorio /></Shell></div>
+          <div className="print-section"><Shell route="reflexao"><Reflexao /></Shell></div>
+          <div className="print-section"><Shell route="suporte"><Suporte /></Shell></div>
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<PrintDoc />);
+
+    (async () => {
+      try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) {}
+      setTimeout(() => { window.print(); }, 1000);
+    })();
+  </script>
+</body>
+</html>
