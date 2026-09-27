@@ -1,0 +1,71 @@
+/* ==========================================================================
+   Estilos de Impressão e Exportação PDF - IAprofEPT
+   ========================================================================== */
+
+@media print {
+  /* Ocultar elementos de navegação e controles na impressão */
+  .topbar,
+  .nav-menu,
+  .maicon-floating-widget,
+  .maicon-chat-drawer,
+  .btn,
+  .filter-bar,
+  .app-footer,
+  .modal-close-btn,
+  .modal-footer {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Cabeçalho Institucional de Impressão */
+  .print-header {
+    display: block !important;
+    border-bottom: 2px solid #064E3B;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .print-header h2 {
+    color: #064E3B;
+    font-size: 16pt;
+    margin-bottom: 4px;
+  }
+
+  .print-header p {
+    font-size: 9pt;
+    color: #475569;
+    margin: 0;
+  }
+
+  /* Banner Ético Obrigatório Impresso */
+  .ethical-banner {
+    border: 1px solid #DC2626 !important;
+    background-color: #FEF2F2 !important;
+    page-break-inside: avoid;
+    margin: 15px 0 !important;
+  }
+
+  .pratica-card,
+  .lab-result-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+  }
+}

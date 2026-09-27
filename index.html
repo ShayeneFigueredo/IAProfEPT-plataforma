@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>IAprofEPT · Plataforma de Apoio à Docência em Matemática na EPT (UFJF / PPGEM)</title>
+  
+  <!-- Google Fonts Oficiais -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Estilos da Aplicação -->
+  <link rel="stylesheet" href="styles/variables.css" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/components.css" />
+  <link rel="stylesheet" href="styles/print.css" />
+</head>
+<body>
+
+  <!-- Topbar Institucional -->
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="#" class="brand-wrapper" onclick="switchTab('inicio'); return false;">
+        <div class="brand-icon">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div class="brand-info">
+          <h1>IAprofEPT</h1>
+          <span>Produto Educacional · UFJF / PPGEM</span>
+        </div>
+      </a>
+
+      <!-- Menu Horizontal dos 5 Ambientes -->
+      <nav>
+        <ul class="nav-menu">
+          <li><a class="nav-link active" data-tab="inicio"><i class="fa-solid fa-house"></i> Início</a></li>
+          <li><a class="nav-link" data-tab="formativo"><i class="fa-solid fa-book-open-reader"></i> Formativo <span class="badge-nav">4</span></a></li>
+          <li><a class="nav-link" data-tab="laboratorio"><i class="fa-solid fa-flask-vial"></i> Laboratório IA</a></li>
+          <li><a class="nav-link" data-tab="repositorio"><i class="fa-solid fa-folder-open"></i> Repositório</a></li>
+          <li><a class="nav-link" data-tab="reflexao"><i class="fa-solid fa-scale-balanced"></i> Reflexão</a></li>
+          <li><a class="nav-link" data-tab="suporte"><i class="fa-solid fa-headset"></i> Suporte</a></li>
+        </ul>
+      </nav>
+
+      <!-- Perfil do Usuário / Login -->
+      <div class="user-profile-badge" id="user-profile-btn" title="Perfil Docente">
+        <div class="user-avatar">MM</div>
+        <div class="user-name-role">
+          <strong>Prof. Maycon Magalhães</strong>
+          <span>IFNMG · Januária</span>
+        </div>
+        <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; color: var(--text-light);"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cabeçalho de Impressão (Exibido apenas em @media print) -->
+  <div class="print-header" style="display: none;">
+    <h2>IAprofEPT — Plataforma de Apoio à Docência em Matemática na EPT</h2>
+    <p>Universidade Federal de Juiz de Fora (UFJF) • Programa de Pós-Graduação em Educação Matemática (PPGEM)</p>
+  </div>
+
+  <main class="container" style="padding-top: 1.5rem; padding-bottom: 4rem;">
+
+    <!-- Banner Ético Permanente Obrigatório -->
+    <div class="ethical-banner">
+      <div class="ethical-banner-icon">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <div class="ethical-banner-content">
+        <h4>Compromisso Ético e Validação Pedagógica Obrigatória</h4>
+        <p>
+          "Este material foi concebido com assistência de Inteligência Artificial Generativa e <strong>deve ser revisado, validado e adaptado pela autoridade docente</strong> antes de qualquer aplicação em sala de aula."
+        </p>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         0. TELA INICIAL (VISÃO GERAL / HERO)
+         ==================================================================== -->
+    <section id="view-inicio" class="view-section">
+      <div class="hero-card">
+        <span class="hero-badge"><i class="fa-solid fa-atom"></i> Pesquisa de Doutorado PPGEM / UFJF</span>
+        <h2 class="hero-title">Ambiente Virtual com IA Generativa para a Educação Matemática na EPT</h2>
+        <p class="hero-desc">
+          Uma plataforma concebida para fortalecer a autonomia docente no planejamento, produção e contextualização de práticas pedagógicas alinhadas à BNCC e aos Catálogos Nacionais de Cursos Técnicos (CNCT).
+        </p>
+
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <button class="btn btn-primary" onclick="document.querySelector('.nav-link[data-tab=\'laboratorio\']').click();">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Acessar Laboratório de IA
+          </button>
+          <button class="btn btn-secondary" onclick="document.querySelector('.nav-link[data-tab=\'formativo\']').click();">
+            <i class="fa-solid fa-book-open-reader"></i> Ver Trilhas Formativas
+          </button>
+        </div>
+
+        <!-- Cards de Acesso Rápido aos 5 Ambientes -->
+        <div class="environments-grid">
+          <div class="env-card-btn" data-tab="formativo">
+            <div>
+              <div class="env-icon-box" style="background: var(--primary-soft-bg); color: var(--primary-green);">
+                <i class="fa-solid fa-book-open-reader"></i>
+              </div>
+              <h3>1. Ambiente Formativo</h3>
+              <p>Trilhas de formação continuada, acervo de documentos e e-book de prompts curados.</p>
+            </div>
+            <div class="env-card-footer">Explorar Módulo <i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+
+          <div class="env-card-btn" data-tab="laboratorio">
+            <div>
+              <div class="env-icon-box" style="background: var(--accent-blue-bg); color: var(--accent-blue);">
+                <i class="fa-solid fa-flask-vial"></i>
+              </div>
+              <h3>2. Laboratório de IA</h3>
+              <p>Geração guiada e parametrizada de atividades e avaliações sem telas de prompt vazias.</p>
+            </div>
+            <div class="env-card-footer">Gerar Recursos <i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+
+          <div class="env-card-btn" data-tab="repositorio">
+            <div>
+              <div class="env-icon-box" style="background: var(--accent-amber-bg); color: var(--accent-amber);">
+                <i class="fa-solid fa-folder-open"></i>
+              </div>
+              <h3>3. Repositório de Práticas</h3>
+              <p>Comunidade de compartilhamento, curadoria e exportação em PDF de sequências didáticas.</p>
+            </div>
+            <div class="env-card-footer">Ver Catálogo <i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+
+          <div class="env-card-btn" data-tab="reflexao">
+            <div>
+              <div class="env-icon-box" style="background: var(--accent-purple-bg); color: var(--accent-purple);">
+                <i class="fa-solid fa-scale-balanced"></i>
+              </div>
+              <h3>4. Painel de Reflexão</h3>
+              <p>Espaço de problematização ética, vieses algorítmicos e valorização da autoria docente.</p>
+            </div>
+            <div class="env-card-footer">Participar <i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+
+          <div class="env-card-btn" data-tab="suporte">
+            <div>
+              <div class="env-icon-box" style="background: var(--accent-red-bg); color: var(--accent-red);">
+                <i class="fa-solid fa-headset"></i>
+              </div>
+              <h3>5. Suporte & mAIcon</h3>
+              <p>Assistente virtual contextualizado, indicadores qualitativos e central de ajuda rápida.</p>
+            </div>
+            <div class="env-card-footer">Obter Apoio <i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         1. AMBIENTE FORMATIVO
+         ==================================================================== -->
+    <section id="view-formativo" class="view-section" style="display: none;">
+      <div class="module-header">
+        <div class="module-header-title">
+          <h2><i class="fa-solid fa-book-open-reader"></i> Ambiente Formativo</h2>
+          <p>Trilhas de autoformação continuada, acervo de legislação e e-book de prompts para Matemática na EPT.</p>
+        </div>
+      </div>
+
+      <h3 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--primary-green);"><i class="fa-solid fa-graduation-cap"></i> Trilhas de Aprendizagem Docente</h3>
+      <div class="trilhas-grid" id="trilhas-container"></div>
+
+      <!-- Player de Vídeo da Live de Maycon -->
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 2rem;">
+        <h3 style="font-size: 1.15rem; color: var(--primary-green); margin-bottom: 0.5rem;"><i class="fa-brands fa-youtube" style="color: #DC2626;"></i> Vídeo & Palestra de Abertura</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">Live inaugural sobre o uso ético e intencional da IA na Educação Profissional e Tecnológica.</p>
+        <div style="position: relative; padding-bottom: 45%; height: 0; overflow: hidden; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+          <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" src="https://www.youtube.com/embed/Q_2bAN04KF0" title="Live IAprofEPT" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <!-- Acervo e E-book de Prompts -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+        <div>
+          <h3 style="font-size: 1.15rem; color: var(--primary-green); margin-bottom: 1rem;"><i class="fa-solid fa-box-archive"></i> Acervo de Documentos & Legislação</h3>
+          <div class="docs-list" id="docs-container"></div>
+        </div>
+
+        <div>
+          <h3 style="font-size: 1.15rem; color: var(--primary-green); margin-bottom: 1rem;"><i class="fa-solid fa-book-bookmark"></i> E-book de Prompts Curados</h3>
+          <div class="prompts-grid" id="prompts-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         2. LABORATÓRIO DE IA (GERADOR PARAMETRIZADO SEM PROMPT VAZIO)
+         ==================================================================== -->
+    <section id="view-laboratorio" class="view-section" style="display: none;">
+      <div class="module-header">
+        <div class="module-header-title">
+          <h2><i class="fa-solid fa-flask-vial"></i> Laboratório de IA</h2>
+          <p>Motor gerador de atividades contextualizadas com injeção automática de parâmetros curriculares.</p>
+        </div>
+        <span class="badge-tag" style="background: var(--primary-soft-bg); color: var(--primary-green); font-size: 0.85rem; padding: 0.5rem 0.85rem;">
+          <i class="fa-solid fa-shield-check"></i> Sem Caixas de Prompt Vazias
+        </span>
+      </div>
+
+      <!-- 4 Modalidades do Laboratório -->
+      <div class="lab-tools-grid" id="lab-tools-container"></div>
+
+      <!-- Formulário Estruturado -->
+      <div class="lab-form-box">
+        <h3 style="font-size: 1.15rem; color: var(--primary-green); margin-bottom: 1.25rem;">
+          <i class="fa-solid fa-sliders"></i> Parâmetros de Contextualização da Atividade
+        </h3>
+
+        <div class="form-group-grid">
+          <div class="form-field">
+            <label for="select-area-mat"><i class="fa-solid fa-square-root-variable"></i> Área / Tópico de Matemática:</label>
+            <select id="select-area-mat" class="form-select"></select>
+          </div>
+
+          <div class="form-field">
+            <label for="select-curso-tec"><i class="fa-solid fa-briefcase"></i> Curso Técnico da EPT:</label>
+            <select id="select-curso-tec" class="form-select"></select>
+          </div>
+
+          <div class="form-field">
+            <label for="select-nivel"><i class="fa-solid fa-layer-group"></i> Nível / Etapa:</label>
+            <select id="select-nivel" class="form-select">
+              <option>1º Ano - Ensino Médio Integrado</option>
+              <option selected>2º Ano - Ensino Médio Integrado</option>
+              <option>3º Ano - Ensino Médio Integrado</option>
+              <option>Cursos Técnicos Subsequentes / Concomitantes</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="select-metodologia"><i class="fa-solid fa-lightbulb"></i> Metodologia Ativa:</label>
+            <select id="select-metodologia" class="form-select"></select>
+          </div>
+        </div>
+
+        <div class="form-field" style="margin-bottom: 1.5rem;">
+          <label><i class="fa-solid fa-diagram-project"></i> Eixo Tecnológico CNCT:</label>
+          <div class="chips-group" id="eixos-chips-container"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+          <div style="font-size: 0.85rem; color: var(--text-muted);">
+            <i class="fa-solid fa-microchip"></i> Motores Integrados: <strong>Groq LLaMA 3.3 70B & Google Gemini</strong>
+          </div>
+          <button type="button" class="btn btn-primary" id="btn-gerar-ia" style="padding: 0.8rem 1.75rem;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Atividade com IA Contextualizada
+          </button>
+        </div>
+      </div>
+
+      <!-- Card de Resultado Gerado -->
+      <div class="lab-result-card" id="lab-result-box" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
+          <div class="result-header-tags">
+            <span class="badge-tag curso"><i class="fa-solid fa-graduation-cap"></i> Técnico em Informática</span>
+            <span class="badge-tag bncc"><i class="fa-solid fa-certificate"></i> BNCC: EM13MAT401 / EM13MAT103</span>
+            <span class="badge-tag" style="background: var(--accent-purple-bg); color: var(--accent-purple);">PBL / Metodologias Ativas</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-secondary" onclick="window.print();"><i class="fa-solid fa-print"></i> Imprimir / PDF</button>
+            <button class="btn btn-primary" onclick="showNotification('Material salvo com sucesso no Repositório de Práticas!');"><i class="fa-solid fa-floppy-disk"></i> Salvar no Repositório</button>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1.25rem; color: var(--primary-green); margin-bottom: 0.75rem;">
+          Situação-Problema: Otimização de Algoritmos de Roteamento e Complexidade de Funções
+        </h3>
+
+        <div class="generated-content-box">
+          <p><strong>1. Contextualização no Mundo do Trabalho:</strong></p>
+          <p>Em empresas de desenvolvimento de software e infraestrutura de redes, o tempo de execução de um algoritmo de busca é modelado por funções matemáticas. Um servidor em nuvem processa requisições de acordo com a lei quadrática <code>T(n) = 0,05n² + 2n + 10</code>, onde <em>n</em> representa a quantidade de dados em MB e <em>T</em> o tempo em milissegundos.</p>
+          
+          <p style="margin-top: 1rem;"><strong>2. Questão Proposta aos Estudantes:</strong></p>
+          <p>a) Calcule o tempo de resposta estimado quando o pacote recebido tiver exatamente 120 MB.<br>
+          b) Determine a taxa média de variação do tempo quando a carga sobe de 50 MB para 100 MB.<br>
+          c) Relacione o comportamento do gráfico da função com os limites de gargalo de memória no sistema operacional.</p>
+          
+          <p style="margin-top: 1rem;"><strong>3. Gabarito Comentado e Critérios de Avaliação Formativa:</strong></p>
+          <p>• a) Para n = 120: T(120) = 0,05*(14400) + 2*(120) + 10 = 720 + 240 + 10 = 970 ms.<br>
+          • b) Taxa = [T(100) - T(50)] / (100 - 50) = [710 - 235] / 50 = 475 / 50 = 9,5 ms/MB.<br>
+          • c) A aceleração quadrática demonstra a necessidade de algoritmos assintoticamente mais eficientes (O(n log n)).</p>
+        </div>
+
+        <div class="ethical-banner" style="margin: 1rem 0 0 0;">
+          <div class="ethical-banner-icon"><i class="fa-solid fa-user-check"></i></div>
+          <div class="ethical-banner-content">
+            <h4>Lembrete de Autoria Docente</h4>
+            <p>Revise os valores numéricos e adapte o enunciado para a realidade específica da sua turma de EPT.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloco de Apoio NotebookLM -->
+      <div class="notebooklm-card">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div style="width: 48px; height: 48px; border-radius: var(--radius-sm); background: white; color: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: var(--shadow-sm);">
+            <i class="fa-brands fa-google"></i>
+          </div>
+          <div>
+            <h4 style="font-size: 1.05rem; color: var(--primary-green); margin-bottom: 0.2rem;">Google NotebookLM Integrado</h4>
+            <p style="font-size: 0.835rem; color: var(--text-muted); margin: 0;">
+              Utilize o assistente de documentos para sintetizar PPCs dos cursos técnicos e diretrizes da BNCC com citações de fontes confiáveis.
+            </p>
+          </div>
+        </div>
+        <a href="https://notebooklm.google.com/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="white-space: nowrap;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir NotebookLM
+        </a>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         3. REPOSITÓRIO DE PRÁTICAS
+         ==================================================================== -->
+    <section id="view-repositorio" class="view-section" style="display: none;">
+      <div class="module-header">
+        <div class="module-header-title">
+          <h2><i class="fa-solid fa-folder-open"></i> Repositório de Práticas Docentes</h2>
+          <p>Curadoria colaborativa de sequências didáticas e atividades validadas por professores da Rede Federal.</p>
+        </div>
+        <button class="btn btn-primary" onclick="showNotification('Em breve: formulário de submissão de práticas pelos docentes.')">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Compartilhar Minha Prática
+        </button>
+      </div>
+
+      <!-- Barra de Filtros por Curso Técnico -->
+      <div class="filter-bar">
+        <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-right: 0.5rem;"><i class="fa-solid fa-filter"></i> Filtrar Curso:</span>
+        <button class="chip-btn filter-chip active" data-curso="Todos">Todos</button>
+        <button class="chip-btn filter-chip" data-curso="Informática">Informática</button>
+        <button class="chip-btn filter-chip" data-curso="Agropecuária">Agropecuária</button>
+        <button class="chip-btn filter-chip" data-curso="Enfermagem">Enfermagem</button>
+        <button class="chip-btn filter-chip" data-curso="Administração">Administração</button>
+        <button class="chip-btn filter-chip" data-curso="Edificações">Edificações</button>
+      </div>
+
+      <div class="praticas-grid" id="praticas-container"></div>
+    </section>
+
+    <!-- ====================================================================
+         4. PAINEL DE REFLEXÃO CRÍTICA
+         ==================================================================== -->
+    <section id="view-reflexao" class="view-section" style="display: none;">
+      <div class="module-header">
+        <div class="module-header-title">
+          <h2><i class="fa-solid fa-scale-balanced"></i> Painel de Reflexão Crítica</h2>
+          <p>Espaço formativo para problematização ética, combate ao uso acrítico e valorização da autoridade docente.</p>
+        </div>
+      </div>
+
+      <!-- Provocações em Destaque -->
+      <div class="provocacoes-slider">
+        <i class="fa-solid fa-quote-left" style="font-size: 2rem; opacity: 0.6; margin-bottom: 0.5rem;"></i>
+        <div class="provocacao-text">
+          "Se a Inteligência Artificial pode gerar dezenas de exercícios em segundos, qual passa a ser o papel insubstituível e humanizador do professor de Matemática na EPT?"
+        </div>
+        <span style="font-size: 0.82rem; opacity: 0.9; font-weight: 600;">— Reflexão Coletiva · PPGEM / UFJF</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+        <div>
+          <h3 style="font-size: 1.15rem; color: var(--primary-green); margin-bottom: 1rem;"><i class="fa-solid fa-comments"></i> Fóruns Temáticos Ativos</h3>
+          <div class="foruns-list" id="foruns-container"></div>
+        </div>
+
+        <div>
+          <h3 style="font-size: 1.15rem; color: var(--primary-green); margin-bottom: 1rem;"><i class="fa-solid fa-newspaper"></i> Artigos & Leituras Críticas</h3>
+          <div class="docs-list">
+            <div class="doc-item">
+              <div>
+                <strong style="font-size: 0.9rem; color: var(--text-main);">A Docência em Matemática na Era dos Algoritmos</strong>
+                <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0;">Entrevista com pesquisadores sobre resistência pedagógica e automação.</p>
+              </div>
+              <button class="btn btn-secondary" style="font-size: 0.8rem;" onclick="showNotification('Artigo disponível para leitura no painel acadêmico.')">Ler</button>
+            </div>
+
+            <div class="doc-item">
+              <div>
+                <strong style="font-size: 0.9rem; color: var(--text-main);">Educação Matemática Crítica e IAs Generativas</strong>
+                <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0;">Fundamentação de Ole Skovsmose frente às novas tecnologias digitais.</p>
+              </div>
+              <button class="btn btn-secondary" style="font-size: 0.8rem;" onclick="showNotification('Artigo disponível para leitura no painel acadêmico.')">Ler</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         5. SUPORTE & INDICADORES (PORTFÓLIO)
+         ==================================================================== -->
+    <section id="view-suporte" class="view-section" style="display: none;">
+      <div class="module-header">
+        <div class="module-header-title">
+          <h2><i class="fa-solid fa-headset"></i> Acompanhamento & Suporte</h2>
+          <p>Seus indicadores de engajamento na pesquisa de doutorado e canal de suporte técnico-pedagógico.</p>
+        </div>
+      </div>
+
+      <h3 style="font-size: 1.15rem; color: var(--primary-green); margin-bottom: 1rem;"><i class="fa-solid fa-chart-pie"></i> Portfólio de Participação Docente</h3>
+      <div class="indicadores-grid" id="indicadores-container"></div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+        <div>
+          <h3 style="font-size: 1.15rem; color: var(--primary-green); margin-bottom: 1rem;"><i class="fa-solid fa-circle-play"></i> Tutoriais Rápidos em Vídeo</h3>
+          <div class="docs-list" id="tutoriais-container"></div>
+        </div>
+
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem;">
+          <h3 style="font-size: 1.15rem; color: var(--primary-green); margin-bottom: 0.5rem;"><i class="fa-solid fa-bug"></i> Reportar Dúvida ou Sugestão</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Envie feedbacks técnicos para a equipe de desenvolvimento (Shayene & Samuel) ou para a pesquisa de Maycon.</p>
+          <textarea class="form-input" rows="3" placeholder="Descreva sua observação ou dúvida..." style="resize: vertical; margin-bottom: 0.75rem;"></textarea>
+          <button class="btn btn-primary" onclick="showNotification('Mensagem enviada para a equipe do projeto!');"><i class="fa-solid fa-paper-plane"></i> Enviar Mensagem</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ====================================================================
+       WIDGET FLUTUANTE DO ASSISTENTE PROF. MAICON
+       ==================================================================== -->
+  <div class="maicon-floating-widget">
+    <button class="maicon-trigger-btn" id="maicon-trigger-btn" title="Conversar com o Prof. mAIcon">
+      <i class="fa-solid fa-robot"></i>
+    </button>
+  </div>
+
+  <div class="maicon-chat-drawer" id="maicon-chat-drawer">
+    <div class="chat-header">
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <div style="width: 34px; height: 34px; border-radius: 50%; background: white; color: var(--primary-green); display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div>
+          <strong style="font-size: 0.95rem; display: block;">Prof. mAIcon</strong>
+          <span style="font-size: 0.7rem; opacity: 0.9;">Assistente Pedagógico IAprofEPT</span>
+        </div>
+      </div>
+      <button class="modal-close-btn" id="chat-close-btn" style="color: white;"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="chat-messages" id="chat-messages-box"></div>
+
+    <div class="chat-quick-suggestions" id="chat-suggestions-container"></div>
+
+    <form class="chat-input-box" id="chat-input-form">
+      <input type="text" id="chat-input-text" class="form-input" placeholder="Pergunte ao Prof. mAIcon..." style="padding: 0.5rem 0.75rem; font-size: 0.85rem;" />
+      <button type="submit" class="btn btn-primary" style="padding: 0.5rem 0.85rem;"><i class="fa-solid fa-paper-plane"></i></button>
+    </form>
+  </div>
+
+  <!-- ====================================================================
+       MODAL DE DETALHES DA PRÁTICA (REPOSITÓRIO)
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-pratica-detalhe">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="modal-pratica-titulo">Detalhes da Sequência Didática</h3>
+          <span style="font-size: 0.8rem; color: var(--text-muted);" id="modal-pratica-autor"></span>
+        </div>
+        <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div id="modal-pratica-tags" style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem;"></div>
+        <div id="modal-pratica-corpo"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary modal-close-trigger">Fechar</button>
+        <button class="btn btn-primary" onclick="window.print();"><i class="fa-solid fa-print"></i> Imprimir / Salvar PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAIS DE AUTENTICAÇÃO (LOGIN / CADASTRO)
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-login">
+    <div class="modal-box" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-right-to-bracket"></i> Acesso Docente</h3>
+        <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-login">
+        <div class="modal-body">
+          <div class="form-field" style="margin-bottom: 1rem;">
+            <label>E-mail Institucional (@if...):</label>
+            <input type="email" class="form-input" value="maycon.magalhaes@ifnmg.edu.br" required />
+          </div>
+          <div class="form-field" style="margin-bottom: 1rem;">
+            <label>Senha:</label>
+            <input type="password" class="form-input" value="••••••••" required />
+          </div>
+        </div>
+        <div class="modal-footer" style="justify-content: space-between;">
+          <a href="#" class="open-cadastro-btn" style="font-size: 0.82rem;">Criar Nova Conta</a>
+          <button type="submit" class="btn btn-primary">Entrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-cadastro">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-user-plus"></i> Cadastro de Professor na Pesquisa</h3>
+        <button class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-cadastro">
+        <div class="modal-body">
+          <div class="form-field" style="margin-bottom: 0.85rem;">
+            <label>Nome Completo:</label>
+            <input type="text" class="form-input" placeholder="Ex: Profa. Maria Silva" required />
+          </div>
+          <div class="form-field" style="margin-bottom: 0.85rem;">
+            <label>E-mail Institucional:</label>
+            <input type="email" class="form-input" placeholder="maria.silva@ifsudestemg.edu.br" required />
+          </div>
+          <div class="form-field" style="margin-bottom: 0.85rem;">
+            <label>Instituição da Rede Federal:</label>
+            <input type="text" class="form-input" placeholder="Ex: IF Sudeste MG · Campus Juiz de Fora" required />
+          </div>
+          <div class="form-field" style="margin-bottom: 0.85rem;">
+            <label>Cursos Técnicos em que Leciona Matemática:</label>
+            <input type="text" class="form-input" placeholder="Ex: Informática, Mecatrônica, Edificações" />
+          </div>
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.5rem;">
+            <label style="display: flex; align-items: flex-start; gap: 0.5rem; cursor: pointer;">
+              <input type="checkbox" checked required style="margin-top: 3px;" />
+              <span>Concordo em participar do teste de usabilidade pedagógica do Produto Educacional de Doutorado (PPGEM / UFJF).</span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer" style="justify-content: space-between;">
+          <a href="#" class="open-login-btn" style="font-size: 0.82rem;">Já tenho conta</a>
+          <button type="submit" class="btn btn-primary">Concluir Cadastro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer Institucional -->
+  <footer class="app-footer">
+    <div class="container footer-grid">
+      <div>
+        <strong style="color: var(--primary-green); font-size: 0.95rem;">IAprofEPT · Produto Educacional PTT4 (CAPES)</strong>
+        <p style="margin: 2px 0 0 0;">Programa de Pós-Graduação em Educação Matemática (PPGEM) · Universidade Federal de Juiz de Fora (UFJF)</p>
+      </div>
+      <div style="font-size: 0.78rem; color: var(--text-light); text-align: right;">
+        Pesquisador: Maycon Magalhães • Desenvolvimento: Shayene Figueredo & Samuel Amorim<br>
+        Servidores & Domínio Institucional cedidos pela UFJF • 2026
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts da Aplicação -->
+  <script src="scripts/data.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>
