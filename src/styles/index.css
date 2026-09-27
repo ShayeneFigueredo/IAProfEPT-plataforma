@@ -54,8 +54,8 @@
   --border-highlight: #CBD5E1;
 
   /* Tipografia */
-  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'Space Grotesk', 'Fira Code', monospace;
 
   /* Raios de Borda */
@@ -78,14 +78,19 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
 }
 
 html, body, #root {
   min-height: 100%;
   background-color: var(--bg-page);
   color: var(--text-main);
-  font-family: var(--font-body);
+  font-family: 'Montserrat', sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea {
+  font-family: 'Montserrat', sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
