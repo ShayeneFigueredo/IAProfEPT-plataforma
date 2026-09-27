@@ -24,9 +24,6 @@ export default function App() {
         <TopHeader currentTab={currentTab} />
 
         <div className="app-content-body">
-          {/* Banner Ético Obrigatório em Todas as Telas */}
-          <EthicalBanner />
-
           {/* Renderização Condicional da View Ativa */}
           {currentTab === 'inicio' && <HomeView setTab={setCurrentTab} />}
           {currentTab === 'formativo' && <FormativoView />}

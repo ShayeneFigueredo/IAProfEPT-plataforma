@@ -59,6 +59,20 @@ export const TRILHAS_DATA = [
   }
 ];
 
+export const VIDEOS_DATA = [
+  {
+    id: 'v1',
+    titulo: 'IA na Educação Matemática da EPT — Live de abertura',
+    autor: 'Prof. Maycon Magalhães',
+    categoria: 'Palestra',
+    tipo: 'Live de abertura',
+    duracao: '1h 15min',
+    youtubeId: 'Q_2bAN04KF0',
+    descricao: 'Discussão de abertura sobre o uso crítico e ético da Inteligência Artificial no ensino de Matemática na Educação Profissional e Tecnológica.',
+    tocando: true
+  }
+];
+
 export const DOCUMENTOS_DATA = [
   { id: 'd1', titulo: 'Recomendação da UNESCO sobre a Ética da IA', tag: 'UNESCO', ano: '2021' },
   { id: 'd2', titulo: 'Plano Brasileiro de Inteligência Artificial (PBIA 2024-2028)', tag: 'Legislação', ano: '2024' },
