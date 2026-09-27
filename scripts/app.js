@@ -1,5 +1,6 @@
 /* ==========================================================================
    Aplicação Principal SPA - IAprofEPT (Fase 1 MVP Navegável)
+   Lógica de Navegação e Interações Fiel ao Protótipo Original
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inicialização
   initNavigation();
-  initAuthAndOnboarding();
   initFormativo();
   initLaboratorio();
   initRepositorio();
@@ -30,35 +30,49 @@ document.addEventListener('DOMContentLoaded', () => {
   // NAVEGAÇÃO ENTRE OS 5 AMBIENTES (SPA)
   // ========================================================================
   function initNavigation() {
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
+    // Links da Sidebar
+    document.querySelectorAll('.sidebar-link').forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const targetTab = link.getAttribute('data-tab');
-        switchTab(targetTab);
+        if (targetTab) switchTab(targetTab);
       });
     });
 
-    // Botões dos ambientes no Hero
-    document.querySelectorAll('.env-card-btn').forEach(card => {
-      card.addEventListener('click', () => {
-        const targetTab = card.getAttribute('data-tab');
-        switchTab(targetTab);
+    // Botão Sair
+    const btnLogout = document.getElementById('btn-logout-trigger');
+    if (btnLogout) {
+      btnLogout.addEventListener('click', () => {
+        showNotification('Sessão encerrada com segurança.');
       });
-    });
+    }
   }
 
-  function switchTab(tabId) {
+  window.switchTab = function(tabId) {
     state.currentTab = tabId;
 
-    // Atualizar links ativos
-    document.querySelectorAll('.nav-link').forEach(link => {
+    // Atualizar links ativos na sidebar
+    document.querySelectorAll('.sidebar-link').forEach(link => {
       if (link.getAttribute('data-tab') === tabId) {
         link.classList.add('active');
       } else {
         link.classList.remove('active');
       }
     });
+
+    // Atualizar Breadcrumb no Header
+    const breadcrumbTitle = document.getElementById('header-breadcrumb-title');
+    if (breadcrumbTitle) {
+      const titulos = {
+        'inicio': 'Início',
+        'formativo': 'Ambiente Formativo',
+        'laboratorio': 'Laboratório de IA',
+        'repositorio': 'Repositório de Práticas',
+        'reflexao': 'Reflexão Crítica',
+        'suporte': 'Acompanhamento e Suporte'
+      };
+      breadcrumbTitle.innerText = titulos[tabId] || 'Início';
+    }
 
     // Atualizar visualização das seções
     document.querySelectorAll('.view-section').forEach(section => {
@@ -69,64 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
         section.style.display = 'none';
       }
     });
-  }
-
-  // ========================================================================
-  // AUTENTICAÇÃO E ONBOARDING
-  // ========================================================================
-  function initAuthAndOnboarding() {
-    const loginModal = document.getElementById('modal-login');
-    const cadastroModal = document.getElementById('modal-cadastro');
-    const userBtn = document.getElementById('user-profile-btn');
-
-    if (userBtn) {
-      userBtn.addEventListener('click', () => {
-        openModal(loginModal);
-      });
-    }
-
-    document.querySelectorAll('.open-cadastro-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeModal(loginModal);
-        openModal(cadastroModal);
-      });
-    });
-
-    document.querySelectorAll('.open-login-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeModal(cadastroModal);
-        openModal(loginModal);
-      });
-    });
-
-    // Form de Login Simulado
-    const formLogin = document.getElementById('form-login');
-    if (formLogin) {
-      formLogin.addEventListener('submit', (e) => {
-        e.preventDefault();
-        showNotification('Login realizado com sucesso! Bem-vindo, Prof. Maycon.');
-        closeModal(loginModal);
-      });
-    }
-
-    // Form de Cadastro Simulado
-    const formCadastro = document.getElementById('form-cadastro');
-    if (formCadastro) {
-      formCadastro.addEventListener('submit', (e) => {
-        e.preventDefault();
-        showNotification('Cadastro realizado com sucesso na Rede Federal!');
-        closeModal(cadastroModal);
-      });
-    }
-  }
+  };
 
   // ========================================================================
   // 1. AMBIENTE FORMATIVO
   // ========================================================================
   function initFormativo() {
-    // Renderizar Trilhas
     const trilhasContainer = document.getElementById('trilhas-container');
     if (trilhasContainer) {
       trilhasContainer.innerHTML = APP_DATA.trilhas.map(trilha => `
@@ -154,13 +116,12 @@ document.addEventListener('DOMContentLoaded', () => {
       `).join('');
     }
 
-    // Renderizar Documentos
     const docsContainer = document.getElementById('docs-container');
     if (docsContainer) {
       docsContainer.innerHTML = APP_DATA.documentos.map(doc => `
         <div class="doc-item">
           <div style="display: flex; align-items: center; gap: 0.85rem;">
-            <div style="width: 36px; height: 36px; border-radius: var(--radius-xs); background: var(--primary-soft-bg); color: var(--primary-green); display: flex; align-items: center; justify-content: center;">
+            <div style="width: 36px; height: 36px; border-radius: var(--radius-xs); background: var(--tint-formativo); color: var(--color-formativo); display: flex; align-items: center; justify-content: center;">
               <i class="fa-solid fa-file-lines"></i>
             </div>
             <div>
@@ -177,13 +138,12 @@ document.addEventListener('DOMContentLoaded', () => {
       `).join('');
     }
 
-    // Renderizar Prompts do E-book
     const promptsContainer = document.getElementById('prompts-container');
     if (promptsContainer) {
       promptsContainer.innerHTML = APP_DATA.promptsEbook.map(p => `
         <div class="prompt-card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-            <span class="badge-tag" style="background: var(--accent-purple-bg); color: var(--accent-purple);">${p.categoria}</span>
+            <span class="badge-tag" style="background: var(--tint-suporte); color: var(--color-suporte);">${p.categoria}</span>
             <button class="btn btn-secondary copy-prompt-btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" data-prompt="${encodeURIComponent(p.template)}">
               <i class="fa-regular fa-copy"></i> Copiar
             </button>
@@ -207,12 +167,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // 2. LABORATÓRIO DE IA (GERADOR PARAMETRIZADO)
   // ========================================================================
   function initLaboratorio() {
-    // Renderizar Ferramentas do Laboratório
     const toolsContainer = document.getElementById('lab-tools-container');
     if (toolsContainer) {
       toolsContainer.innerHTML = APP_DATA.laboratorio.ferramentas.map(tool => `
         <div class="lab-tool-card ${tool.id === state.selectedLabTool ? 'active' : ''}" data-tool="${tool.id}">
-          <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--primary-soft-bg); color: ${tool.cor}; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+          <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--tint-formativo); color: ${tool.cor}; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
             <i class="${tool.icone}"></i>
           </div>
           <div>
@@ -231,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Preencher Selects
     const selectArea = document.getElementById('select-area-mat');
     if (selectArea) {
       selectArea.innerHTML = APP_DATA.laboratorio.areasMatematica.map(a => `<option value="${a}">${a}</option>`).join('');
@@ -247,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
       selectMetodologia.innerHTML = APP_DATA.laboratorio.metodologias.map(m => `<option value="${m}">${m}</option>`).join('');
     }
 
-    // Chips de Eixos Tecnológicos CNCT
     const eixosContainer = document.getElementById('eixos-chips-container');
     if (eixosContainer) {
       eixosContainer.innerHTML = APP_DATA.laboratorio.eixosCNCT.map(eixo => `
@@ -265,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Ação do Botão Gerar
     const btnGerar = document.getElementById('btn-gerar-ia');
     const resultBox = document.getElementById('lab-result-box');
 
@@ -291,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function initRepositorio() {
     renderPraticas();
 
-    // Filtros de Cursos
     document.querySelectorAll('.filter-chip').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
@@ -323,56 +278,19 @@ document.addEventListener('DOMContentLoaded', () => {
         <div>
           <div class="pratica-meta">
             <span><i class="fa-regular fa-user"></i> ${p.autor}</span>
-            <span><i class="fa-solid fa-heart" style="color: var(--accent-red);"></i> ${p.likes}</span>
+            <span><i class="fa-solid fa-heart" style="color: #DC2626;"></i> ${p.likes}</span>
           </div>
           <div style="display: flex; gap: 0.5rem; margin-top: 0.85rem;">
-            <button class="btn btn-secondary view-pratica-btn" style="flex: 1; font-size: 0.8rem;" data-id="${p.id}">
+            <button class="btn btn-secondary" style="flex: 1; font-size: 0.8rem;" onclick="showNotification('Sequência didática pronta para consulta.')">
               <i class="fa-regular fa-eye"></i> Detalhes
             </button>
-            <button class="btn btn-primary print-pratica-btn" style="font-size: 0.8rem;" data-id="${p.id}">
+            <button class="btn btn-primary" style="font-size: 0.8rem;" onclick="window.print();">
               <i class="fa-solid fa-print"></i>
             </button>
           </div>
         </div>
       </div>
     `).join('');
-
-    // Eventos de clique nos botões das práticas
-    document.querySelectorAll('.view-pratica-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-id');
-        const item = APP_DATA.praticas.find(p => p.id === id);
-        if (item) openPraticaModal(item);
-      });
-    });
-
-    document.querySelectorAll('.print-pratica-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        window.print();
-      });
-    });
-  }
-
-  function openPraticaModal(item) {
-    const modal = document.getElementById('modal-pratica-detalhe');
-    if (!modal) return;
-
-    document.getElementById('modal-pratica-titulo').innerText = item.titulo;
-    document.getElementById('modal-pratica-autor').innerText = `${item.autor} (${item.instituicao})`;
-    document.getElementById('modal-pratica-tags').innerHTML = `
-      <span class="badge-tag curso">${item.curso}</span>
-      <span class="badge-tag bncc">${item.habilidadeBNCC}</span>
-      <span class="badge-tag">${item.tipo}</span>
-    `;
-    document.getElementById('modal-pratica-corpo').innerHTML = `
-      <div class="generated-content-box">
-        <p><strong>Resumo Pedagógico:</strong> ${item.resumo}</p>
-        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 1rem 0;">
-        <div style="white-space: pre-wrap; font-family: var(--font-mono); font-size: 0.85rem;">${item.conteudoCompleto}</div>
-      </div>
-    `;
-
-    openModal(modal);
   }
 
   // ========================================================================
@@ -385,13 +303,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="forum-item">
           <div>
             <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem;">
-              <span class="badge-tag" style="background: var(--accent-purple-bg); color: var(--accent-purple);">${f.tag}</span>
+              <span class="badge-tag" style="background: var(--tint-suporte); color: var(--color-suporte);">${f.tag}</span>
               <span style="font-size: 0.75rem; color: var(--text-light);"><i class="fa-regular fa-clock"></i> ${f.data}</span>
             </div>
             <h4 style="font-size: 0.98rem; color: var(--text-main); margin-bottom: 0.25rem;">${f.titulo}</h4>
             <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-regular fa-user"></i> Iniciado por ${f.autor}</span>
           </div>
-          <button class="btn btn-secondary" style="font-size: 0.8rem; white-space: nowrap;" onclick="showNotification('Fórum de debate aberto aos docentes.')">
+          <button class="btn btn-secondary" style="font-size: 0.8rem; white-space: nowrap;" onclick="showNotification('Fórum aberto para debate docente.')">
             <i class="fa-regular fa-comments"></i> ${f.respostas} Respostas
           </button>
         </div>
@@ -400,10 +318,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================================
-  // 5. SUPORTE & ASSISTENTE PROF. MAICON (CHATBOT)
+  // 5. SUPORTE & INDICADORES
   // ========================================================================
   function initSuporte() {
-    // Indicadores de engajamento
     const indicadoresContainer = document.getElementById('indicadores-container');
     if (indicadoresContainer) {
       indicadoresContainer.innerHTML = APP_DATA.indicadores.map(ind => `
@@ -419,7 +336,6 @@ document.addEventListener('DOMContentLoaded', () => {
       `).join('');
     }
 
-    // Tutoriais
     const tutoriaisContainer = document.getElementById('tutoriais-container');
     if (tutoriaisContainer) {
       tutoriaisContainer.innerHTML = APP_DATA.tutoriais.map(t => `
@@ -434,6 +350,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ========================================================================
+  // CHATBOT PROF. MAICON
+  // ========================================================================
   function initChatMaicon() {
     const triggerBtn = document.getElementById('maicon-trigger-btn');
     const chatDrawer = document.getElementById('maicon-chat-drawer');
@@ -457,7 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Sugestões Rápidas
     if (suggestionsContainer) {
       suggestionsContainer.innerHTML = APP_DATA.respostasMaicon.sugestoes.map(s => `
         <button type="button" class="chat-suggestion-chip">${s}</button>
@@ -486,7 +404,6 @@ document.addEventListener('DOMContentLoaded', () => {
       state.chatMessages.push({ sender: 'user', text });
       renderChatMessages();
 
-      // Resposta simulada pedagógica do Prof. mAIcon
       setTimeout(() => {
         let reply = APP_DATA.respostasMaicon.perguntasFrequentes.padrao;
         const lower = text.toLowerCase();
@@ -515,23 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ========================================================================
-  // UTILITÁRIOS (MODAIS & TOAST NOTIFICATION)
-  // ========================================================================
-  function openModal(modal) {
-    if (modal) modal.classList.add('active');
-  }
-
-  function closeModal(modal) {
-    if (modal) modal.classList.remove('active');
-  }
-
-  document.querySelectorAll('.modal-close-btn, .modal-close-trigger').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
-    });
-  });
-
+  // Toast
   window.showNotification = function(msg) {
     let toast = document.getElementById('app-toast');
     if (!toast) {
@@ -542,23 +443,22 @@ document.addEventListener('DOMContentLoaded', () => {
         bottom: 24px;
         left: 50%;
         transform: translateX(-50%);
-        background: var(--text-main);
+        background: #0F172A;
         color: white;
         padding: 0.75rem 1.5rem;
-        border-radius: var(--radius-full);
+        border-radius: 9999px;
         font-size: 0.85rem;
         font-weight: 600;
         z-index: 2000;
-        box-shadow: var(--shadow-lg);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        animation: fadeIn 0.3s ease;
       `;
       document.body.appendChild(toast);
     }
 
-    toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--accent-green);"></i> ${msg}`;
+    toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #10B981;"></i> ${msg}`;
     toast.style.display = 'flex';
 
     setTimeout(() => {
