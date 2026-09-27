@@ -36,10 +36,19 @@ A plataforma integra dois motores de Inteligência Artificial para validação e
 
 ---
 
-## 📂 Documentação e Guias do Projeto
+## 🧠 Wiki Científica & Registros de Decisões Arquiteturais (ADRs)
+- 📄 [ADR-001: Proibição de Caixas de Prompt em Branco e Adoção da Engenharia Oculta](docs/wiki/ADR_001_ENGENHARIA_PROMPT_OCULTA_SEM_PROMPT_EM_BRANCO.md)
+- 📄 [ADR-002: Autoridade Docente Insubstituível e Validação Ético-Pedagógica](docs/wiki/ADR_002_PRINCIPIO_AUTORIDADE_DOCENTE_E_VALIDACAO_ETICA.md)
+- 📄 [ADR-003: Arquitetura de IA Dupla (Groq LLaMA 3.3 vs Gemini 1.5) e Protocolo A/B](docs/wiki/ADR_003_ARQUITETURA_IA_DUPLA_E_PROTOCOLO_TESTE_AB.md)
+- 📐 [Matriz de Alinhamento Curricular: Matemática x EPT x BNCC](docs/wiki/MATRIZ_CURRICULAR_BNCC_CNCT_EPT.md)
+- 🚀 [Diário de Bordo Técnico do Produto Educacional (Fase 1)](docs/wiki/DIARIO_DE_BORDO_FASE1_MVP.md)
+
+---
+
+## 📂 Guias Técnicos e de Governança
 - 🧠 [Instruções Permanentes para IA (AGENTS.md)](AGENTS.md)
 - 📚 [Diretrizes de Documentação & Rigor Científico](docs/DIRETRIZES_DOCUMENTACAO_IA.md)
-- 📖 [Estrutura Pronta para a Wiki do GitHub](docs/GUIA_WIKI_GITHUB.md)
+- 📖 [Página Inicial da Wiki (docs/wiki/Home.md)](docs/wiki/Home.md)
 - 📋 [Backlog de Tasks e Épicos para o Jira](docs/ESTRUTURA_TASKS_JIRA.md)
 - 🐙 [Guia de Configuração e Fluxo de Trabalho no Git](docs/GUIA_CONFIGURACAO_GIT.md)
 
