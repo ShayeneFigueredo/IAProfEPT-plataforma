@@ -40,32 +40,50 @@ export default function FormativoView() {
         </p>
       </div>
 
-      {/* Pílulas de Sub-Navegação (Sub-tabs) */}
-      <div className="subnav-pill-container">
-        <button
-          className={`subnav-pill-btn ${activeSubTab === 'trilhas' ? 'active' : ''}`}
-          onClick={() => setActiveSubTab('trilhas')}
-        >
-          Trilhas
-        </button>
-        <button
-          className={`subnav-pill-btn ${activeSubTab === 'videos' ? 'active' : ''}`}
-          onClick={() => setActiveSubTab('videos')}
-        >
-          Vídeos
-        </button>
-        <button
-          className={`subnav-pill-btn ${activeSubTab === 'materiais' ? 'active' : ''}`}
-          onClick={() => setActiveSubTab('materiais')}
-        >
-          Materiais & legislação
-        </button>
-        <button
-          className={`subnav-pill-btn ${activeSubTab === 'ebook' ? 'active' : ''}`}
-          onClick={() => setActiveSubTab('ebook')}
-        >
-          IAs & E-book de prompts
-        </button>
+      {/* Pílulas de Sub-Navegação (Sub-tabs com Scroll Horizontal Touch Adaptado) */}
+      <div className="subnav-scroll-wrapper">
+        <div className="subnav-pill-container" role="tablist" aria-label="Seções do Ambiente Formativo">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeSubTab === 'trilhas'}
+            className={`subnav-pill-btn ${activeSubTab === 'trilhas' ? 'active' : ''}`}
+            onClick={() => setActiveSubTab('trilhas')}
+          >
+            <BookOpen size={14} />
+            <span>Trilhas</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeSubTab === 'videos'}
+            className={`subnav-pill-btn ${activeSubTab === 'videos' ? 'active' : ''}`}
+            onClick={() => setActiveSubTab('videos')}
+          >
+            <Video size={14} />
+            <span>Vídeos</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeSubTab === 'materiais'}
+            className={`subnav-pill-btn ${activeSubTab === 'materiais' ? 'active' : ''}`}
+            onClick={() => setActiveSubTab('materiais')}
+          >
+            <FileText size={14} />
+            <span>Materiais & Legislação</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeSubTab === 'ebook'}
+            className={`subnav-pill-btn ${activeSubTab === 'ebook' ? 'active' : ''}`}
+            onClick={() => setActiveSubTab('ebook')}
+          >
+            <Sparkles size={14} />
+            <span>E-book de Prompts</span>
+          </button>
+        </div>
       </div>
 
       {/* ====================================================================
@@ -209,9 +227,10 @@ export default function FormativoView() {
             <div className="video-player-card">
               <div className="video-iframe-container">
                 <iframe
-                  src={`https://www.youtube.com/embed/${selectedVideo.youtubeId}?autoplay=0&rel=0`}
+                  src={`https://www.youtube.com/embed/${selectedVideo.youtubeId}?autoplay=0&rel=0&enablejsapi=1`}
                   title={selectedVideo.titulo}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
                 />
               </div>
@@ -222,6 +241,18 @@ export default function FormativoView() {
                 </div>
                 <h3 className="video-current-title">{selectedVideo.titulo}</h3>
                 <p className="video-current-desc">{selectedVideo.descricao}</p>
+                <div className="video-player-actions">
+                  <a
+                    href={`https://www.youtube.com/watch?v=${selectedVideo.youtubeId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-open-youtube"
+                  >
+                    <Youtube size={16} color="#DC2626" />
+                    <span>Assistir no YouTube</span>
+                    <ExternalLink size={13} />
+                  </a>
+                </div>
               </div>
             </div>
 

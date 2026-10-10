@@ -8,7 +8,8 @@ export const USER_DATA = {
   instituicao: 'Instituto Federal do Norte de Minas Gerais (IFNMG)',
   campus: 'Campus Januária',
   cargo: 'Docente de Matemática · IFNMG',
-  iniciais: 'M'
+  iniciais: 'M',
+  foto: null // Foto de perfil do usuário (independente da foto do assistente Prof. mAIcon)
 };
 
 export const MODULES_DATA = [

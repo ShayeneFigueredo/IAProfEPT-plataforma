@@ -1,22 +1,45 @@
 import React from 'react';
-import { Home, BookOpen, FlaskConical, FolderGit2, Scale, HelpCircle, LogOut } from 'lucide-react';
+import { Home, BookOpen, FlaskConical, FolderGit2, Scale, HelpCircle, LogOut, X } from 'lucide-react';
 import { USER_DATA } from '../data/mockData';
 
-const iconMap = {
-  Home,
-  BookOpen,
-  FlaskConical,
-  FolderGit2,
-  Scale,
-  HelpCircle
-};
+export default function Sidebar({ currentTab, setTab, mobileMenuOpen, setMobileMenuOpen }) {
+  const handleNavClick = (tabId) => {
+    setTab(tabId);
+    if (setMobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+  };
 
-export default function Sidebar({ currentTab, setTab }) {
+  const handleLogout = () => {
+    if (setMobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+    alert('Sessão encerrada com segurança.');
+  };
+
   return (
-    <aside className="app-sidebar">
-      <div>
-        {/* Logotipo */}
-        <div className="sidebar-brand" onClick={() => setTab('inicio')}>
+    <>
+      {/* Backdrop escuro para fechar gaveta no mobile ao tocar fora */}
+      <div
+        className={`mobile-sidebar-backdrop ${mobileMenuOpen ? 'active' : ''}`}
+        onClick={() => setMobileMenuOpen && setMobileMenuOpen(false)}
+        aria-hidden="true"
+      />
+
+      <aside className={`app-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`} aria-label="Menu Principal">
+        {/* Botão de Fechar Exclusivo para Telas Mobile */}
+        <button
+          type="button"
+          className="mobile-close-btn"
+          onClick={() => setMobileMenuOpen && setMobileMenuOpen(false)}
+          aria-label="Fechar menu de navegação"
+        >
+          <X size={20} />
+        </button>
+
+        <div>
+          {/* Logotipo */}
+          <div className="sidebar-brand" onClick={() => handleNavClick('inicio')} role="button" tabIndex={0}>
           <svg className="brand-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
             <polyline points="16 7 22 7 22 13"></polyline>
@@ -31,7 +54,7 @@ export default function Sidebar({ currentTab, setTab }) {
         <nav className="sidebar-menu-list">
           <button
             className={`sidebar-nav-item ${currentTab === 'inicio' ? 'active' : ''}`}
-            onClick={() => setTab('inicio')}
+            onClick={() => handleNavClick('inicio')}
           >
             <div className="sidebar-nav-left">
               <Home size={18} />
@@ -43,7 +66,7 @@ export default function Sidebar({ currentTab, setTab }) {
 
           <button
             className={`sidebar-nav-item ${currentTab === 'formativo' ? 'active' : ''}`}
-            onClick={() => setTab('formativo')}
+            onClick={() => handleNavClick('formativo')}
           >
             <div className="sidebar-nav-left">
               <BookOpen size={18} />
@@ -54,7 +77,7 @@ export default function Sidebar({ currentTab, setTab }) {
 
           <button
             className={`sidebar-nav-item ${currentTab === 'laboratorio' ? 'active' : ''}`}
-            onClick={() => setTab('laboratorio')}
+            onClick={() => handleNavClick('laboratorio')}
           >
             <div className="sidebar-nav-left">
               <FlaskConical size={18} />
@@ -64,7 +87,7 @@ export default function Sidebar({ currentTab, setTab }) {
 
           <button
             className={`sidebar-nav-item ${currentTab === 'repositorio' ? 'active' : ''}`}
-            onClick={() => setTab('repositorio')}
+            onClick={() => handleNavClick('repositorio')}
           >
             <div className="sidebar-nav-left">
               <FolderGit2 size={18} />
@@ -74,7 +97,7 @@ export default function Sidebar({ currentTab, setTab }) {
 
           <button
             className={`sidebar-nav-item ${currentTab === 'reflexao' ? 'active' : ''}`}
-            onClick={() => setTab('reflexao')}
+            onClick={() => handleNavClick('reflexao')}
           >
             <div className="sidebar-nav-left">
               <Scale size={18} />
@@ -84,7 +107,7 @@ export default function Sidebar({ currentTab, setTab }) {
 
           <button
             className={`sidebar-nav-item ${currentTab === 'suporte' ? 'active' : ''}`}
-            onClick={() => setTab('suporte')}
+            onClick={() => handleNavClick('suporte')}
           >
             <div className="sidebar-nav-left">
               <HelpCircle size={18} />
@@ -97,17 +120,33 @@ export default function Sidebar({ currentTab, setTab }) {
       {/* Card do Usuário */}
       <div className="sidebar-user-footer">
         <div className="user-footer-row">
-          <div className="user-avatar-pill">{USER_DATA.iniciais}</div>
+          <div className="user-avatar-pill">
+            {USER_DATA.foto ? (
+              <img
+                src={USER_DATA.foto}
+                alt={USER_DATA.nome}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  if (e.currentTarget.parentElement) {
+                    e.currentTarget.parentElement.innerText = USER_DATA.iniciais;
+                  }
+                }}
+              />
+            ) : (
+              <span>{USER_DATA.iniciais}</span>
+            )}
+          </div>
           <div className="user-footer-details">
-            <strong>{USER_DATA.nome}</strong>
-            <span>{USER_DATA.cargo}</span>
+            <strong title={USER_DATA.nome}>{USER_DATA.nome}</strong>
+            <span title={USER_DATA.cargo}>{USER_DATA.cargo}</span>
           </div>
         </div>
-        <button className="btn-sidebar-logout" onClick={() => alert('Sessão encerrada com segurança.')}>
+        <button className="btn-sidebar-logout" onClick={handleLogout} title="Encerrar sessão na plataforma">
           <LogOut size={14} />
           <span>Sair</span>
         </button>
       </div>
     </aside>
+  </>
   );
 }
