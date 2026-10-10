@@ -7,7 +7,8 @@ import {
   ChevronRight,
   ChevronDown,
   FileCheck,
-  RotateCcw
+  RotateCcw,
+  Check
 } from 'lucide-react';
 import { LAB_OPTIONS } from '../data/mockData';
 
@@ -20,6 +21,13 @@ export default function LaboratorioView() {
   const [showSystemPrompt, setShowSystemPrompt] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(true);
+  const [copiedFormula, setCopiedFormula] = useState(false);
+
+  const handleCopyFormula = () => {
+    navigator.clipboard.writeText('C(t) = 50 \\cdot \\left(\\frac{1}{2}\\right)^{\\frac{t}{4}}');
+    setCopiedFormula(true);
+    setTimeout(() => setCopiedFormula(false), 2000);
+  };
 
   const handleGenerate = () => {
     setIsGenerating(true);
@@ -228,9 +236,46 @@ Diretrizes obrigatórias:
                 </p>
               </div>
 
-              {/* Fórmula Matemática Renderizada */}
-              <div className="math-formula-display">
-                <span>{'$$C(t) = 50 \\cdot \\left(\\frac{1}{2}\\right)^{t/4}$$'}</span>
+              {/* Fórmula Matemática Renderizada (MathML Padrão + Fallback Tipográfico Matemático) */}
+              <div className="math-formula-container">
+                <div className="math-formula-card">
+                  <div className="math-formula-header">
+                    <span className="math-formula-badge">
+                      <Sparkles size={13} /> Modelagem Formal: Decaimento Exponencial
+                    </span>
+                    <button
+                      type="button"
+                      className="btn-copy-latex"
+                      onClick={handleCopyFormula}
+                      title="Copiar fórmula em código LaTeX"
+                    >
+                      {copiedFormula ? <Check size={13} color="#10B981" /> : <Copy size={13} />}
+                      <span>{copiedFormula ? 'Copiado!' : 'Copiar LaTeX'}</span>
+                    </button>
+                  </div>
+
+                  {/* Exibição Visual da Fórmula Matemática */}
+                  <div className="math-render-area">
+                    <div className="math-equation-box">
+                      <span className="math-func">C(t)</span>
+                      <span className="math-symbol">=</span>
+                      <span className="math-constant">50</span>
+                      <span className="math-symbol">·</span>
+                      <span className="math-paren-big">(</span>
+                      <span className="math-fraction">
+                        <span className="fraction-num">1</span>
+                        <span className="fraction-bar"></span>
+                        <span className="fraction-den">2</span>
+                      </span>
+                      <span className="math-paren-big">)</span>
+                      <sup className="math-exponent-fraction">
+                        <span className="exp-num">t</span>
+                        <span className="exp-bar"></span>
+                        <span className="exp-den">4</span>
+                      </sup>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="question-subquestions">
