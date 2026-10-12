@@ -1,31 +1,84 @@
 /* ==========================================================================
-   Design System Tokens e Estilos Globais - IAprofEPT (React + Vite)
-   Tipografia: Montserrat | Paleta Oficial UFJF
+   Design System Tokens e Estilos Globais Institucionais - IAprofEPT
+   UFJF / PPGEM (Educação Matemática / EPT)
+   Paleta Oficial: #064E3B, #10B981, #DC2626, #F8FAFC, #0F172A
+   Tipografia: Outfit (Títulos), Plus Jakarta Sans (Corpo), Space Grotesk / Fira Code (Técnico)
+   Acessibilidade: WCAG AA Comprovada (Contraste >= 4.5:1, Focus Rings, Motion Adaptativo)
    ========================================================================== */
 
 :root {
-  /* Sidebar e Verdes Institucionais */
-  --sidebar-bg: #064E3B;
-  --sidebar-hover: #085f48;
-  --sidebar-active: #0d6951;
-  --sidebar-text: #E2E8F0;
-  --sidebar-muted: #94A3B8;
-
+  /* ========================================================================
+     1. PALETA DE CORES INSTITUCIONAL UFJF/PPGEM
+     ======================================================================== */
+  /* Verde Floresta Institucional UFJF (#064E3B) */
   --primary-green: #064E3B;
   --primary-light: #0d6951;
   --primary-dark: #032b21;
   --primary-soft-bg: #ECFDF5;
   --primary-border: #A7F3D0;
 
+  /* Verde Acento (#10B981) - Interatividade, feedback positivo e destaque */
   --accent-green: #10B981;
   --accent-green-hover: #059669;
+  --accent-green-bg: #ECFDF5;
+  --accent-green-border: #A7F3D0;
+  --accent-green-dark: #047857;
 
-  /* Alerta & Compromisso Ético */
+  /* Alerta & Compromisso Ético (#DC2626) */
   --accent-red: #DC2626;
+  --accent-red-hover: #B91C1C;
   --accent-red-bg: #FEF2F2;
   --accent-red-border: #FECACA;
+  --accent-red-text: #991B1B;
 
-  /* Cores de Destaque dos Módulos */
+  /* Neutros e Superfícies (#F8FAFC e #0F172A) */
+  --bg-page: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-alt: #F1F5F9;
+
+  --text-main: #0F172A;
+  --text-muted: #64748B;
+  --text-light: #94A3B8;
+
+  --border-color: #E2E8F0;
+  --border-highlight: #CBD5E1;
+
+  /* Tokens Canônicos Semânticos */
+  --color-primary: #064E3B;
+  --color-primary-hover: #043e2f;
+  --color-primary-light: #0d6951;
+  --color-primary-dark: #032b21;
+  --color-accent: #10B981;
+  --color-accent-hover: #059669;
+  --color-danger: #DC2626;
+  --color-danger-hover: #B91C1C;
+  --color-bg-page: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-text-main: #0F172A;
+  --color-text-muted: #64748B;
+  --color-border: #E2E8F0;
+
+  /* Escala Completa de Cinzas Neutros (Slate) */
+  --slate-50: #F8FAFC;
+  --slate-100: #F1F5F9;
+  --slate-200: #E2E8F0;
+  --slate-300: #CBD5E1;
+  --slate-400: #94A3B8;
+  --slate-500: #64748B;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1E293B;
+  --slate-900: #0F172A;
+
+  /* Sidebar e Menu Lateral */
+  --sidebar-bg: #064E3B;
+  --sidebar-hover: #085f48;
+  --sidebar-active: #0d6951;
+  --sidebar-text: #E2E8F0;
+  --sidebar-muted: #94A3B8;
+
+  /* Cores de Destaque dos 5 Ambientes da Plataforma */
   --tint-formativo: #ECFDF5;
   --color-formativo: #065F46;
 
@@ -41,53 +94,95 @@
   --tint-suporte: #F5F3FF;
   --color-suporte: #6B51C4;
 
-  /* Superfícies e Neutros */
-  --bg-page: #F4F7F6;
-  --bg-surface: #FFFFFF;
-  --bg-card: #FFFFFF;
-  --bg-card-alt: #F1F5F9;
+  /* ========================================================================
+     2. TIPOGRAFIA OFICIAL (UFJF / PPGEM)
+     ======================================================================== */
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Space Grotesk', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-tech: 'Space Grotesk', sans-serif;
+  --font-code: 'Fira Code', monospace;
+  --font-family: var(--font-body);
 
-  --text-main: #0F172A;
-  --text-muted: #64748B;
-  --text-light: #94A3B8;
+  /* Escala Tipográfica Proporcional */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
 
-  --border-color: #E2E8F0;
-  --border-highlight: #CBD5E1;
+  /* Pesos Tipográficos */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
 
-  /* Tipografia */
-  --font-heading: 'Montserrat', sans-serif;
-  --font-body: 'Montserrat', sans-serif;
-  --font-mono: 'Space Grotesk', 'Fira Code', monospace;
+  /* Alturas de Linha */
+  --line-height-tight: 1.2;
+  --line-height-snug: 1.35;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.65;
 
-  /* Raios de Borda */
-  --radius-xs: 8px;
-  --radius-sm: 12px;
-  --radius-md: 18px;
-  --radius-lg: 22px;
+  /* ========================================================================
+     3. BORDAS ARREDONDADAS
+     ======================================================================== */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* Sombras */
-  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
-  --shadow-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.1);
-  --shadow-floating: 0 8px 24px rgba(6, 78, 59, 0.35);
+  /* ========================================================================
+     4. SOMBRAS SUAVES INSTITUCIONAIS (shadow-app)
+     ======================================================================== */
+  --shadow-app: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+  --shadow-app-hover: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+  --shadow-app-active: 0 2px 8px -1px rgba(15, 23, 42, 0.06);
+  --shadow-app-floating: 0 12px 36px -4px rgba(6, 78, 59, 0.25), 0 4px 12px -2px rgba(15, 23, 42, 0.08);
 
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
+  --shadow-md: var(--shadow-app);
+  --shadow-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 20px 40px -6px rgba(15, 23, 42, 0.1);
+  --shadow-floating: var(--shadow-app-floating);
+
+  /* ========================================================================
+     5. SISTEMA DE GRID RESPONSIVO & LAYOUT
+     ======================================================================== */
+  --container-max-width: 1440px;
+  --container-padding: 1.5rem;
+  --grid-gutter: 1.5rem;
+  --grid-gutter-sm: 1rem;
+  --grid-gutter-lg: 2rem;
+
+  /* Transições e Animações */
   --transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ==========================================================================
+   ESTILOS GLOBAIS E RESET COM ACESSIBILIDADE WCAG AA
+   ========================================================================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Montserrat', sans-serif;
 }
 
 html, body, #root {
   min-height: 100%;
   background-color: var(--bg-page);
   color: var(--text-main);
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
   overflow-x: hidden;
@@ -95,7 +190,7 @@ html, body, #root {
 }
 
 button, input, select, textarea {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-body);
 }
 
 /* Prevenção de auto-zoom em inputs no Safari iOS */
@@ -109,12 +204,256 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 700;
   color: var(--text-main);
-  line-height: 1.25;
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+p, span, li, a {
+  font-family: var(--font-body);
+}
+
+code, kbd, samp, pre {
+  font-family: var(--font-mono);
 }
 
 a {
   color: var(--primary-green);
   text-decoration: none;
+  transition: color var(--transition);
+}
+
+a:hover {
+  color: var(--primary-light);
+}
+
+/* Acessibilidade WCAG AA: Indicadores Visuais de Foco para Teclado */
+:focus-visible {
+  outline: 2px solid var(--accent-green);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent-green);
+  outline-offset: 2px;
+}
+
+/* Link de Acessibilidade: Pular para Conteúdo Principal (WCAG AA 2.4.1) */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 1.5rem;
+  background: var(--primary-green);
+  color: #FFFFFF !important;
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: var(--radius-sm);
+  z-index: 9999;
+  box-shadow: var(--shadow-app-floating);
+  transition: top 0.2s ease;
+  text-decoration: none;
+}
+
+.skip-to-content:focus {
+  top: 1rem;
+  outline: 3px solid var(--accent-green);
+  outline-offset: 2px;
+}
+
+/* Respeito à Preferência de Movimento Reduzido (Acessibilidade Vestibular) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Alvos de Toque Acessíveis (Mínimo 44px para dispositivos móveis) */
+@media (max-width: 860px) {
+  button,
+  .sidebar-nav-item,
+  .topheader-action-btn,
+  .mobile-toggle-btn {
+    min-height: 44px;
+  }
+}
+
+/* Utilitário para Leitores de Tela (A11y) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   CLASSES UTILITÁRIAS DO DESIGN SYSTEM
+   ========================================================================== */
+/* Tipografia */
+.font-heading { font-family: var(--font-heading) !important; }
+.font-body { font-family: var(--font-body) !important; }
+.font-mono { font-family: var(--font-mono) !important; }
+.font-tech { font-family: var(--font-tech) !important; }
+.font-code { font-family: var(--font-code) !important; }
+
+/* Sombras Institucionais Suaves */
+.shadow-app { box-shadow: var(--shadow-app); }
+.shadow-app-hover:hover { box-shadow: var(--shadow-app-hover); }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+.shadow-floating { box-shadow: var(--shadow-app-floating); }
+.shadow-none { box-shadow: none !important; }
+
+/* Bordas Arredondadas */
+.rounded-xs { border-radius: var(--radius-xs); }
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* Sistema de Grid Responsivo */
+.container-app {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+.app-grid, .grid {
+  display: grid;
+  gap: var(--grid-gutter);
+}
+
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.grid-auto-fit { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.grid-auto-fill { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+
+.gap-xs { gap: 0.5rem; }
+.gap-sm { gap: 0.75rem; }
+.gap-md { gap: 1.25rem; }
+.gap-lg { gap: 1.75rem; }
+.gap-xl { gap: 2.5rem; }
+
+.col-span-1 { grid-column: span 1 / span 1; }
+.col-span-2 { grid-column: span 2 / span 2; }
+.col-span-3 { grid-column: span 3 / span 3; }
+.col-span-4 { grid-column: span 4 / span 4; }
+.col-span-6 { grid-column: span 6 / span 6; }
+.col-span-12, .col-span-full { grid-column: 1 / -1; }
+
+@media (max-width: 640px) {
+  .app-grid, .grid {
+    gap: var(--grid-gutter-sm);
+  }
+  .grid-cols-2, .grid-cols-3, .grid-cols-4, .grid-cols-5, .grid-cols-6, .grid-cols-12 {
+    grid-template-columns: 1fr;
+  }
+  .col-span-1, .col-span-2, .col-span-3, .col-span-4, .col-span-6, .col-span-12 {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .grid-cols-3, .grid-cols-4, .grid-cols-5, .grid-cols-6 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Flexbox Helpers */
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.justify-start { justify-content: flex-start; }
+.justify-end { justify-content: flex-end; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1 1 0%; }
+
+/* Estilização do EthicalBanner Reutilizável */
+.ethical-alert-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: var(--accent-red-bg);
+  border: 1px solid var(--accent-red-border);
+  border-left: 4px solid var(--accent-red);
+  border-radius: var(--radius-md);
+  padding: 1.15rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+  transition: all var(--transition);
+}
+
+.ethical-alert-box:hover {
+  box-shadow: var(--shadow-app);
+}
+
+.ethical-icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: #FEE2E2;
+  color: var(--accent-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ethical-text-content {
+  flex: 1;
+}
+
+.ethical-text-content h4 {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent-red-text);
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ethical-text-content p {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #7F1D1D;
+  line-height: 1.5;
+}
+
+.ethical-text-content strong {
+  color: #991B1B;
+  font-weight: 700;
 }
 
 /* Layout App */

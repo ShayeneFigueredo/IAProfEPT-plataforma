@@ -50,6 +50,11 @@ export default function App() {
 
   return (
     <div className="app-container">
+      {/* Link de Acessibilidade: Pular para o Conteúdo Principal (WCAG AA 2.4.1) */}
+      <a href="#main-content" className="skip-to-content">
+        Pular para o conteúdo principal
+      </a>
+
       {/* Sidebar Lateral (Desktop fixa / Mobile gaveta retrátil com backdrop) */}
       <Sidebar
         currentTab={currentTab}
@@ -59,7 +64,7 @@ export default function App() {
       />
 
       {/* Conteúdo Principal à Direita */}
-      <main className="app-main">
+      <main className="app-main" id="main-content" tabIndex="-1">
         <TopHeader
           currentTab={currentTab}
           mobileMenuOpen={mobileMenuOpen}

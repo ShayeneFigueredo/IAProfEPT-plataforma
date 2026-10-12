@@ -14,8 +14,10 @@
 ### 1. Migração Tecnológica & Design System
 - **Stack Tecnológico:** Migração e consolidação em **React 18 + Vite** para máxima performance, leveza de bundle e hot reload instantâneo.
 - **Identidade Visual Oficial UFJF:**
-  - Paleta: Verde Floresta Institucional (`#064E3B`), Verde Acento (`#10B981`), Alerta Vermelho (`#DC2626`) e Superfícies Neutras (`#F8FAFC`, `#0F172A`).
-  - Tipografia: Padronização rigorosa na família **Montserrat** em todos os componentes, botões, títulos e formulários.
+  - Paleta Oficial: Verde Floresta Institucional (`#064E3B`), Verde Acento (`#10B981`), Alerta Vermelho (`#DC2626`) e Superfícies Neutras (`#F8FAFC`, `#0F172A`).
+  - Tipografia Institucional (ADR-004 / [IAPROF-2.1]): Outfit (Títulos), Plus Jakarta Sans (Corpo), Space Grotesk / Fira Code (Dados técnicos/prompts/código).
+  - Sombras & Layout: Camada de sombras suaves (`--shadow-app`), bordas arredondadas e sistema de grid responsivo fluído.
+  - Acessibilidade: Contraste WCAG AA/AAA comprovado, foco por teclado `:focus-visible`, link skip-to-content e adaptação para movimento reduzido.
 
 ### 2. Implementação dos 5 Ambientes Navegáveis (1:1 com Protótipo)
 1. **Início (HomeView):**
