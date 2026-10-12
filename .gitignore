@@ -29,6 +29,7 @@ dist/
 out/
 .DS_Store
 Thumbs.db
+.temp_wiki/
 
 # Logs
 logs/
