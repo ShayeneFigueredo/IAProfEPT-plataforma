@@ -11,7 +11,37 @@ import {
   Layers
 } from 'lucide-react';
 
-export default function HomeView({ setTab }) {
+export default function HomeView({ setTab, currentUser }) {
+  // Saudação contextual conforme o horário do dia
+  const getSaudacao = () => {
+    const hora = new Date().getHours();
+    if (hora >= 5 && hora < 12) return 'Bom dia';
+    if (hora >= 12 && hora < 18) return 'Boa tarde';
+    return 'Boa noite';
+  };
+
+  // Extrai o primeiro nome do docente ou define 'Visitante'
+  const getPrimeiroNome = () => {
+    if (!currentUser || !currentUser.nome) return 'Visitante';
+    const nomeLimpo = currentUser.nome.trim();
+
+    // Se contiver menção a visitante ou convidado
+    if (/visitante|convidado/i.test(nomeLimpo)) {
+      return 'Visitante';
+    }
+
+    // Remove eventuais títulos docentes (Prof., Profª., Dr., etc.)
+    const semTitulo = nomeLimpo
+      .replace(/^(prof\.|profª\.|profa\.|professor\(a\)|professor|professora|dr\.|dra\.|doutor|doutora)\s+/i, '')
+      .trim();
+
+    const primeiro = semTitulo.split(/\s+/)[0];
+    return primeiro || 'Visitante';
+  };
+
+  const saudacao = getSaudacao();
+  const primeiroNome = getPrimeiroNome();
+
   return (
     <section className="home-view-container">
       {/* Hero Banner Verde Escuro com Degradê Suave */}
@@ -21,7 +51,7 @@ export default function HomeView({ setTab }) {
             <span>✳️</span> Ambiente virtual de apoio à docência
           </div>
           <h2 className="hero-heading">
-            Boa noite, Maycon. Vamos experimentar a IA na sua prática?
+            {saudacao}, {primeiroNome}. Vamos experimentar a IA na sua prática?
           </h2>
           <p className="hero-paragraph">
             Apoio à prática docente de Matemática na EPT — voltado à experimentação e à reflexão crítica sobre o uso da Inteligência Artificial na educação.

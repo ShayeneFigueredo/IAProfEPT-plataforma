@@ -15,6 +15,7 @@ Documentos formais que fundamentam as escolhas técnicas do software à luz da p
 - 📄 [ADR-002: Princípio da Autoridade Docente Insubstituível e Banner Obrigatório de Validação Ética](./ADR_002_PRINCIPIO_AUTORIDADE_DOCENTE_E_VALIDACAO_ETICA.md)
 - 📄 [ADR-003: Arquitetura de IA Dupla (Groq LLaMA 3.3 vs Google Gemini 1.5) e Protocolo Experimental do Teste A/B](./ADR_003_ARQUITETURA_IA_DUPLA_E_PROTOCOLO_TESTE_AB.md)
 - 📄 [ADR-004: Implementação do Design System Institucional: Tokens Visuais, Tipografia Oficial, Grid Responsivo e Acessibilidade WCAG AA](./ADR_004_DESIGN_SYSTEM_TOKENS_E_ESTILOS_GLOBAIS.md)
+- 📄 [ADR-005: Fluxo de Autenticação, Cadastro Institucional da RFEPCT e Onboarding Pedagógico dos 5 Ambientes](./ADR_005_AUTENTICACAO_ONBOARDING_ACOLHIMENTO_DOCENTE_RFEPCT.md)
 
 ---
 

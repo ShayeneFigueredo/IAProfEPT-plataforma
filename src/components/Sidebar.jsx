@@ -2,7 +2,17 @@ import React from 'react';
 import { Home, BookOpen, FlaskConical, FolderGit2, Scale, HelpCircle, LogOut, X } from 'lucide-react';
 import { USER_DATA } from '../data/mockData';
 
-export default function Sidebar({ currentTab, setTab, mobileMenuOpen, setMobileMenuOpen }) {
+export default function Sidebar({
+  currentTab,
+  setTab,
+  mobileMenuOpen,
+  setMobileMenuOpen,
+  currentUser,
+  onLogout,
+  onOpenOnboarding
+}) {
+  const user = currentUser || USER_DATA;
+
   const handleNavClick = (tabId) => {
     setTab(tabId);
     if (setMobileMenuOpen) {
@@ -10,11 +20,15 @@ export default function Sidebar({ currentTab, setTab, mobileMenuOpen, setMobileM
     }
   };
 
-  const handleLogout = () => {
+  const handleLogoutClick = () => {
     if (setMobileMenuOpen) {
       setMobileMenuOpen(false);
     }
-    alert('Sessão encerrada com segurança.');
+    if (onLogout) {
+      onLogout();
+    } else {
+      alert('Sessão encerrada com segurança.');
+    }
   };
 
   return (
@@ -117,31 +131,58 @@ export default function Sidebar({ currentTab, setTab, mobileMenuOpen, setMobileM
         </nav>
       </div>
 
-      {/* Card do Usuário */}
+      {/* Card do Usuário Autenticado */}
       <div className="sidebar-user-footer">
+        {onOpenOnboarding && (
+          <button
+            type="button"
+            className="sidebar-onboarding-link-btn"
+            onClick={onOpenOnboarding}
+            title="Apresentação dos 5 Ambientes da Plataforma"
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.4rem',
+              padding: '0.45rem',
+              marginBottom: '0.65rem',
+              background: 'rgba(255, 255, 255, 0.08)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: 'var(--radius-sm)',
+              color: 'var(--accent-green)',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              cursor: 'pointer'
+            }}
+          >
+            <span>Guia dos 5 Ambientes</span>
+          </button>
+        )}
+
         <div className="user-footer-row">
           <div className="user-avatar-pill">
-            {USER_DATA.foto ? (
+            {user.foto ? (
               <img
-                src={USER_DATA.foto}
-                alt={USER_DATA.nome}
+                src={user.foto}
+                alt={user.nome}
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                   if (e.currentTarget.parentElement) {
-                    e.currentTarget.parentElement.innerText = USER_DATA.iniciais;
+                    e.currentTarget.parentElement.innerText = user.iniciais || 'P';
                   }
                 }}
               />
             ) : (
-              <span>{USER_DATA.iniciais}</span>
+              <span>{user.iniciais || 'P'}</span>
             )}
           </div>
           <div className="user-footer-details">
-            <strong title={USER_DATA.nome}>{USER_DATA.nome}</strong>
-            <span title={USER_DATA.cargo}>{USER_DATA.cargo}</span>
+            <strong title={user.nome}>{user.nome}</strong>
+            <span title={user.cargo || user.instituicao}>{user.cargo || user.instituicao}</span>
           </div>
         </div>
-        <button className="btn-sidebar-logout" onClick={handleLogout} title="Encerrar sessão na plataforma">
+        <button className="btn-sidebar-logout" onClick={handleLogoutClick} title="Encerrar sessão na plataforma">
           <LogOut size={14} />
           <span>Sair</span>
         </button>

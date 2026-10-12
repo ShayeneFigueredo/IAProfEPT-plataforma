@@ -45,7 +45,14 @@
 - Widget pill flutuante com a fotografia oficial do Prof. Maycon Magalhães no canto inferior direito;
 - Painel retrátil (drawer) com respostas contextuais parametrizadas para tirar dúvidas sobre a plataforma, banner ético e BNCC.
 
-### 4. Governança e Rastreabilidade
-- Estruturação de ADRs (Architectural Decision Records);
+### 4. Fluxo de Autenticação, Cadastro Docente RFEPCT & Onboarding dos 5 Ambientes
+- **Tela de Login Institucional (`LoginView.jsx`):** Brasão oficial da UFJF/PPGEM, credenciais com alternância de visibilidade de senha e acessos rápidos de demonstração (*Prof. Maycon Magalhães*, *Profª. Shayene Figueredo*, *Convidado RFEPCT*).
+- **Modal de Cadastro Docente (`RegisterModal.jsx`):** Formulário guiado com vínculo institucional da RFEPCT (IFs/CEFETs), Campus de lotação, área de atuação em Matemática e seleção dinâmica de cursos técnicos atendidos.
+- **Onboarding e Boas-Vindas (`OnboardingModal.jsx`):** Apresentação pedagógica passo a passo dos 5 Ambientes com indicadores de etapas (*step dots*), atalhos no cabeçalho (*"Guia dos 5 Ambientes"*) e persistência em `localStorage`.
+- **Card Inicial Dinâmico (`HomeView.jsx`):** Saudação personalizada de acordo com o turno e primeiro nome do usuário autenticado (ou *"Visitante"*), integrando calor humano e rigor acadêmico.
+
+### 5. Governança e Rastreabilidade
+- Estruturação de ADRs (Architectural Decision Records — ADR-001 a ADR-005);
 - Emissão de templates de pull request e diretrizes de IA;
 - Backlog de tarefas do Jira Cloud importadas e mapeadas para o cronograma oficial.
+

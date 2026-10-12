@@ -32,6 +32,7 @@ Abaixo está o backlog estruturado em **5 Épicos (correspondentes às 5 Fases d
   - `[IAPROF-3.3]` Repositório de Práticas (grid de materiais, filtros por tags e botões de download).
   - `[IAPROF-3.4]` Painel de Reflexão Crítica (fóruns temáticos e leitor de artigos de ética).
   - `[IAPROF-3.5]` Canal de Suporte / Prof. mAIcon (gaveta de chat flutuante e atalhos de ajuda).
+  - `[IAPROF-3.6]` [Auth & Onboarding] Telas de Login Institucional, Cadastro Docente RFEPCT e Boas-Vindas aos 5 Ambientes (com persistência local de sessão simulada e hero card dinâmico).
 
 ---
 

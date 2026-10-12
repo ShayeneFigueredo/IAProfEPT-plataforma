@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Bell, Menu } from 'lucide-react';
+import { Search, Bell, Menu, Sparkles } from 'lucide-react';
 
 const TITULOS_MAP = {
   inicio: 'Início',
@@ -10,7 +10,13 @@ const TITULOS_MAP = {
   suporte: 'Acompanhamento e Suporte'
 };
 
-export default function TopHeader({ currentTab, mobileMenuOpen, setMobileMenuOpen }) {
+export default function TopHeader({
+  currentTab,
+  mobileMenuOpen,
+  setMobileMenuOpen,
+  currentUser,
+  onOpenOnboarding
+}) {
   return (
     <header className="app-topbar">
       <div className="topbar-left-cluster">
@@ -31,6 +37,31 @@ export default function TopHeader({ currentTab, mobileMenuOpen, setMobileMenuOpe
       </div>
 
       <div className="topbar-controls">
+        {onOpenOnboarding && (
+          <button
+            type="button"
+            className="topbar-onboarding-btn"
+            onClick={onOpenOnboarding}
+            title="Conhecer ou rever os 5 Ambientes da Plataforma"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              padding: '0.4rem 0.75rem',
+              background: 'var(--primary-soft-bg)',
+              border: '1px solid var(--primary-border)',
+              borderRadius: 'var(--radius-full)',
+              color: 'var(--primary-green)',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              cursor: 'pointer'
+            }}
+          >
+            <Sparkles size={14} color="var(--accent-green)" />
+            <span>Guia dos 5 Ambientes</span>
+          </button>
+        )}
+
         <div className="topbar-search-wrapper">
           <Search size={16} />
           <input
