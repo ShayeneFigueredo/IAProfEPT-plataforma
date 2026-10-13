@@ -8,11 +8,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "wiki:sync": "node scripts/sync-wiki.mjs",
-    "db:migrate": "node backend/src/database/migrate.js",
-    "db:check": "node backend/src/database/check-connection.js"
+    "db:migrate": "node backend/src/database/knex-migrate.js latest",
+    "db:rollback": "node backend/src/database/knex-migrate.js rollback",
+    "db:status": "node backend/src/database/knex-migrate.js status",
+    "db:check": "node backend/src/database/check-connection.js",
+    "db:test": "node backend/src/database/test-migrations.js"
   },
   "dependencies": {
     "dotenv": "^18.0.7",
+    "knex": "^3.3.0",
     "lucide-react": "^0.475.0",
     "pg": "^8.23.1",
     "react": "^18.3.1",

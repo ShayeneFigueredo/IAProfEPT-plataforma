@@ -75,42 +75,52 @@ Encoding: UTF8
    - Latência:       12ms
 ```
 
-### C. Executar as Migrações do Esquema (`npm run db:migrate`)
-Aplica o arquivo DDL [`schema.sql`](file:///c:/apps/IAProfEPT/PLATAFORMA/backend/src/database/schema.sql) criando as 12 tabelas, índices e triggers, realizando a auditoria automática de integridade:
+### C. Executar as Migrações Versionadas com Knex (`npm run db:migrate`)
+Aplica a suíte modular de migrações estruturais do Knex versionando o histórico na tabela `knex_migrations`:
 ```bash
+# Executa todas as migrações pendentes até a versão mais recente
 npm run db:migrate
+
+# Verificar status das migrações (pendentes vs aplicadas)
+npm run db:status
+
+# Reverter o último lote de migrações (Rollback controlado)
+npm run db:rollback
+
+# Testar e auditar integridade referencial (CASCADE / RESTRICT / UNIQUE)
+npm run db:test
 ```
-**Exemplo de Saída Esperada:**
+
+**Exemplo de Saída Esperada no `npm run db:migrate`:**
 ```text
 ================================================================
-🚀 PLATAFORMA IAProfEPT — Inicialização do Banco PostgreSQL
+🚀 PLATAFORMA IAProfEPT — Knex Migrations (LATEST)
+   Ambiente: development
 ================================================================
-📡 1. Verificando conectividade e parâmetros do PostgreSQL...
-✅ Conexão ativa com sucesso!
-   - Banco de Dados: iaprofept_db
-   - Versão PG:      PostgreSQL 16.2
-   - Codificação:    UTF8 (Critério UTF-8 atendido)
-   - Latência:       14ms
+📡 Verificando conectividade com o PostgreSQL...
+✅ Conexão ativa! Versão: PostgreSQL 16.2 | Charset: UTF8
+⚡ Executando migrações pendentes (knex.migrate.latest)...
+🎉 Sucesso! Batch 1 executou as seguintes migrações:
+   ✔ 20261013100001_create_extensions_and_instituicoes.js
+   ✔ 20261013100002_create_usuarios_and_perfis.js
+   ✔ 20261013100003_create_trilhas_and_progresso.js
+   ✔ 20261013100004_create_laboratorio_and_telemetria.js
+   ✔ 20261013100005_create_repositorio_and_avaliacoes.js
+   ✔ 20261013100006_create_forum_and_auditoria.js
 
-📄 2. Lendo arquivo de schema DDL: backend/src/database/schema.sql
-⚡ 3. Aplicando tabelas, índices e triggers...
-✅ Todas as definições de DDL foram aplicadas com sucesso!
-
-🔍 4. Auditando integridade das 12 entidades criadas no PostgreSQL:
-   ✔ [OK] Tabela 'instituicoes_rfepct' presente e íntegra.
-   ✔ [OK] Tabela 'usuarios' presente e íntegra.
-   ✔ [OK] Tabela 'perfis_docentes' presente e íntegra.
-   ✔ [OK] Tabela 'trilhas_formativas' presente e íntegra.
-   ✔ [OK] Tabela 'progresso_trilhas' presente e íntegra.
-   ✔ [OK] Tabela 'requisicoes_ia' presente e íntegra.
-   ✔ [OK] Tabela 'telemetria_ab' presente e íntegra.
-   ✔ [OK] Tabela 'praticas_repositorio' presente e íntegra.
-   ✔ [OK] Tabela 'avaliacoes_praticas' presente e íntegra.
-   ✔ [OK] Tabela 'topicos_forum' presente e íntegra.
-   ✔ [OK] Tabela 'respostas_forum' presente e íntegra.
-   ✔ [OK] Tabela 'logs_auditoria' presente e íntegra.
-
-🎉 SUCESSO: Todas as 12 entidades foram modeladas e migradas perfeitamente!
+🔍 Auditando integridade referencial das tabelas gerenciadas:
+   ✔ Tabela 'instituicoes_rfepct' verificada e ativa.
+   ✔ Tabela 'usuarios' verificada e ativa.
+   ✔ Tabela 'perfis_docentes' verificada e ativa.
+   ✔ Tabela 'trilhas_formativas' verificada e ativa.
+   ✔ Tabela 'progresso_trilhas' verificada e ativa.
+   ✔ Tabela 'requisicoes_ia' verificada e ativa.
+   ✔ Tabela 'telemetria_ab' verificada e ativa.
+   ✔ Tabela 'praticas_repositorio' verificada e ativa.
+   ✔ Tabela 'avaliacoes_praticas' verificada e ativa.
+   ✔ Tabela 'topicos_forum' verificada e ativa.
+   ✔ Tabela 'respostas_forum' verificada e ativa.
+   ✔ Tabela 'logs_auditoria' verificada e ativa.
 ================================================================
 ```
 
