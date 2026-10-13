@@ -354,3 +354,58 @@ DROP TRIGGER IF EXISTS trg_respostas_forum_updated_at ON respostas_forum;
 CREATE TRIGGER trg_respostas_forum_updated_at 
     BEFORE UPDATE ON respostas_forum 
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================================================
+-- TABELAS AUXILIARES CURRICULARES (CNCT & BNCC)
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS eixos_cnct (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    codigo VARCHAR(60) NOT NULL UNIQUE,
+    nome VARCHAR(150) NOT NULL,
+    descricao TEXT,
+    icone VARCHAR(50) NOT NULL DEFAULT 'layers',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS cursos_tecnicos_cnct (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    eixo_id UUID NOT NULL REFERENCES eixos_cnct(id) ON DELETE CASCADE,
+    codigo VARCHAR(80) NOT NULL UNIQUE,
+    nome VARCHAR(150) NOT NULL,
+    descricao TEXT,
+    perfil_profissional TEXT,
+    carga_horaria_minima INT NOT NULL DEFAULT 1200,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_cursos_eixo ON cursos_tecnicos_cnct (eixo_id);
+
+CREATE TABLE IF NOT EXISTS habilidades_bncc (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    area VARCHAR(100) NOT NULL DEFAULT 'Matemática e suas Tecnologias',
+    campo_matematico VARCHAR(100) NOT NULL,
+    descricao TEXT NOT NULL,
+    etapa VARCHAR(50) NOT NULL DEFAULT 'Ensino Médio',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_bncc_campo ON habilidades_bncc (campo_matematico);
+
+DROP TRIGGER IF EXISTS trg_eixos_updated_at ON eixos_cnct;
+CREATE TRIGGER trg_eixos_updated_at 
+    BEFORE UPDATE ON eixos_cnct 
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS trg_cursos_updated_at ON cursos_tecnicos_cnct;
+CREATE TRIGGER trg_cursos_updated_at 
+    BEFORE UPDATE ON cursos_tecnicos_cnct 
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS trg_habilidades_updated_at ON habilidades_bncc;
+CREATE TRIGGER trg_habilidades_updated_at 
+    BEFORE UPDATE ON habilidades_bncc 
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

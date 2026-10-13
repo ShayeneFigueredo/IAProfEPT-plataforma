@@ -64,6 +64,9 @@ export async function runKnexMigrate(action = 'latest') {
       'topicos_forum',
       'respostas_forum',
       'logs_auditoria',
+      'eixos_cnct',
+      'cursos_tecnicos_cnct',
+      'habilidades_bncc',
     ];
 
     for (const table of tables) {

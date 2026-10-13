@@ -124,14 +124,25 @@ npm run db:test
 ================================================================
 ```
 
-### D. Benchmark e Validação de Performance de Busca (`npm run db:benchmark`)
+### D. Carga Inicial de Dados e Seeds Curriculares (`npm run db:seed`)
+Executa a suíte de seeds de forma **100% idempotente**, preenchendo as tabelas auxiliares e institucionais essenciais para o funcionamento do sistema e para a tese:
+```bash
+npm run db:seed
+```
+**Dados Populados:**
+1. **Catálogo Oficial da RFEPCT:** Todas as 27 UFs do Brasil (IFs, CEFETs e Colégios Técnicos).
+2. **4 Trilhas Formativas:** Fundamentos da IA, Ética, Didática e Estudos de Caso na EPT.
+3. **Eixos Tecnológicos e Cursos do CNCT:** Mapeamento curricular de cursos integrados (Enfermagem, Agropecuária, Informática, Administração, Edificações, Eletrotécnica, etc.).
+4. **Matriz de Habilidades BNCC:** Competências e habilidades de Matemática do Ensino Médio (`EM13MAT101` a `EM13MAT504`).
+
+### E. Benchmark e Validação de Performance de Busca (`npm run db:benchmark`)
 Executa uma bateria de testes medindo o tempo de resposta das consultas com trigramas, filtros compostos e tolerância a erros de digitação:
 ```bash
 npm run db:benchmark
 ```
 *Critério de Aceite da Pesquisa:* Todas as consultas de busca textual executam em **menos de 50ms**, mesmo em cenários de busca com erros ortográficos (*fuzzy search*).
 
-### E. Estratégia de Indexação Otimizada
+### F. Estratégia de Indexação Otimizada
 O banco conta com 4 famílias de índices especializadas:
 1. **B-Tree Composto:** Otimiza consultas frequentes por curso técnico, eixo tecnológico, tema e status ativo (`idx_praticas_filtros_combo`, `idx_praticas_ranking`).
 2. **GIN Trigram (`pg_trgm`):** Acelera buscas por similaridade em títulos, descrições e conteúdos (`idx_praticas_titulo_trgm`, `idx_topicos_titulo_trgm`).
