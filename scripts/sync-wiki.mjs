@@ -62,8 +62,10 @@ const sidebarContent = `### 🧠 Navegação da Wiki
 - [ADR-003: Arquitetura de IA Dupla & Teste A/B](ADR_003_ARQUITETURA_IA_DUPLA_E_PROTOCOLO_TESTE_AB)
 - [ADR-004: Design System & Tokens](ADR_004_DESIGN_SYSTEM_TOKENS_E_ESTILOS_GLOBAIS)
 - [ADR-005: Autenticação & Onboarding](ADR_005_AUTENTICACAO_ONBOARDING_ACOLHIMENTO_DOCENTE_RFEPCT)
+- [ADR-006: Banco de Dados PostgreSQL](ADR_006_MODELAGEM_E_CONFIGURACAO_BANCO_POSTGRESQL)
 
-#### 📖 Documentos Pedagógicos
+#### 📖 Documentos Pedagógicos & Guias
+- [Guia do Banco de Dados PostgreSQL](GUIA_BANCO_DE_DADOS_POSTGRESQL)
 - [Diário de Bordo — Fase 1 (MVP)](DIARIO_DE_BORDO_FASE1_MVP)
 - [Matriz Curricular BNCC / CNCT](MATRIZ_CURRICULAR_BNCC_CNCT_EPT)
 

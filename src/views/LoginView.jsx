@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Lock, Mail, Eye, EyeOff, ArrowRight, Sparkles, GraduationCap, Building2, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, ArrowRight, Sparkles, GraduationCap, Building2, ShieldCheck, CheckCircle2, UserCheck, MapPin } from 'lucide-react';
 import AppIcon from '../components/AppIcon';
 import Badge from '../components/Badge';
+import ForgotPasswordModal from '../components/ForgotPasswordModal';
 import { USER_DATA } from '../data/mockData';
+import { UFS_LISTA } from '../data/instituicoesData';
 
 /**
  * Tela de Login Oficial - Plataforma IAprofEPT (UFJF / PPGEM)
@@ -11,15 +13,17 @@ import { USER_DATA } from '../data/mockData';
 export default function LoginView({ onLogin, onOpenRegister }) {
   const [email, setEmail] = useState('maycon.magalhaes@ifnmg.edu.br');
   const [password, setPassword] = useState('123456');
+  const [uf, setUf] = useState('MG');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [isForgotOpen, setIsForgotOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      setErrorMsg('Por favor, informe seu e-mail institucional e senha.');
+    if (!email.trim() || !password) {
+      setErrorMsg('Por favor, informe seu e-mail institucional ou matrícula e a senha.');
       return;
     }
 
@@ -28,33 +32,39 @@ export default function LoginView({ onLogin, onOpenRegister }) {
 
     setTimeout(() => {
       setLoading(false);
+      const idLimpo = email.trim().toLowerCase();
 
-      // 1. Verifica se existe conta previamente cadastrada no localStorage
+      // 1. Verifica se existe conta previamente cadastrada no localStorage por e-mail ou matrícula
       let cadastrado = null;
       try {
         const contas = JSON.parse(localStorage.getItem('iaprofept_registered_accounts') || '[]');
-        cadastrado = contas.find(c => c.email.toLowerCase() === email.trim().toLowerCase());
+        cadastrado = contas.find(c => 
+          (c.email && c.email.toLowerCase() === idLimpo) ||
+          (c.matricula && c.matricula.toLowerCase() === idLimpo)
+        );
       } catch (e) {}
 
       if (cadastrado) {
-        onLogin(cadastrado);
+        onLogin({ ...cadastrado, uf: cadastrado.uf || uf });
         return;
       }
 
       // 2. Se for o login demonstrativo do Prof. Maycon
-      if (email.toLowerCase().includes('maycon')) {
-        onLogin(USER_DATA);
+      if (idLimpo.includes('maycon') || idLimpo === '123456') {
+        onLogin({ ...USER_DATA, uf: 'MG' });
         return;
       }
 
       // 3. Se for login com indicador de visitante ou convidado
-      if (email.toLowerCase().includes('visitante') || email.toLowerCase().includes('convidado')) {
+      if (idLimpo.includes('visitante') || idLimpo.includes('convidado')) {
         const guestUser = {
           nome: 'Visitante da RFEPCT',
-          email: email.trim(),
+          email: idLimpo.includes('@') ? idLimpo : 'visitante@rfepct.edu.br',
+          matricula: !idLimpo.includes('@') ? email.trim() : 'VISITANTE',
+          uf: uf,
           instituicao: 'Rede Federal de EPCT',
-          campus: 'Campus Visitante',
-          cargo: 'Docente Visitante · RFEPCT',
+          campus: `Campus Visitante (${uf})`,
+          cargo: `Docente Visitante · RFEPCT (${uf})`,
           iniciais: 'VI',
           areaMatematica: 'Matemática na EPT',
           cursosAtendidos: ['Informática', 'Eletrotécnica']
@@ -63,22 +73,32 @@ export default function LoginView({ onLogin, onOpenRegister }) {
         return;
       }
 
-      // 4. Nova conta inferida a partir do e-mail institucional informado
-      const parteLocal = email.split('@')[0] || 'docente';
-      const partes = parteLocal.split(/[\._\-]/).filter(Boolean);
-      const nomeFormatado = partes
-        .map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase())
-        .join(' ');
-      const iniciais = partes.length > 1
-        ? (partes[0][0] + partes[partes.length - 1][0]).toUpperCase()
-        : partes[0] ? partes[0].slice(0, 2).toUpperCase() : 'DC';
+      // 4. Nova conta inferida a partir do e-mail ou matrícula informada
+      let nomeFormatado = 'Docente RFEPCT';
+      let iniciais = 'PF';
+
+      if (idLimpo.includes('@')) {
+        const parteLocal = idLimpo.split('@')[0] || 'docente';
+        const partes = parteLocal.split(/[\._\-]/).filter(Boolean);
+        nomeFormatado = partes
+          .map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase())
+          .join(' ');
+        iniciais = partes.length > 1
+          ? (partes[0][0] + partes[partes.length - 1][0]).toUpperCase()
+          : partes[0] ? partes[0].slice(0, 2).toUpperCase() : 'DC';
+      } else {
+        nomeFormatado = `Docente (SIAPE ${email.trim()})`;
+        iniciais = 'SI';
+      }
 
       const user = {
         nome: nomeFormatado || 'Docente RFEPCT',
-        email: email.trim(),
+        email: idLimpo.includes('@') ? idLimpo : `${idLimpo}@instituto.edu.br`,
+        matricula: !idLimpo.includes('@') ? email.trim() : '',
+        uf: uf,
         instituicao: 'Rede Federal de EPCT',
-        campus: 'Campus Local',
-        cargo: 'Docente de Matemática · RFEPCT',
+        campus: `Campus Local (${uf})`,
+        cargo: `Docente de Matemática · RFEPCT (${uf})`,
         iniciais: iniciais,
         areaMatematica: 'Matemática na EPT',
         cursosAtendidos: ['Informática', 'Agropecuária']
@@ -90,20 +110,23 @@ export default function LoginView({ onLogin, onOpenRegister }) {
   const handleQuickLoginMaycon = () => {
     setEmail('maycon.magalhaes@ifnmg.edu.br');
     setPassword('123456');
+    setUf('MG');
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      onLogin(USER_DATA);
+      onLogin({ ...USER_DATA, uf: 'MG' });
     }, 300);
   };
 
   const handleQuickLoginGuest = () => {
+    setUf('SP');
     const guestUser = {
       nome: 'Prof. Visitante da RFEPCT',
       email: 'professor.visitante@ifs.edu.br',
-      instituicao: 'Instituto Federal de Educação, Ciência e Tecnologia',
-      campus: 'Campus Central',
-      cargo: 'Docente de Matemática na EPT',
+      uf: 'SP',
+      instituicao: 'Instituto Federal de São Paulo (IFSP)',
+      campus: 'Campus São Paulo',
+      cargo: 'Docente de Matemática na EPT · IFSP (SP)',
       iniciais: 'PV',
       areaMatematica: 'Matemática Aplicada na EPT',
       cursosAtendidos: ['Informática', 'Eletrotécnica', 'Edificações'],
@@ -178,7 +201,7 @@ export default function LoginView({ onLogin, onOpenRegister }) {
           
           {/* Avatar Institucional e Boas-Vindas */}
           <div className="auth-header-block">
-            <div className="auth-avatar-circle">
+            <div className="auth-avatar-circle" title="Identidade Visual Oficial UFJF / PPGEM">
               <GraduationCap size={28} />
             </div>
             <h2 className="auth-title">Acesso Docente</h2>
@@ -195,22 +218,45 @@ export default function LoginView({ onLogin, onOpenRegister }) {
 
           {/* Formulário de Login */}
           <form onSubmit={handleSubmit} className="auth-form">
-            <div className="auth-field-group">
-              <label htmlFor="auth-email" className="auth-label">
-                E-mail Institucional
-              </label>
-              <div className="auth-input-wrapper">
-                <Mail size={18} className="auth-input-icon" />
-                <input
-                  id="auth-email"
-                  type="email"
-                  className="auth-input"
-                  placeholder="exemplo@instituto.edu.br"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                  required
-                />
+            <div className="auth-grid-2col">
+              <div className="auth-field-group">
+                <label htmlFor="auth-uf" className="auth-label">
+                  UF (Estado) *
+                </label>
+                <div className="auth-input-wrapper">
+                  <MapPin size={18} className="auth-input-icon" />
+                  <select
+                    id="auth-uf"
+                    className="auth-input"
+                    value={uf}
+                    onChange={(e) => setUf(e.target.value)}
+                  >
+                    {UFS_LISTA.map((item) => (
+                      <option key={item.sigla} value={item.sigla}>
+                        {item.sigla} — {item.nome}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="auth-field-group">
+                <label htmlFor="auth-email" className="auth-label">
+                  E-mail ou Matrícula *
+                </label>
+                <div className="auth-input-wrapper">
+                  <Mail size={18} className="auth-input-icon" />
+                  <input
+                    id="auth-email"
+                    type="text"
+                    className="auth-input"
+                    placeholder="E-mail ou SIAPE"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="username"
+                    required
+                  />
+                </div>
               </div>
             </div>
 
@@ -222,9 +268,10 @@ export default function LoginView({ onLogin, onOpenRegister }) {
                 <button
                   type="button"
                   className="auth-forgot-link"
-                  onClick={() => alert('Para redefinição em ambiente piloto, utilize a senha padrão 123456 ou acesse com um clique nos atalhos abaixo.')}
+                  onClick={() => setIsForgotOpen(true)}
+                  title="Recuperar acesso com e-mail institucional ou matrícula"
                 >
-                  Esqueceu a senha?
+                  Esqueci minha senha
                 </button>
               </div>
               <div className="auth-input-wrapper">
@@ -293,8 +340,11 @@ export default function LoginView({ onLogin, onOpenRegister }) {
               <div className="quick-btn-left">
                 <div className="quick-avatar-mini">MM</div>
                 <div className="quick-btn-text">
-                  <strong>Entrar como Prof. Maycon Magalhães</strong>
-                  <small>Docente IFNMG · Pesquisador PPGEM</small>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <strong>Entrar como Prof. Maycon Magalhães</strong>
+                    <span style={{ fontSize: '0.65rem', fontWeight: 800, padding: '0.1rem 0.35rem', borderRadius: '4px', background: 'var(--primary-soft-bg)', color: 'var(--primary-green)', border: '1px solid var(--primary-border)' }}>MG</span>
+                  </div>
+                  <small>Docente IFNMG (MG) · Pesquisador PPGEM-UFJF</small>
                 </div>
               </div>
               <ArrowRight size={16} />
@@ -309,28 +359,39 @@ export default function LoginView({ onLogin, onOpenRegister }) {
               <div className="quick-btn-left">
                 <div className="quick-avatar-mini guest">RF</div>
                 <div className="quick-btn-text">
-                  <strong>Entrar como Docente Convidado da RFEPCT</strong>
-                  <small>Experimentar onboarding dos 5 Ambientes</small>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <strong>Entrar como Docente Convidado da RFEPCT</strong>
+                    <span style={{ fontSize: '0.65rem', fontWeight: 800, padding: '0.1rem 0.35rem', borderRadius: '4px', background: '#EAF3FF', color: '#1E5FB0', border: '1px solid #BFDBFE' }}>SP</span>
+                  </div>
+                  <small>Docente IFSP (SP) · Experimentar acolhimento</small>
                 </div>
               </div>
               <Sparkles size={16} color="var(--accent-green)" />
             </button>
           </div>
 
-          {/* Rodapé do Formulário: Link para Cadastro */}
+          {/* Rodapé do Formulário: Link para Criação de Conta */}
           <div className="auth-card-footer">
-            <span>É docente da Rede Federal e não possui acesso?</span>
+            <span>Ainda não possui acesso institucional?</span>
             <button
               type="button"
               className="btn-auth-register-link"
               onClick={onOpenRegister}
+              title="Criar nova conta de docente na RFEPCT"
             >
-              Cadastre-se como Docente da EPT
+              Criar nova conta de docente na RFEPCT
             </button>
           </div>
 
         </div>
       </div>
+
+      {/* Modal de Recuperação de Senha */}
+      <ForgotPasswordModal
+        isOpen={isForgotOpen}
+        onClose={() => setIsForgotOpen(false)}
+        initialEmail={email}
+      />
     </div>
   );
 }

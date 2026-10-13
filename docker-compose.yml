@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: iaprofept-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${PGUSER:-postgres}
+      POSTGRES_PASSWORD: ${PGPASSWORD:-postgres}
+      POSTGRES_DB: ${PGDATABASE:-iaprofept_db}
+      # Força explicitamente a inicialização do cluster PostgreSQL em UTF-8
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "${PGPORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/src/database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PGUSER:-postgres} -d ${PGDATABASE:-iaprofept_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - iaprofept-network
+
+volumes:
+  postgres_data:
+    name: iaprofept_postgres_data
+
+networks:
+  iaprofept-network:
+    name: iaprofept_network
+    driver: bridge

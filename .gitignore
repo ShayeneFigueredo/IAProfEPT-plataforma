@@ -38,3 +38,7 @@ logs/
 # IDEs
 .vscode/
 .idea/
+
+# Jira Backlog CSVs temporários
+*.csv
+docs/*.csv

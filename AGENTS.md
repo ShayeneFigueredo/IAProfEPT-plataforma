@@ -33,6 +33,10 @@ Qualquer Inteligência Artificial (IA) ou desenvolvedor atuando neste repositór
    - Paleta oficial: Verde Floresta Institucional (`#064E3B`), Verde Acento (`#10B981`), Alerta Vermelho (`#DC2626`), Cinzas Neutros (`#F8FAFC`, `#0F172A`).
    - Servidores de aplicação, banco de dados e domínio são fornecidos pela **UFJF**.
 
+6. **Ignorar Arquivos CSVs do Jira para Versionamento & Execução:**
+   - A IA deve SEMPRE ignorar arquivos CSVs de tasks do Jira para fins de versionamento no Git ou execução direta de código.
+   - A implementação do projeto deve ocorrer estritamente conforme o usuário envia as histórias e tarefas aqui no chat, sem depender de scripts ou planilhas externas.
+
 ---
 
 ## 📝 2. Como a IA Deve Documentar Qualquer Ação

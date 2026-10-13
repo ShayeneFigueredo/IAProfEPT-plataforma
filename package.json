@@ -7,10 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "wiki:sync": "node scripts/sync-wiki.mjs"
+    "wiki:sync": "node scripts/sync-wiki.mjs",
+    "db:migrate": "node backend/src/database/migrate.js",
+    "db:check": "node backend/src/database/check-connection.js"
   },
   "dependencies": {
+    "dotenv": "^18.0.7",
     "lucide-react": "^0.475.0",
+    "pg": "^8.23.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
