@@ -12,7 +12,8 @@
     "db:rollback": "node backend/src/database/knex-migrate.js rollback",
     "db:status": "node backend/src/database/knex-migrate.js status",
     "db:check": "node backend/src/database/check-connection.js",
-    "db:test": "node backend/src/database/test-migrations.js"
+    "db:test": "node backend/src/database/test-migrations.js",
+    "db:benchmark": "node backend/src/database/benchmark-search.js"
   },
   "dependencies": {
     "dotenv": "^18.0.7",

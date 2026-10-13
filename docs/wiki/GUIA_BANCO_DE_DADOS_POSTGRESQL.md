@@ -124,7 +124,21 @@ npm run db:test
 ================================================================
 ```
 
-### D. Parar ou Reiniciar o Banco de Dados
+### D. Benchmark e Validação de Performance de Busca (`npm run db:benchmark`)
+Executa uma bateria de testes medindo o tempo de resposta das consultas com trigramas, filtros compostos e tolerância a erros de digitação:
+```bash
+npm run db:benchmark
+```
+*Critério de Aceite da Pesquisa:* Todas as consultas de busca textual executam em **menos de 50ms**, mesmo em cenários de busca com erros ortográficos (*fuzzy search*).
+
+### E. Estratégia de Indexação Otimizada
+O banco conta com 4 famílias de índices especializadas:
+1. **B-Tree Composto:** Otimiza consultas frequentes por curso técnico, eixo tecnológico, tema e status ativo (`idx_praticas_filtros_combo`, `idx_praticas_ranking`).
+2. **GIN Trigram (`pg_trgm`):** Acelera buscas por similaridade em títulos, descrições e conteúdos (`idx_praticas_titulo_trgm`, `idx_topicos_titulo_trgm`).
+3. **Full-Text Search (FTS):** Indexação em linguagem natural com dicionário em português (`to_tsvector('portuguese', ...)`).
+4. **JSONB Path Ops:** Índices velozes para busca de competências da BNCC e parâmetros de IA (`idx_praticas_bncc_jsonb`, `idx_requisicoes_params_jsonb`).
+
+### F. Parar ou Reiniciar o Banco de Dados
 ```bash
 # Parar o container preservando os dados persistentes
 docker compose stop postgres

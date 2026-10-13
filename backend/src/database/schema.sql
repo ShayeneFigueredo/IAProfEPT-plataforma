@@ -209,9 +209,32 @@ CREATE INDEX IF NOT EXISTS idx_praticas_usuario ON praticas_repositorio (usuario
 CREATE INDEX IF NOT EXISTS idx_praticas_curso ON praticas_repositorio (curso_tecnico);
 CREATE INDEX IF NOT EXISTS idx_praticas_eixo ON praticas_repositorio (eixo_cnct);
 CREATE INDEX IF NOT EXISTS idx_praticas_tema ON praticas_repositorio (tema_matematico);
+CREATE INDEX IF NOT EXISTS idx_praticas_created_at ON praticas_repositorio (created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_praticas_publicado ON praticas_repositorio (publicado) WHERE deleted_at IS NULL;
--- Índice trigram para busca rápida no Repositório
-CREATE INDEX IF NOT EXISTS idx_praticas_busca_trgm ON praticas_repositorio USING GIN (titulo gin_trgm_ops);
+
+-- Índice composto para filtros combinados na barra do repositório
+CREATE INDEX IF NOT EXISTS idx_praticas_filtros_combo 
+  ON praticas_repositorio (curso_tecnico, eixo_cnct, tema_matematico, created_at DESC) 
+  WHERE deleted_at IS NULL;
+
+-- Índice para ordenação por melhores notas e engajamento
+CREATE INDEX IF NOT EXISTS idx_praticas_ranking 
+  ON praticas_repositorio (media_estrelas DESC, total_curtidas DESC) 
+  WHERE deleted_at IS NULL;
+
+-- Índices Trigram (pg_trgm) para busca aproximada tolerante a erros
+CREATE INDEX IF NOT EXISTS idx_praticas_titulo_trgm ON praticas_repositorio USING GIN (titulo gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_praticas_descricao_trgm ON praticas_repositorio USING GIN (descricao gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_praticas_conteudo_trgm ON praticas_repositorio USING GIN (conteudo_completo gin_trgm_ops);
+
+-- Índice Full-Text Search (FTS) em português
+CREATE INDEX IF NOT EXISTS idx_praticas_fts 
+  ON praticas_repositorio USING GIN (
+    to_tsvector('portuguese', coalesce(titulo, '') || ' ' || coalesce(descricao, '') || ' ' || coalesce(tema_matematico, ''))
+  );
+
+-- Índice JSONB para habilidades BNCC
+CREATE INDEX IF NOT EXISTS idx_praticas_bncc_jsonb ON praticas_repositorio USING GIN (habilidades_bncc jsonb_path_ops);
 
 -- ============================================================================
 -- ENTIDADE 9: avaliacoes_praticas
