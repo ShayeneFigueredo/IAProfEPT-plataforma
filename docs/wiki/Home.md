@@ -19,6 +19,7 @@ Documentos formais que fundamentam as escolhas técnicas do software à luz da p
 - 📄 [ADR-006: Modelagem Relacional e Configuração do Banco de Dados PostgreSQL 16+](./ADR_006_MODELAGEM_E_CONFIGURACAO_BANCO_POSTGRESQL.md)
 - 📄 [ADR-007: Fluxo Seguro de Recuperação e Redefinição de Senha com Tokens de Uso Único](./ADR_007_RECUPERACAO_E_REDEFINICAO_SEGURA_DE_SENHA.md)
 - 📄 [ADR-008: Registro de Consentimento Livre e Esclarecido (TCLE) e Governança Ética CEP/UFJF](./ADR_008_REGISTRO_CONSENTIMENTO_TCLE_CEP_UFJF.md)
+- 📄 [ADR-009: Middleware de Autorização e Controle de Acesso Baseado em Papéis (RBAC)](./ADR_009_CONTROLE_DE_ACESSO_BASEADO_EM_PAPEIS_RBAC.md)
 
 ---
 

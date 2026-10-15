@@ -22,7 +22,8 @@
     "auth:register:test": "node backend/src/test-register.js",
     "auth:login:test": "node backend/src/test-login.js",
     "auth:recovery:test": "node backend/src/test-recovery.js",
-    "auth:tcle:test": "node backend/src/test-tcle.js"
+    "auth:tcle:test": "node backend/src/test-tcle.js",
+    "auth:rbac:test": "node backend/src/test-rbac.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

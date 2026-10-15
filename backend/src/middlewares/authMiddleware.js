@@ -69,4 +69,11 @@ export function optionalAuthenticateToken(req, res, next) {
   next();
 }
 
+export {
+  authorizeRoles,
+  requireAdmin,
+  requirePesquisador,
+  requireDocente,
+} from './rbacMiddleware.js';
+
 export default authenticateToken;

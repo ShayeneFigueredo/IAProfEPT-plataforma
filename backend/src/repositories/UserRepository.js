@@ -373,6 +373,199 @@ export class UserRepository extends BaseRepository {
       return null;
     }
   }
+
+  /**
+   * Listagem paginada de usuários para painel administrativo UFJF (sem expor senha_hash)
+   * @param {object} params
+   * @param {number} [params.page]
+   * @param {number} [params.limit]
+   * @param {string} [params.role]
+   * @param {string} [params.status]
+   * @param {string} [params.search]
+   * @returns {Promise<object>}
+   */
+  async listUsers({ page = 1, limit = 20, role = null, status = null, search = null } = {}) {
+    const pageNum = Math.max(1, parseInt(page, 10) || 1);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 20));
+    const offset = (pageNum - 1) * limitNum;
+
+    const conditions = [];
+    const params = [];
+    let paramIndex = 1;
+
+    if (role) {
+      conditions.push(`u.role = $${paramIndex++}`);
+      params.push(role);
+    }
+
+    if (status) {
+      conditions.push(`u.status = $${paramIndex++}`);
+      params.push(status);
+    }
+
+    if (search) {
+      conditions.push(`(u.nome ILIKE $${paramIndex} OR u.email ILIKE $${paramIndex})`);
+      params.push(`%${search}%`);
+      paramIndex++;
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    const countRes = await this.query(
+      `SELECT COUNT(*) as total FROM usuarios u ${whereClause};`,
+      params
+    );
+    const total = parseInt(countRes.rows[0]?.total || 0, 10);
+
+    const queryText = `
+      SELECT 
+        u.id, u.nome, u.email, u.role, u.status, u.ultimo_login_em,
+        u.created_at, u.updated_at,
+        pd.uf, pd.matricula_siape, pd.area_atuacao,
+        i.sigla AS instituicao_sigla, i.nome AS instituicao_nome, i.campus AS instituicao_campus
+      FROM usuarios u
+      LEFT JOIN perfis_docentes pd ON pd.usuario_id = u.id
+      LEFT JOIN instituicoes_rfepct i ON pd.instituicao_id = i.id
+      ${whereClause}
+      ORDER BY u.created_at DESC
+      LIMIT $${paramIndex++} OFFSET $${paramIndex++};
+    `;
+
+    const usersRes = await this.query(queryText, [...params, limitNum, offset]);
+
+    return {
+      total,
+      pagina: pageNum,
+      limite: limitNum,
+      totalPaginas: Math.ceil(total / limitNum) || 1,
+      usuarios: usersRes.rows,
+    };
+  }
+
+  /**
+   * Atualiza o status de um usuário pelo Administrador UFJF
+   * @param {string} userId
+   * @param {string} novoStatus
+   * @param {string} [adminId]
+   * @returns {Promise<object|null>}
+   */
+  async updateUserStatus(userId, novoStatus, adminId = null) {
+    const res = await this.query(
+      `UPDATE usuarios 
+       SET status = $2, updated_at = NOW() 
+       WHERE id = $1 
+       RETURNING id, nome, email, role, status, updated_at;`,
+      [userId, novoStatus]
+    );
+
+    const usuarioAtualizado = res.rows[0] || null;
+
+    if (usuarioAtualizado && adminId) {
+      await this.recordAuditLog({
+        usuarioId: adminId,
+        acao: 'admin.alteracao_status_usuario',
+        recurso: 'usuarios',
+        payload: {
+          alvoUsuarioId: userId,
+          novoStatus,
+        },
+      });
+    }
+
+    return usuarioAtualizado;
+  }
+
+  /**
+   * Consulta paginada aos logs de auditoria do sistema
+   * @param {object} params
+   * @returns {Promise<object>}
+   */
+  async findAuditLogs({ page = 1, limit = 20, acao = null, recurso = null, usuarioId = null } = {}) {
+    const pageNum = Math.max(1, parseInt(page, 10) || 1);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 20));
+    const offset = (pageNum - 1) * limitNum;
+
+    const conditions = [];
+    const params = [];
+    let paramIndex = 1;
+
+    if (acao) {
+      conditions.push(`l.acao ILIKE $${paramIndex++}`);
+      params.push(`%${acao}%`);
+    }
+
+    if (recurso) {
+      conditions.push(`l.recurso = $${paramIndex++}`);
+      params.push(recurso);
+    }
+
+    if (usuarioId) {
+      conditions.push(`l.usuario_id = $${paramIndex++}`);
+      params.push(usuarioId);
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    const countRes = await this.query(
+      `SELECT COUNT(*) as total FROM logs_auditoria l ${whereClause};`,
+      params
+    );
+    const total = parseInt(countRes.rows[0]?.total || 0, 10);
+
+    const queryText = `
+      SELECT 
+        l.id, l.usuario_id, u.nome AS usuario_nome, u.email AS usuario_email, u.role AS usuario_role,
+        l.acao, l.recurso, l.payload, l.ip_anonimizado, l.user_agent, l.created_at
+      FROM logs_auditoria l
+      LEFT JOIN usuarios u ON l.usuario_id = u.id
+      ${whereClause}
+      ORDER BY l.created_at DESC
+      LIMIT $${paramIndex++} OFFSET $${paramIndex++};
+    `;
+
+    const logsRes = await this.query(queryText, [...params, limitNum, offset]);
+
+    return {
+      total,
+      pagina: pageNum,
+      limite: limitNum,
+      totalPaginas: Math.ceil(total / limitNum) || 1,
+      logs: logsRes.rows,
+    };
+  }
+
+  /**
+   * Consolida métricas gerais do sistema para a administração UFJF
+   * @returns {Promise<object>}
+   */
+  async getSystemStats() {
+    const usuariosRes = await this.query(`
+      SELECT 
+        COUNT(*) as total_usuarios,
+        COUNT(CASE WHEN role = 'docente_rfepct' THEN 1 END) as total_docentes,
+        COUNT(CASE WHEN role = 'pesquisador_doutorado' THEN 1 END) as total_pesquisadores,
+        COUNT(CASE WHEN role = 'administrador_ufjf' THEN 1 END) as total_administradores,
+        COUNT(CASE WHEN status = 'ativo' THEN 1 END) as total_ativos,
+        COUNT(CASE WHEN bloqueado_ate IS NOT NULL AND bloqueado_ate > NOW() THEN 1 END) as total_bloqueados
+      FROM usuarios;
+    `);
+
+    const instituicoesRes = await this.query(`
+      SELECT COUNT(DISTINCT instituicao_id) as total_instituicoes_atendidas,
+             COUNT(DISTINCT uf) as total_ufs_atendidas
+      FROM perfis_docentes;
+    `);
+
+    const consentimentosRes = await this.query(`
+      SELECT COUNT(*) as total_consentimentos_tcle FROM consentimentos_tcle WHERE aceito = TRUE;
+    `);
+
+    return {
+      usuarios: usuariosRes.rows[0] || {},
+      adopcaoRfepct: instituicoesRes.rows[0] || {},
+      tcle: consentimentosRes.rows[0] || {},
+    };
+  }
 }
 
 export const userRepository = new UserRepository();
