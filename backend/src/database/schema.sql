@@ -409,3 +409,100 @@ DROP TRIGGER IF EXISTS trg_habilidades_updated_at ON habilidades_bncc;
 CREATE TRIGGER trg_habilidades_updated_at 
     BEFORE UPDATE ON habilidades_bncc 
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================================================
+-- TABELA DE REFRESH TOKENS (SESSÕES SEGURAS E REVOGAÇÃO)
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    usuario_id UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    token_hash VARCHAR(64) NOT NULL UNIQUE,
+    revogado BOOLEAN NOT NULL DEFAULT FALSE,
+    substituido_por_id UUID,
+    ip_origem VARCHAR(64),
+    user_agent TEXT,
+    expira_em TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_usuario ON refresh_tokens (usuario_id);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_hash ON refresh_tokens (token_hash);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_expira ON refresh_tokens (expira_em);
+
+DROP TRIGGER IF EXISTS trg_refresh_tokens_updated_at ON refresh_tokens;
+CREATE TRIGGER trg_refresh_tokens_updated_at 
+    BEFORE UPDATE ON refresh_tokens 
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================================================
+-- TABELA DE TOKENS DE RECUPERAÇÃO DE SENHA (USO ÚNICO E VALIDADE 2H)
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS tokens_recuperacao_senha (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    usuario_id UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    token_hash VARCHAR(64) NOT NULL UNIQUE,
+    expira_em TIMESTAMPTZ NOT NULL,
+    usado BOOLEAN NOT NULL DEFAULT FALSE,
+    usado_em TIMESTAMPTZ,
+    ip_solicitacao VARCHAR(64),
+    user_agent_solicitacao TEXT,
+    ip_uso VARCHAR(64),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_reset_tokens_usuario ON tokens_recuperacao_senha (usuario_id);
+CREATE INDEX IF NOT EXISTS idx_reset_tokens_hash ON tokens_recuperacao_senha (token_hash);
+CREATE INDEX IF NOT EXISTS idx_reset_tokens_status ON tokens_recuperacao_senha (expira_em, usado);
+
+DROP TRIGGER IF EXISTS trg_tokens_recuperacao_updated_at ON tokens_recuperacao_senha;
+CREATE TRIGGER trg_tokens_recuperacao_updated_at 
+    BEFORE UPDATE ON tokens_recuperacao_senha 
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================================================
+-- TABELA DE CONTROLE DE CONSENTIMENTO LIVRE E ESCLARECIDO (TCLE - CEP/UFJF & CNS 510/2016)
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS consentimentos_tcle (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    usuario_id UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    versao_termo VARCHAR(20) NOT NULL DEFAULT '1.0',
+    aceito BOOLEAN NOT NULL DEFAULT TRUE,
+    ip_anonimizado VARCHAR(64) NOT NULL,
+    user_agent TEXT,
+    dispositivo_meta JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_consentimento_usuario ON consentimentos_tcle (usuario_id);
+CREATE INDEX IF NOT EXISTS idx_consentimento_versao ON consentimentos_tcle (versao_termo);
+CREATE INDEX IF NOT EXISTS idx_consentimento_created_at ON consentimentos_tcle (created_at);
+CREATE INDEX IF NOT EXISTS idx_consentimento_usuario_aceito ON consentimentos_tcle (usuario_id, aceito);
+
+DROP TRIGGER IF EXISTS trg_consentimentos_tcle_updated_at ON consentimentos_tcle;
+CREATE TRIGGER trg_consentimentos_tcle_updated_at 
+    BEFORE UPDATE ON consentimentos_tcle 
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- CONSTRAINT TRIGGER: Garante que nenhum usuário exista sem consentimento
+CREATE OR REPLACE FUNCTION check_usuario_consentimento_tcle()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM consentimentos_tcle WHERE usuario_id = NEW.id AND aceito = TRUE
+  ) THEN
+    RAISE EXCEPTION 'Violacao de Conformidade Etica (CEP/UFJF - CNS 510/2016): Nenhum usuario pode ser persistido no banco sem o devido registro de consentimento livre e esclarecido (TCLE).'
+      USING ERRCODE = 'check_violation';
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_garantir_consentimento_tcle ON usuarios;
+CREATE CONSTRAINT TRIGGER trg_garantir_consentimento_tcle
+AFTER INSERT ON usuarios
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE FUNCTION check_usuario_consentimento_tcle();

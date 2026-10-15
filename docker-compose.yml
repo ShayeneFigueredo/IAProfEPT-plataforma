@@ -1,27 +1,77 @@
+# ==============================================================================
+# Docker Compose — Orquestração de Ambiente IAprofEPT
+# Produto Educacional (PTT4) / Tese de Doutorado PPGEM-UFJF
+# ==============================================================================
+
 services:
+  # 1. SERVIÇO DE BANCO DE DADOS POSTGRESQL 16+
   postgres:
     image: postgres:16-alpine
     container_name: iaprofept-postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${PGUSER:-postgres}
       POSTGRES_PASSWORD: ${PGPASSWORD:-postgres}
       POSTGRES_DB: ${PGDATABASE:-iaprofept_db}
-      # Força explicitamente a inicialização do cluster PostgreSQL em UTF-8
+      # Força codificação de cluster em UTF-8 nativo
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
     ports:
       - "${PGPORT:-5432}:5432"
     volumes:
+      # Persistência permanente dos dados do banco
       - postgres_data:/var/lib/postgresql/data
+      # Script de inicialização automática do schema no primeiro boot
       - ./backend/src/database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${PGUSER:-postgres} -d ${PGDATABASE:-iaprofept_db}"]
       interval: 5s
       timeout: 5s
       retries: 5
+      start_period: 5s
     networks:
       - iaprofept-network
 
+  # 2. SERVIÇO DE APLICAÇÃO BACKEND REST API
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    container_name: iaprofept-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${PORT:-3001}:3001"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3001
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:5173}
+      # Conexão interna via rede Docker com o serviço postgres
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: ${PGUSER:-postgres}
+      PGPASSWORD: ${PGPASSWORD:-postgres}
+      PGDATABASE: ${PGDATABASE:-iaprofept_db}
+      PGSSLMODE: disable
+      DATABASE_URL: postgresql://${PGUSER:-postgres}:${PGPASSWORD:-postgres}@postgres:5432/${PGDATABASE:-iaprofept_db}?sslmode=disable
+      # Variáveis de Autenticação e IA
+      JWT_SECRET: ${JWT_SECRET:-dev_secret_iaprofept_ufjf_2026}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-dev_refresh_secret_iaprofept_ufjf_2026}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3001/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - iaprofept-network
+
+# ==============================================================================
+# VOLUMES PERSISTENTES E REDE ISOLADA
+# ==============================================================================
 volumes:
   postgres_data:
     name: iaprofept_postgres_data

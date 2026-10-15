@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Bell, Menu, Sparkles } from 'lucide-react';
+import { Search, Bell, Menu, BookOpen } from 'lucide-react';
 
 const TITULOS_MAP = {
   inicio: 'Início',
@@ -57,7 +57,7 @@ export default function TopHeader({
               cursor: 'pointer'
             }}
           >
-            <Sparkles size={14} color="var(--accent-green)" />
+            <BookOpen size={14} color="var(--primary-green)" />
             <span>Guia dos 5 Ambientes</span>
           </button>
         )}

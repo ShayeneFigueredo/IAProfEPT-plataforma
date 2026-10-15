@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import {
-  Sparkles,
+  FlaskConical,
+  FileText,
+  Calculator,
   Copy,
   Download,
   ShieldAlert,
@@ -139,7 +141,7 @@ c) Após quantas horas a concentração reduzir-se-á a 12,5 mg/L?`;
             onClick={handleGenerate}
             disabled={isGenerating}
           >
-            <Sparkles size={16} />
+            <FlaskConical size={16} />
             <span>{isGenerating ? 'Gerando com IA...' : 'Gerar com IA'}</span>
           </button>
         </div>
@@ -189,7 +191,7 @@ Diretrizes obrigatórias:
           <div className="lab-output-header">
             <div className="output-header-left">
               <div className="output-icon-box">
-                <Sparkles size={18} />
+                <FileText size={18} />
               </div>
               <div>
                 <h3 className="output-card-title">Conteúdo gerado</h3>
@@ -241,7 +243,7 @@ Diretrizes obrigatórias:
                 <div className="math-formula-card">
                   <div className="math-formula-header">
                     <span className="math-formula-badge">
-                      <Sparkles size={13} /> Modelagem Formal: Decaimento Exponencial
+                      <Calculator size={13} /> Modelagem Formal: Decaimento Exponencial
                     </span>
                     <button
                       type="button"

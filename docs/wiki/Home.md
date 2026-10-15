@@ -17,6 +17,8 @@ Documentos formais que fundamentam as escolhas técnicas do software à luz da p
 - 📄 [ADR-004: Implementação do Design System Institucional: Tokens Visuais, Tipografia Oficial, Grid Responsivo e Acessibilidade WCAG AA](./ADR_004_DESIGN_SYSTEM_TOKENS_E_ESTILOS_GLOBAIS.md)
 - 📄 [ADR-005: Fluxo de Autenticação, Cadastro Institucional da RFEPCT e Onboarding Pedagógico dos 5 Ambientes](./ADR_005_AUTENTICACAO_ONBOARDING_ACOLHIMENTO_DOCENTE_RFEPCT.md)
 - 📄 [ADR-006: Modelagem Relacional e Configuração do Banco de Dados PostgreSQL 16+](./ADR_006_MODELAGEM_E_CONFIGURACAO_BANCO_POSTGRESQL.md)
+- 📄 [ADR-007: Fluxo Seguro de Recuperação e Redefinição de Senha com Tokens de Uso Único](./ADR_007_RECUPERACAO_E_REDEFINICAO_SEGURA_DE_SENHA.md)
+- 📄 [ADR-008: Registro de Consentimento Livre e Esclarecido (TCLE) e Governança Ética CEP/UFJF](./ADR_008_REGISTRO_CONSENTIMENTO_TCLE_CEP_UFJF.md)
 
 ---
 

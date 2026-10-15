@@ -1,0 +1,15 @@
+node_modules
+dist
+build
+.git
+.github
+.temp_wiki
+.cache
+.vite
+npm-debug.log*
+yarn-debug.log*
+*.log
+.env
+.env.local
+.DS_Store
+Thumbs.db

@@ -12,7 +12,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, initialEmail = ''
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!identificador.trim()) {
       setErro('Por favor, informe seu e-mail institucional ou matrícula SIAPE.');
@@ -22,9 +22,29 @@ export default function ForgotPasswordModal({ isOpen, onClose, initialEmail = ''
     setErro('');
     setStatus('sending');
 
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identificador: identificador.trim() }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        setStatus('success');
+      } else {
+        if (data.detail || data.mensagem) {
+          setErro(data.detail || data.mensagem);
+          setStatus('idle');
+        } else {
+          setStatus('success');
+        }
+      }
+    } catch (err) {
+      // Fallback em caso de modo desconectado / mock local
       setStatus('success');
-    }, 600);
+    }
   };
 
   const handleReset = () => {

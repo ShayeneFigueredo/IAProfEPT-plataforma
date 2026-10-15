@@ -4,6 +4,7 @@ import TopHeader from './components/TopHeader';
 import MaiconDrawer from './components/MaiconDrawer';
 import RegisterModal from './components/RegisterModal';
 import OnboardingModal from './components/OnboardingModal';
+import ResetPasswordModal from './components/ResetPasswordModal';
 import LoginView from './views/LoginView';
 
 import HomeView from './views/HomeView';
@@ -30,6 +31,32 @@ export default function App() {
 
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+  const [resetToken, setResetToken] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('token') || '';
+    } catch (e) {
+      return '';
+    }
+  });
+  const [isResetOpen, setIsResetOpen] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return !!params.get('token');
+    } catch (e) {
+      return false;
+    }
+  });
+
+  const handleCloseReset = () => {
+    setIsResetOpen(false);
+    setResetToken('');
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('token');
+      window.history.replaceState({}, '', url.pathname + (url.search ? url.search : ''));
+    } catch (e) {}
+  };
 
   // Fecha o menu móvel ao redimensionar para tela desktop ou ao pressionar Escape
   useEffect(() => {
@@ -37,6 +64,7 @@ export default function App() {
       if (e.key === 'Escape') {
         if (mobileMenuOpen) setMobileMenuOpen(false);
         if (isRegisterOpen) setIsRegisterOpen(false);
+        if (isResetOpen) handleCloseReset();
       }
     };
 
@@ -52,11 +80,11 @@ export default function App() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('resize', handleResize);
     };
-  }, [mobileMenuOpen, isRegisterOpen]);
+  }, [mobileMenuOpen, isRegisterOpen, isResetOpen]);
 
   // Bloqueia rolagem do fundo quando gaveta ou modais estiverem abertos
   useEffect(() => {
-    if (mobileMenuOpen || isRegisterOpen || isOnboardingOpen) {
+    if (mobileMenuOpen || isRegisterOpen || isOnboardingOpen || isResetOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
@@ -64,7 +92,7 @@ export default function App() {
     return () => {
       document.body.style.overflow = '';
     };
-  }, [mobileMenuOpen, isRegisterOpen, isOnboardingOpen]);
+  }, [mobileMenuOpen, isRegisterOpen, isOnboardingOpen, isResetOpen]);
 
   // Ações de Autenticação e Sessão
   const handleLogin = (user, triggerOnboarding = false) => {
@@ -119,6 +147,12 @@ export default function App() {
           isOpen={isRegisterOpen}
           onClose={() => setIsRegisterOpen(false)}
           onRegisterSuccess={handleRegisterSuccess}
+        />
+        <ResetPasswordModal
+          isOpen={isResetOpen}
+          token={resetToken}
+          onClose={handleCloseReset}
+          onSuccess={handleCloseReset}
         />
       </>
     );
@@ -178,6 +212,13 @@ export default function App() {
         isOpen={isRegisterOpen}
         onClose={() => setIsRegisterOpen(false)}
         onRegisterSuccess={handleRegisterSuccess}
+      />
+
+      <ResetPasswordModal
+        isOpen={isResetOpen}
+        token={resetToken}
+        onClose={handleCloseReset}
+        onSuccess={handleCloseReset}
       />
     </div>
   );

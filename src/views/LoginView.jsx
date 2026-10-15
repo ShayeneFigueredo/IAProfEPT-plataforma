@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Mail, Eye, EyeOff, ArrowRight, Sparkles, GraduationCap, Building2, ShieldCheck, CheckCircle2, UserCheck, MapPin } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, ArrowRight, GraduationCap, Building2, ShieldCheck, CheckCircle2, UserCheck, MapPin } from 'lucide-react';
 import AppIcon from '../components/AppIcon';
 import Badge from '../components/Badge';
 import ForgotPasswordModal from '../components/ForgotPasswordModal';
@@ -366,7 +366,7 @@ export default function LoginView({ onLogin, onOpenRegister }) {
                   <small>Docente IFSP (SP) · Experimentar acolhimento</small>
                 </div>
               </div>
-              <Sparkles size={16} color="var(--accent-green)" />
+              <ArrowRight size={16} />
             </button>
           </div>
 

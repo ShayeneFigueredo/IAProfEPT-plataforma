@@ -67,6 +67,9 @@ export async function runKnexMigrate(action = 'latest') {
       'eixos_cnct',
       'cursos_tecnicos_cnct',
       'habilidades_bncc',
+      'refresh_tokens',
+      'tokens_recuperacao_senha',
+      'consentimentos_tcle',
     ];
 
     for (const table of tables) {

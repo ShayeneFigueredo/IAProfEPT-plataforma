@@ -9,7 +9,6 @@ import {
   FileText,
   Copy,
   ExternalLink,
-  Sparkles,
   Youtube,
   Video,
   List,
@@ -80,7 +79,7 @@ export default function FormativoView() {
             className={`subnav-pill-btn ${activeSubTab === 'ebook' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('ebook')}
           >
-            <Sparkles size={14} />
+            <BookMarked size={14} />
             <span>E-book de Prompts</span>
           </button>
         </div>

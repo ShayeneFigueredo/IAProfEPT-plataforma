@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Sparkles,
   ArrowRight,
   TrendingUp,
   BookOpen,
@@ -82,7 +81,7 @@ export default function HomeView({ setTab, currentUser }) {
 
           <div className="hero-stat-pill">
             <div className="hero-stat-icon-wrapper">
-              <Sparkles size={20} />
+              <FlaskConical size={20} />
             </div>
             <div>
               <div className="stat-value-text">17</div>

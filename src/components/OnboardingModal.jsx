@@ -4,7 +4,6 @@ import {
   ArrowRight,
   ArrowLeft,
   Check,
-  Sparkles,
   BookOpen,
   FlaskConical,
   FolderGit2,
@@ -13,7 +12,6 @@ import {
   GraduationCap,
   ShieldCheck,
   Layers,
-  Bot,
   ExternalLink
 } from 'lucide-react';
 import AppIcon from './AppIcon';

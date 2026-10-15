@@ -68,10 +68,10 @@ if (!process.env.DATABASE_URL) {
 export const pool = new Pool(poolConfig);
 
 // Eventos de telemetria do pool de conexões
-pool.on('connect', (client) => {
-  // Garante explicitamente client_encoding UTF8 em toda nova conexão do pool
-  client.query("SET client_encoding TO 'UTF8'")
-    .catch((err) => console.error('[PostgreSQL] Erro ao aplicar client_encoding UTF8:', err.message));
+pool.on('connect', () => {
+  if (process.env.DEBUG_SQL === 'true') {
+    console.log('[PostgreSQL] Nova conexão cliente alocada no pool.');
+  }
 });
 
 pool.on('error', (err, client) => {
@@ -128,7 +128,7 @@ export async function healthCheck() {
       SELECT 
         current_database() AS database_name,
         version() AS pg_version,
-        pg_encoding_to_char(encoding) AS db_encoding,
+        current_setting('server_encoding') AS db_encoding,
         NOW() AS server_time
     `);
     const latencyMs = Date.now() - start;
