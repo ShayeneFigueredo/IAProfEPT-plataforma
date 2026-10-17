@@ -18,7 +18,7 @@ export class MetricasRepository extends BaseRepository {
    * Agrega dados do Experimento A/B (Groq vs Gemini) e da amostra docente da RFEPCT
    */
   async getMetricasTese() {
-    // 1. Estatísticas de Telemetria A/B
+    // 1. Estatísticas de Telemetria A/B por Motor
     const telemetriaRes = await this.query(`
       SELECT 
         motor_ia,
@@ -34,6 +34,33 @@ export class MetricasRepository extends BaseRepository {
       FROM telemetria_ab
       GROUP BY motor_ia;
     `);
+
+    // 1.1 Estatísticas de Balanceamento por Grupo Experimental (Grupo A vs Grupo B)
+    const gruposAbRes = await this.query(`
+      SELECT 
+        COALESCE(grupo_experimental, 'SEM_GRUPO') as grupo,
+        COUNT(*) as total_alocacoes,
+        ROUND(AVG(latencia_ms), 2) as latencia_media_ms,
+        COUNT(CASE WHEN status_execucao = 'sucesso' THEN 1 END) as sucessos,
+        COUNT(CASE WHEN fallback_utilizado = TRUE THEN 1 END) as fallbacks
+      FROM telemetria_ab
+      GROUP BY grupo_experimental
+      ORDER BY grupo ASC;
+    `);
+
+    let totalA = 0;
+    let totalB = 0;
+    for (const g of gruposAbRes.rows) {
+      if (g.grupo === 'A') totalA = parseInt(g.total_alocacoes, 10) || 0;
+      if (g.grupo === 'B') totalB = parseInt(g.total_alocacoes, 10) || 0;
+    }
+    const totalN = totalA + totalB;
+    const quiQuadrado = totalN > 0
+      ? (Math.pow(totalA - totalN / 2, 2) / (totalN / 2) + Math.pow(totalB - totalN / 2, 2) / (totalN / 2))
+      : 0;
+    const proporcaoA = totalN > 0 ? (totalA / totalN) : 0;
+    const proporcaoB = totalN > 0 ? (totalB / totalN) : 0;
+    const chi2Valido = quiQuadrado < 3.84146;
 
     // 2. Estatísticas de Adoção Docente na RFEPCT
     const docentesRes = await this.query(`
@@ -93,6 +120,21 @@ export class MetricasRepository extends BaseRepository {
         total_instituicoes_alcancadas: 0,
         areas_matematica_atendidas: 0,
       },
+      experimentoAB30Dias: {
+        totalAlocacoesExperimento: totalN,
+        grupoA_Groq: totalA,
+        grupoB_Gemini: totalB,
+        proporcaoA: Number(proporcaoA.toFixed(4)),
+        proporcaoB: Number(proporcaoB.toFixed(4)),
+        razaoDistribuicao: totalB > 0 ? (totalA / totalB).toFixed(4) : '0',
+        testeQuiQuadrado: {
+          estatisticaQuiQuadrado: Number(quiQuadrado.toFixed(4)),
+          valorCriticoAlpha005: 3.84146,
+          hipoteseNulaAceita: chi2Valido,
+          criterio1para1Atendido: chi2Valido && Math.abs(proporcaoA - 0.5) <= 0.05,
+        },
+        distribuicaoPorGrupo: gruposAbRes.rows,
+      },
       distribuicaoGeograficaUf: distribuicaoUfRes.rows,
       telemetriaMotoresIa: telemetriaRes.rows,
       geracoesLaboratorio: requisicoesRes.rows,
@@ -130,7 +172,9 @@ export class MetricasRepository extends BaseRepository {
       `SELECT 
          id, motor_ia, modelo_especifico, latencia_ms,
          tokens_prompt, tokens_completion, total_tokens,
-         status_execucao, fallback_utilizado, criado_em
+         status_execucao, fallback_utilizado,
+         grupo_experimental, chave_alocacao, criterio_alocacao, experimento_ativo,
+         criado_em
        FROM telemetria_ab
        ${whereClause}
        ORDER BY criado_em DESC

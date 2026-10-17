@@ -3,6 +3,9 @@ import healthRoutes from './healthRoutes.js';
 import authRoutes from './authRoutes.js';
 import adminRoutes from './adminRoutes.js';
 import metricasRoutes from './metricasRoutes.js';
+import laboratorioRoutes from './laboratorioRoutes.js';
+import telemetriaRoutes from './telemetriaRoutes.js';
+import formativoRoutes from './formativoRoutes.js';
 
 const apiRouter = Router();
 
@@ -23,6 +26,21 @@ apiRouter.get('/', (req, res) => {
       authResetPassword: 'POST /api/auth/reset-password',
       authMe: 'GET /api/auth/me [Autenticado]',
       authTermoEtico: 'GET /api/auth/termo-etico',
+      formativoTrilhas: 'GET /api/formativo/trilhas [Lista das 4 Trilhas e Progresso Docente]',
+      formativoTrilhaDetalhes: 'GET /api/formativo/trilhas/:id [Conteúdo das Aulas e Vídeos]',
+      formativoProgresso: 'POST /api/formativo/progresso [Persistência de Progresso do Docente no PostgreSQL]',
+      laboratorioGerar: 'POST /api/laboratorio/gerar [Circuit Breaker + Fallback Automático]',
+      laboratorioCircuitBreakerStatus: 'GET /api/laboratorio/circuit-breaker-status',
+      laboratorioMontarPrompt: 'POST /api/laboratorio/montar-prompt',
+      laboratorioGerarGroq: 'POST /api/laboratorio/gerar-groq',
+      laboratorioGroqBenchmark: 'GET /api/laboratorio/groq-benchmark',
+      laboratorioGerarGemini: 'POST /api/laboratorio/gerar-gemini',
+      laboratorioGeminiBenchmark: 'GET /api/laboratorio/gemini-benchmark',
+      laboratorioParametros: 'GET /api/laboratorio/parametros-curriculares',
+      telemetriaAvaliacao: 'POST /api/telemetria/avaliacao [1 a 5 Estrelas, Tags Qualitativas & Feedback Docente]',
+      telemetriaAvaliacaoEstatisticas: 'GET /api/telemetria/avaliacao/estatisticas [Consolidação A/B para Tese]',
+      telemetriaRelatorioTese: 'GET /api/telemetria/relatorio-tese [Consolidação Estatística e Exportação JSON/CSV - RBAC: pesquisador_doutorado, administrador_ufjf]',
+      telemetriaStatus: 'GET /api/telemetria/status [Vazão e Fila de Telemetria]',
       metricasTese: 'GET /api/metricas/tese [RBAC: pesquisador_doutorado, administrador_ufjf]',
       metricasTelemetria: 'GET /api/metricas/telemetria-ab [RBAC: pesquisador_doutorado, administrador_ufjf]',
       adminUsuarios: 'GET /api/admin/usuarios [RBAC: administrador_ufjf]',
@@ -37,8 +55,12 @@ apiRouter.get('/', (req, res) => {
 // Acoplamento de módulos de rota
 apiRouter.use('/', healthRoutes);
 apiRouter.use('/auth', authRoutes);
+apiRouter.use('/formativo', formativoRoutes);
+apiRouter.use('/laboratorio', laboratorioRoutes);
+apiRouter.use('/telemetria', telemetriaRoutes);
 apiRouter.use('/admin', adminRoutes);
 apiRouter.use('/metricas', metricasRoutes);
 
 export default apiRouter;
+
 

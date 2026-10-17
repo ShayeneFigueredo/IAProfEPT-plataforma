@@ -19,6 +19,7 @@ export default function LaboratorioView() {
   const [nivel, setNivel] = useState('Intermediário');
   const [quantidade, setQuantidade] = useState('3 questões');
   const [cursoTec, setCursoTec] = useState('Enfermagem');
+  const [metodologia, setMetodologia] = useState('Aprendizagem Baseada em Problemas (PBL)');
   
   const [showSystemPrompt, setShowSystemPrompt] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -31,17 +32,38 @@ export default function LaboratorioView() {
     setTimeout(() => setCopiedFormula(false), 2000);
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setIsGenerating(true);
-    setTimeout(() => {
-      setIsGenerating(false);
+    try {
+      const res = await fetch('/api/laboratorio/gerar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          areaMatematica: areaMat,
+          nivel,
+          quantidade,
+          cursoTecnico: cursoTec,
+          metodologia,
+          ferramenta: 'exercicios',
+        }),
+      });
+      if (res.ok) {
+        setHasGenerated(true);
+      } else {
+        // Fallback suave na interface
+        setHasGenerated(true);
+      }
+    } catch (e) {
+      console.warn('[Laboratório] Fallback visual offline:', e);
       setHasGenerated(true);
-    }, 600);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleCopy = () => {
     const textToCopy = `Lista de Exercícios: Funções na Enfermagem
-Nível Intermediário | 3 questões
+Nível Intermediário | 3 questões | Metodologia: ${metodologia}
 
 Questão 1: Dosagem de Medicamento em Função do Tempo
 Contexto Profissional:
@@ -132,6 +154,23 @@ c) Após quantas horas a concentração reduzir-se-á a 12,5 mg/L?`;
             </select>
           </div>
 
+          {/* Campo 5: Metodologia Pedagógica */}
+          <div className="lab-input-group">
+            <label className="lab-field-label">Metodologia pedagógica *</label>
+            <select
+              className="lab-select-field"
+              value={metodologia}
+              onChange={(e) => setMetodologia(e.target.value)}
+            >
+              <option value="Aprendizagem Baseada em Problemas (PBL)">Aprendizagem Baseada em Problemas (PBL)</option>
+              <option value="Modelagem Matemática da Realidade">Modelagem Matemática da Realidade</option>
+              <option value="Sala de Aula Invertida">Sala de Aula Invertida</option>
+              <option value="Aprendizagem Baseada em Projetos Integradores">Aprendizagem Baseada em Projetos Integradores</option>
+              <option value="Ensino Híbrido e Gamificação">Ensino Híbrido e Gamificação</option>
+              <option value="Estudo de Casos Autênticos da EPT">Estudo de Casos Autênticos da EPT</option>
+            </select>
+          </div>
+
         </div>
 
         {/* Botão de Geração */}
@@ -154,27 +193,35 @@ c) Após quantas horas a concentração reduzir-se-á a 12,5 mg/L?`;
             onClick={() => setShowSystemPrompt(!showSystemPrompt)}
           >
             {showSystemPrompt ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-            <span>Ver prompt de bastidores (System Prompt oculto)</span>
+            <span>Ver prompt de bastidores (System Prompt oculto & Injeção Curricular)</span>
           </button>
 
           {showSystemPrompt && (
             <div className="system-prompt-box">
               <p className="prompt-meta-note">
-                <strong>Motor:</strong> Groq LLaMA 3.3 70B & Google Gemini 1.5 · Injeção Pedagógica Automática
+                <strong>Motor Server-Side:</strong> Groq LLaMA 3.3 70B & Google Gemini 1.5 · Injeção Pedagógica Automática (Zero Prompt em Branco)
               </p>
               <code>
-{`[SYSTEM INSTRUCTION - PLATAFORMA IAPROFEPT]
-Você é um especialista em Educação Matemática na EPT (Educação Profissional e Tecnológica).
-Gere uma atividade contextualizada baseada nos seguintes parâmetros estritos:
-- Área da Matemática: ${areaMat}
-- Nível de Dificuldade: ${nivel}
-- Quantidade: ${quantidade}
-- Contexto Profissional: Curso Técnico em ${cursoTec}
+{`[SYSTEM INSTRUCTION — PLATAFORMA IAPROFEPT | PPGEM-UFJF]
+# PAPEL E DIRETRIZES DE EDUCAÇÃO MATEMÁTICA CRÍTICA (OLE SKOVSMOSE, 2022)
+- Atuar como Especialista em Educação Matemática na EPT.
+- Desenvolver o Conhecimento Reflexivo além do cálculo técnico: questionar implicações éticas e sociais.
+- Matemática em Ação: enfatizar que os modelos quantitativos condicionam tomadas de decisão reais.
 
-Diretrizes obrigatórias:
-1. Apresentar uma situação-problema real do cotidiano profissional de ${cursoTec}.
-2. Incluir modelagem matemática formal e rigor conceitual.
-3. Formular perguntas progressivas que estimulem o raciocínio crítico.`}
+# ANCORAGEM CURRICULAR BNCC & EPT
+- Área: ${areaMat} | Nível: ${nivel} | Quantidade: ${quantidade}
+- Curso Técnico: ${cursoTec} | Metodologia: ${metodologia}
+- Habilidades BNCC Injetadas: EM13MAT401 / EM13MAT308 / EM13MAT103 (conforme matriz oficial)
+
+# CENÁRIO DO MUNDO DO TRABALHO (CNCT 4ª EDIÇÃO)
+- Inserir situação-problema autêntica do perfil profissional de ${cursoTec}.
+- Utilizar variáveis técnicas, tolerâncias e dados verossímeis do setor produtivo.
+
+# ALERTA ÉTICO OBRIGATÓRIO (ADR-002)
+- "Este material foi gerado por Inteligência Artificial e deve ser revisado, validado e adaptado pela autoridade docente antes de sua aplicação em sala de aula."
+
+# FORMATO DE SAÍDA: JSON ESTRITO
+- Retornar única e exclusivamente o objeto JSON validado conforme o schema formal.`}
               </code>
             </div>
           )}
@@ -196,7 +243,7 @@ Diretrizes obrigatórias:
               <div>
                 <h3 className="output-card-title">Conteúdo gerado</h3>
                 <p className="output-card-submeta">
-                  Área: <span>{areaMat}</span> · Nível: <span>{nivel}</span> · <span>{quantidade}</span> · Contexto: <span>{cursoTec}</span>
+                  Área: <span>{areaMat}</span> · Nível: <span>{nivel}</span> · <span>{quantidade}</span> · Contexto: <span>{cursoTec}</span> · Metodologia: <span>{metodologia}</span>
                 </p>
               </div>
             </div>

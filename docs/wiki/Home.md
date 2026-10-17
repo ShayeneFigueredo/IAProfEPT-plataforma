@@ -20,6 +20,12 @@ Documentos formais que fundamentam as escolhas técnicas do software à luz da p
 - 📄 [ADR-007: Fluxo Seguro de Recuperação e Redefinição de Senha com Tokens de Uso Único](./ADR_007_RECUPERACAO_E_REDEFINICAO_SEGURA_DE_SENHA.md)
 - 📄 [ADR-008: Registro de Consentimento Livre e Esclarecido (TCLE) e Governança Ética CEP/UFJF](./ADR_008_REGISTRO_CONSENTIMENTO_TCLE_CEP_UFJF.md)
 - 📄 [ADR-009: Middleware de Autorização e Controle de Acesso Baseado em Papéis (RBAC)](./ADR_009_CONTROLE_DE_ACESSO_BASEADO_EM_PAPEIS_RBAC.md)
+- 📄 [ADR-010: Motor Server-Side de Injeção de Prompts Ocultos, Parametrização Curricular (BNCC x EPT) e Educação Matemática Crítica](./ADR_010_MOTOR_SERVER_SIDE_INJECAO_PROMPTS_PARAMETRIZADOS.md)
+- 📄 [ADR-011: Integração com a API Groq (LLaMA 3.3 70B via LPU), Parametrização para Cálculo Matemático Preciso e Tratamento de Rate Limits (429)](./ADR_011_INTEGRACAO_GROQ_LLAMA33_LPU_INFERENCIA.md)
+- 📄 [ADR-012: Integração com a API Google Gemini (SDK Oficial), Configuração de Safety Settings, Temperatura e Esquemas JSON Estruturados (Interdisciplinar e Planos de Aula)](./ADR_012_INTEGRACAO_GOOGLE_GEMINI_SAFETY_SETTINGS_JSON_ESTRUTURADO.md)
+- 📄 [ADR-013: Roteador Inteligente de IA, Padrão Circuit Breaker com Timeout de 10s e Mecanismo de Fallback Automático entre Motores (Groq vs Gemini)](./ADR_013_ROTEADOR_INTELIGENTE_CIRCUIT_BREAKER_FALLBACK_ENTRE_MOTORES.md)
+- 📄 [ADR-014: Motor de Roteamento Balanceado para o Experimento Piloto A/B de 30 Dias (Groq vs Gemini)](./ADR_014_MOTOR_ROTEAMENTO_BALANCEADO_EXPERIMENTO_AB_30_DIAS.md)
+- 📄 [ADR-015: Instrumentação de Avaliação Docente por Estrelas (1 a 5) e Feedback Qualitativo da Telemetria A/B](./ADR_015_AVALIACAO_DOCENTE_POR_ESTRELAS_E_FEEDBACK_QUALITATIVO.md)
 
 ---
 
