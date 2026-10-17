@@ -1,4 +1,5 @@
 import { formativoRepository } from '../repositories/FormativoRepository.js';
+import { acervoFormativoRepository } from '../repositories/AcervoFormativoRepository.js';
 import { validarAtualizacaoProgresso } from '../validators/formativoValidator.js';
 import { UnauthorizedError } from '../errors/AppError.js';
 
@@ -12,6 +13,8 @@ export class FormativoController {
     this.getTrilhas = this.getTrilhas.bind(this);
     this.getTrilhaDetalhes = this.getTrilhaDetalhes.bind(this);
     this.atualizarProgresso = this.atualizarProgresso.bind(this);
+    this.getDocumentos = this.getDocumentos.bind(this);
+    this.getEbookPrompts = this.getEbookPrompts.bind(this);
   }
 
   /**
@@ -98,6 +101,69 @@ export class FormativoController {
         progresso: progressoAtualizado,
         avisoEtico:
           'Sua jornada formativa valoriza a autonomia docente e a apropriação crítica das tecnologias de Inteligência Artificial na EPT.',
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * GET /api/formativo/documentos
+   * Lista documentos oficiais, relatórios e marcos regulatórios da EPT
+   * com suporte a filtragem por tags (Legislacao EPT, Relatorios UNESCO, Plano Brasileiro de IA),
+   * busca textual e ano de publicação.
+   */
+  async getDocumentos(req, res, next) {
+    try {
+      const { tag, busca, ano } = req.query;
+
+      const resultado = await acervoFormativoRepository.listarDocumentos({
+        tag: tag ? String(tag).trim() : null,
+        busca: busca ? String(busca).trim() : null,
+        ano: ano ? String(ano).trim() : null,
+      });
+
+      return res.status(200).json({
+        sucesso: true,
+        total: resultado.total,
+        totalGeralAcervo: resultado.totalGeralAcervo,
+        filtroAplicado: resultado.filtroAplicado,
+        tagsDisponiveis: resultado.tagsDisponiveis,
+        contagemPorTag: resultado.contagemPorTag,
+        documentos: resultado.documentos,
+        avisoEtico:
+          'Este material foi gerado por Inteligência Artificial e deve ser revisado, validado e adaptado pela autoridade docente antes de sua aplicação em sala de aula.',
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * GET /api/formativo/ebook-prompts
+   * Entrega os modelos estruturados de prompts para Educação Matemática na EPT,
+   * permitindo filtragem por categoria pedagógica, busca textual e eixo tecnológico.
+   */
+  async getEbookPrompts(req, res, next) {
+    try {
+      const { categoria, busca, eixo } = req.query;
+
+      const resultado = await acervoFormativoRepository.listarPromptsEbook({
+        categoria: categoria ? String(categoria).trim() : null,
+        busca: busca ? String(busca).trim() : null,
+        eixo: eixo ? String(eixo).trim() : null,
+      });
+
+      return res.status(200).json({
+        sucesso: true,
+        total: resultado.total,
+        totalGeralEbook: resultado.totalGeralEbook,
+        filtroAplicado: resultado.filtroAplicado,
+        categoriasDisponiveis: resultado.categoriasDisponiveis,
+        contagemPorCategoria: resultado.contagemPorCategoria,
+        prompts: resultado.prompts,
+        avisoEtico:
+          'Este material foi gerado por Inteligência Artificial e deve ser revisado, validado e adaptado pela autoridade docente antes de sua aplicação em sala de aula.',
       });
     } catch (err) {
       next(err);

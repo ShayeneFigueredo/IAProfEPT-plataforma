@@ -37,4 +37,30 @@ formativoRoutes.post(
   formativoController.atualizarProgresso
 );
 
+/**
+ * GET /api/formativo/documentos
+ * Acervo oficial de documentos, relatórios internacionais e diretrizes da EPT.
+ * Suporta filtragem por tag (Legislacao EPT, Relatorios UNESCO, Plano Brasileiro de IA),
+ * busca textual e ano de publicação.
+ * Critério de Aceite: retorno rápido com metadados completos de publicação e links funcionais.
+ */
+formativoRoutes.get(
+  '/documentos',
+  optionalAuthenticateToken,
+  formativoController.getDocumentos
+);
+
+/**
+ * GET /api/formativo/ebook-prompts
+ * Entrega os modelos estruturados de prompts para Educação Matemática na EPT.
+ * Suporta filtragem por categoria pedagógica, busca textual e eixo tecnológico.
+ * Critério de Aceite: retorno rápido com metadados completos de publicação e links funcionais.
+ */
+formativoRoutes.get(
+  '/ebook-prompts',
+  optionalAuthenticateToken,
+  formativoController.getEbookPrompts
+);
+
 export default formativoRoutes;
+

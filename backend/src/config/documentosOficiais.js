@@ -1,0 +1,151 @@
+/**
+ * Acervo Canônico de Documentos Oficiais, Diretrizes e Legislação da EPT
+ * Plataforma IAprofEPT — Programa de Pós-Graduação em Educação Matemática (PPGEM / UFJF)
+ * Doutorando: Maycon Luiz Amaral Magalhães
+ * Orientação: Prof. Dr. Eduardo Barrére & Prof. Dr. Manuel Cabral dos Santos Reis
+ * 
+ * Tags Canônicas Oficiais:
+ * - Legislacao EPT
+ * - Relatorios UNESCO
+ * - Plano Brasileiro de IA
+ * - Diretriz MEC
+ * - Fundamentação Teórica
+ */
+
+export const TAGS_DOCUMENTOS_CANONICAS = [
+  'Legislacao EPT',
+  'Relatorios UNESCO',
+  'Plano Brasileiro de IA',
+  'Diretriz MEC',
+  'Fundamentação Teórica',
+];
+
+export const MAPA_NORMALIZACAO_TAGS_DOCS = {
+  'legislacao ept': 'Legislacao EPT',
+  'legislação ept': 'Legislacao EPT',
+  'legislacao_ept': 'Legislacao EPT',
+  'legislacao': 'Legislacao EPT',
+  'legislação': 'Legislacao EPT',
+  'relatorios unesco': 'Relatorios UNESCO',
+  'relatórios unesco': 'Relatorios UNESCO',
+  'relatorios_unesco': 'Relatorios UNESCO',
+  'unesco': 'Relatorios UNESCO',
+  'plano brasileiro de ia': 'Plano Brasileiro de IA',
+  'plano_brasileiro_de_ia': 'Plano Brasileiro de IA',
+  'pbia': 'Plano Brasileiro de IA',
+  'diretriz mec': 'Diretriz MEC',
+  'diretrizes mec': 'Diretriz MEC',
+  'diretriz_mec': 'Diretriz MEC',
+  'mec': 'Diretriz MEC',
+  'fundamentacao teorica': 'Fundamentação Teórica',
+  'fundamentação teórica': 'Fundamentação Teórica',
+  'fundamentacao_teorica': 'Fundamentação Teórica',
+  'teoria': 'Fundamentação Teórica',
+};
+
+export const DOCUMENTOS_OFICIAIS_ACERVO = [
+  {
+    id: 'doc-unesco-etica-2021',
+    titulo: 'Recomendação sobre a Ética da Inteligência Artificial (UNESCO)',
+    descricao: 'Primeiro instrumento normativo global sobre a ética da inteligência artificial, adotado por aclamação por 193 Estados-membros da UNESCO, com ênfase na proteção dos direitos humanos, transparência algorítmica e equidade social.',
+    orgaoEmissor: 'UNESCO — Organização das Nações Unidas para a Educação, a Ciência e a Cultura',
+    anoPublicacao: 2021,
+    tagPrincipal: 'Relatorios UNESCO',
+    tags: ['Relatorios UNESCO', 'Etica e Cidadania', 'Diretrizes Internacionais'],
+    url: 'https://unesdoc.unesco.org/ark:/48223/pf0000381137_por',
+    formato: 'PDF',
+    paginas: 44,
+    tamanhoEstimado: '1.8 MB',
+    ativo: true,
+  },
+  {
+    id: 'doc-pbia-2024',
+    titulo: 'Plano Brasileiro de Inteligência Artificial (PBIA 2024-2028)',
+    descricao: 'Proposta nacional de diretrizes e investimentos para desenvolvimento ético, soberano e inclusivo de IA no Brasil, estruturada em eixos de soberania de infraestrutura, impacto nos serviços públicos e formação crítica de professores e pesquisadores.',
+    orgaoEmissor: 'Ministério da Ciência, Tecnologia e Inovação (MCTI)',
+    anoPublicacao: 2024,
+    tagPrincipal: 'Plano Brasileiro de IA',
+    tags: ['Plano Brasileiro de IA', 'Legislacao EPT', 'Politicas Publicas'],
+    url: 'https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/2024/07/conheca-o-plano-brasileiro-de-inteligencia-artificial',
+    formato: 'Portal Oficial / Documento Executivo',
+    paginas: 86,
+    tamanhoEstimado: '4.2 MB',
+    ativo: true,
+  },
+  {
+    id: 'doc-mec-ia-generativa-2024',
+    titulo: 'Guia de IA Generativa na Educação Básica e Profissional (MEC/SETEC)',
+    descricao: 'Orientações pedagógicas para gestores e professores da Rede Federal sobre a introdução qualificada, crítica e inclusiva de ferramentas generativas em sala de aula, respeitando a autoria e a autonomia docente.',
+    orgaoEmissor: 'Ministério da Educação (MEC / SETEC / SEB)',
+    anoPublicacao: 2024,
+    tagPrincipal: 'Legislacao EPT',
+    tags: ['Legislacao EPT', 'Diretriz MEC', 'Educacao Basica e Tecnica'],
+    url: 'https://www.gov.br/mec/pt-br/acesso-a-informacao/institucional/secretarias/secretaria-de-educacao-profissional-e-tecnologica',
+    formato: 'PDF',
+    paginas: 52,
+    tamanhoEstimado: '2.6 MB',
+    ativo: true,
+  },
+  {
+    id: 'doc-cnct-4ed-2023',
+    titulo: 'Catálogo Nacional de Cursos Técnicos (CNCT 4ª Edição)',
+    descricao: 'Referencial curricular nacional que normatiza e organiza as ofertas de cursos de Educação Profissional Técnica de Nível Médio, agrupados em 13 eixos tecnológicos, servindo de base para as contextualizações matemáticas da plataforma.',
+    orgaoEmissor: 'MEC / Secretaria de Educação Profissional e Tecnológica (SETEC)',
+    anoPublicacao: 2023,
+    tagPrincipal: 'Legislacao EPT',
+    tags: ['Legislacao EPT', 'Curricular EPT', 'Eixos Tecnologicos'],
+    url: 'http://cnct.mec.gov.br/',
+    formato: 'Portal Oficial / Catálogo Normativo',
+    paginas: 320,
+    tamanhoEstimado: '12.5 MB',
+    ativo: true,
+  },
+  {
+    id: 'doc-unesco-politicas-2023',
+    titulo: 'IA e Educação: Orientações para Responsáveis por Políticas Públicas (UNESCO)',
+    descricao: 'Guia detalhado sobre a regulação do uso de modelos de linguagem e ferramentas de IA na formação docente, alertando contra a dependência tecnológica desprovida de validação pedagógica humana.',
+    orgaoEmissor: 'UNESCO',
+    anoPublicacao: 2023,
+    tagPrincipal: 'Relatorios UNESCO',
+    tags: ['Relatorios UNESCO', 'Politicas Publicas', 'Educacao e Tecnologia'],
+    url: 'https://unesdoc.unesco.org/ark:/48223/pf0000385723_por',
+    formato: 'PDF',
+    paginas: 60,
+    tamanhoEstimado: '2.1 MB',
+    ativo: true,
+  },
+  {
+    id: 'doc-skovsmose-2022',
+    titulo: 'Educação Matemática Crítica e Tecnologias: Práticas e Desafios',
+    descricao: 'Fundamentação epistemológica sobre o poder formatador da matemática na automação social e a indispensabilidade de promover a "matemacia" (miteracia crítica) em ambientes mediados por computação.',
+    orgaoEmissor: 'Ole Skovsmose / Artigos de Pesquisa em Educação Matemática (Bolema)',
+    anoPublicacao: 2022,
+    tagPrincipal: 'Fundamentação Teórica',
+    tags: ['Fundamentação Teórica', 'Educacao Matematica', 'Pensamento Critico'],
+    url: 'https://www.scielo.br/j/bolema/',
+    formato: 'Artigo Acadêmico / Referencial Teórico',
+    paginas: 28,
+    tamanhoEstimado: '1.2 MB',
+    ativo: true,
+  },
+  {
+    id: 'doc-lei-11892-rfepct',
+    titulo: 'Lei Federal nº 11.892/2008 — Criação dos Institutos Federais (RFEPCT)',
+    descricao: 'Marco legal de criação da Rede Federal de Educação Profissional, Científica e Tecnológica e dos Institutos Federais, estabelecendo suas finalidades pedagógicas, verticalização do ensino e compromisso com o desenvolvimento socioeconômico.',
+    orgaoEmissor: 'Presidência da República / Casa Civil',
+    anoPublicacao: 2008,
+    tagPrincipal: 'Legislacao EPT',
+    tags: ['Legislacao EPT', 'Marco Legal RFEPCT', 'Normativa Federal'],
+    url: 'http://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11892.htm',
+    formato: 'Legislação Federal',
+    paginas: 15,
+    tamanhoEstimado: '0.5 MB',
+    ativo: true,
+  },
+];
+
+export default {
+  TAGS_DOCUMENTOS_CANONICAS,
+  MAPA_NORMALIZACAO_TAGS_DOCS,
+  DOCUMENTOS_OFICIAIS_ACERVO,
+};

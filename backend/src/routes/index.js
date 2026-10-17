@@ -29,6 +29,8 @@ apiRouter.get('/', (req, res) => {
       formativoTrilhas: 'GET /api/formativo/trilhas [Lista das 4 Trilhas e Progresso Docente]',
       formativoTrilhaDetalhes: 'GET /api/formativo/trilhas/:id [Conteúdo das Aulas e Vídeos]',
       formativoProgresso: 'POST /api/formativo/progresso [Persistência de Progresso do Docente no PostgreSQL]',
+      formativoDocumentos: 'GET /api/formativo/documentos [Acervo Oficial com Filtro por Tags e Links]',
+      formativoEbookPrompts: 'GET /api/formativo/ebook-prompts [Modelos Estruturados de Prompts para Ed. Matemática]',
       laboratorioGerar: 'POST /api/laboratorio/gerar [Circuit Breaker + Fallback Automático]',
       laboratorioCircuitBreakerStatus: 'GET /api/laboratorio/circuit-breaker-status',
       laboratorioMontarPrompt: 'POST /api/laboratorio/montar-prompt',

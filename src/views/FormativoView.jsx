@@ -18,7 +18,10 @@ import {
   CheckCircle2,
   Circle,
   Sparkles,
-  Info
+  Info,
+  Search,
+  Filter,
+  Tag
 } from 'lucide-react';
 import { TRILHAS_DATA, DOCUMENTOS_DATA, PROMPTS_EBOOK_DATA, VIDEOS_DATA } from '../data/mockData';
 
@@ -33,10 +36,128 @@ export default function FormativoView() {
   const [loadingDetalhes, setLoadingDetalhes] = useState(false);
   const [atualizandoAulaId, setAtualizandoAulaId] = useState(null);
 
+  // Estados do Acervo de Documentos Oficiais (GET /api/formativo/documentos)
+  const [documentos, setDocumentos] = useState([]);
+  const [loadingDocs, setLoadingDocs] = useState(false);
+  const [tagDocSelecionada, setTagDocSelecionada] = useState('');
+  const [buscaDoc, setBuscaDoc] = useState('');
+
+  // Estados do E-book de Prompts Estruturados (GET /api/formativo/ebook-prompts)
+  const [promptsEbook, setPromptsEbook] = useState([]);
+  const [loadingPrompts, setLoadingPrompts] = useState(false);
+  const [categoriaPromptSelecionada, setCategoriaPromptSelecionada] = useState('');
+  const [buscaPrompt, setBuscaPrompt] = useState('');
+  const [promptCopiadoId, setPromptCopiadoId] = useState(null);
+
   // Carrega trilhas ao montar o componente
   useEffect(() => {
     carregarTrilhas();
   }, []);
+
+  // Carrega documentos quando a aba de materiais for aberta ou filtros mudarem
+  useEffect(() => {
+    if (activeSubTab === 'materiais') {
+      carregarDocumentos();
+    }
+  }, [activeSubTab, tagDocSelecionada, buscaDoc]);
+
+  // Carrega prompts do e-book quando a aba de prompts for aberta ou filtros mudarem
+  useEffect(() => {
+    if (activeSubTab === 'ebook') {
+      carregarPromptsEbook();
+    }
+  }, [activeSubTab, categoriaPromptSelecionada, buscaPrompt]);
+
+  const carregarDocumentos = async () => {
+    try {
+      setLoadingDocs(true);
+      const params = new URLSearchParams();
+      if (tagDocSelecionada) params.append('tag', tagDocSelecionada);
+      if (buscaDoc) params.append('busca', buscaDoc);
+
+      const url = `/api/formativo/documentos${params.toString() ? `?${params.toString()}` : ''}`;
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.documentos) {
+          setDocumentos(data.documentos);
+          return;
+        }
+      }
+      // Fallback gracioso
+      setDocumentos(DOCUMENTOS_DATA.map((d) => ({
+        id: d.id,
+        titulo: d.titulo,
+        tagPrincipal: d.tag,
+        tags: [d.tag],
+        anoPublicacao: parseInt(d.ano, 10),
+        descricao: 'Documento oficial referencial para a Educação Profissional e Tecnológica.',
+        orgaoEmissor: 'MEC / UNESCO / Governança Federal',
+        formato: 'PDF Oficial',
+        url: 'https://www.gov.br/mec/pt-br',
+      })));
+    } catch (e) {
+      console.warn('Erro ao carregar documentos oficiais:', e);
+      setDocumentos(DOCUMENTOS_DATA.map((d) => ({
+        id: d.id,
+        titulo: d.titulo,
+        tagPrincipal: d.tag,
+        tags: [d.tag],
+        anoPublicacao: parseInt(d.ano, 10),
+        descricao: 'Documento oficial referencial para a Educação Profissional e Tecnológica.',
+        orgaoEmissor: 'MEC / UNESCO / Governança Federal',
+        formato: 'PDF Oficial',
+        url: 'https://www.gov.br/mec/pt-br',
+      })));
+    } finally {
+      setLoadingDocs(false);
+    }
+  };
+
+  const carregarPromptsEbook = async () => {
+    try {
+      setLoadingPrompts(true);
+      const params = new URLSearchParams();
+      if (categoriaPromptSelecionada) params.append('categoria', categoriaPromptSelecionada);
+      if (buscaPrompt) params.append('busca', buscaPrompt);
+
+      const url = `/api/formativo/ebook-prompts${params.toString() ? `?${params.toString()}` : ''}`;
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.prompts) {
+          setPromptsEbook(data.prompts);
+          return;
+        }
+      }
+      // Fallback gracioso
+      setPromptsEbook(PROMPTS_EBOOK_DATA);
+    } catch (e) {
+      console.warn('Erro ao carregar prompts do e-book:', e);
+      setPromptsEbook(PROMPTS_EBOOK_DATA);
+    } finally {
+      setLoadingPrompts(false);
+    }
+  };
+
+  const handleCopyPrompt = async (texto, promptId) => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(texto);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = texto;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+      setPromptCopiadoId(promptId);
+      setTimeout(() => setPromptCopiadoId(null), 2500);
+    } catch (err) {
+      console.error('Falha ao copiar prompt:', err);
+    }
+  };
 
   const carregarTrilhas = async () => {
     try {
@@ -184,11 +305,6 @@ export default function FormativoView() {
     } finally {
       setAtualizandoAulaId(null);
     }
-  };
-
-  const handleCopyPrompt = (template) => {
-    navigator.clipboard.writeText(template);
-    alert('Prompt copiado para a área de transferência!');
   };
 
   return (
@@ -643,50 +759,491 @@ export default function FormativoView() {
       )}
 
       {/* ====================================================================
-           3. ABA: MATERIAIS & LEGISLAÇÃO
+           3. ABA: MATERIAIS & LEGISLAÇÃO (GET /api/formativo/documentos)
            ==================================================================== */}
       {activeSubTab === 'materiais' && (
         <div className="formativo-tab-content">
-          <div className="docs-vertical-list">
-            {DOCUMENTOS_DATA.map((d) => (
-              <div key={d.id} className="doc-row-card">
-                <div className="doc-row-left">
-                  <div className="doc-icon-box">
-                    <FileText size={20} />
-                  </div>
-                  <div>
-                    <h4>{d.titulo}</h4>
-                    <span className="doc-tag-meta">{d.tag} • Ano {d.ano}</span>
+          {/* Barra de Filtros e Busca de Documentos */}
+          <div style={{ marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+              <div>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <FileText size={20} color="#064E3B" />
+                  Acervo de Documentos Oficiais & Legislação da EPT
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.2rem' }}>
+                  Marcos regulatórios, diretrizes curriculares do MEC/SETEC, relatórios globais da UNESCO e políticas de IA.
+                </p>
+              </div>
+
+              {/* Campo de Busca Rápida */}
+              <div style={{ position: 'relative', minWidth: '260px' }}>
+                <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
+                <input
+                  type="text"
+                  placeholder="Buscar no acervo..."
+                  value={buscaDoc}
+                  onChange={(e) => setBuscaDoc(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.45rem 0.85rem 0.45rem 2.1rem',
+                    fontSize: '0.85rem',
+                    border: '1px solid #CBD5E1',
+                    borderRadius: '8px',
+                    outline: 'none',
+                    background: '#FFFFFF',
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Pílulas de Filtro por Tags Canônicas */}
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: '600', color: '#475569', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <Filter size={13} /> Filtrar por:
+              </span>
+              {[
+                { label: 'Todos os Documentos', val: '' },
+                { label: 'Legislação EPT', val: 'Legislacao EPT' },
+                { label: 'Relatórios UNESCO', val: 'Relatorios UNESCO' },
+                { label: 'Plano Brasileiro de IA', val: 'Plano Brasileiro de IA' },
+              ].map((f) => {
+                const ativo = tagDocSelecionada === f.val;
+                return (
+                  <button
+                    key={f.val}
+                    type="button"
+                    onClick={() => setTagDocSelecionada(f.val)}
+                    style={{
+                      padding: '0.35rem 0.75rem',
+                      fontSize: '0.8rem',
+                      fontWeight: ativo ? '700' : '500',
+                      borderRadius: '999px',
+                      cursor: 'pointer',
+                      border: ativo ? '1px solid #064E3B' : '1px solid #E2E8F0',
+                      background: ativo ? '#064E3B' : '#F8FAFC',
+                      color: ativo ? '#FFFFFF' : '#475569',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    {f.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Listagem de Documentos */}
+          {loadingDocs ? (
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#64748B' }}>
+              Carregando documentos oficiais do acervo...
+            </div>
+          ) : documentos.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem', background: '#F8FAFC', borderRadius: '12px', border: '1px dashed #CBD5E1' }}>
+              <FileText size={32} color="#94A3B8" style={{ margin: '0 auto 0.5rem' }} />
+              <p style={{ color: '#475569', fontWeight: '600' }}>Nenhum documento encontrado com os filtros aplicados.</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setTagDocSelecionada('');
+                  setBuscaDoc('');
+                }}
+                style={{
+                  marginTop: '0.75rem',
+                  padding: '0.4rem 0.9rem',
+                  fontSize: '0.8rem',
+                  background: '#064E3B',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                }}
+              >
+                Limpar filtros
+              </button>
+            </div>
+          ) : (
+            <div className="docs-vertical-list" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {documentos.map((d) => (
+                <div
+                  key={d.id}
+                  className="doc-row-card"
+                  style={{
+                    background: '#FFFFFF',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '12px',
+                    padding: '1.25rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.75rem',
+                    transition: 'box-shadow 0.2s ease',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: '0.85rem', alignItems: 'flex-start', flex: 1 }}>
+                      <div
+                        className="doc-icon-box"
+                        style={{
+                          background: '#ECFDF5',
+                          color: '#065F46',
+                          padding: '0.75rem',
+                          borderRadius: '10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <FileText size={22} />
+                      </div>
+                      <div>
+                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
+                          <span
+                            style={{
+                              background: '#F1F5F9',
+                              color: '#065F46',
+                              fontSize: '0.72rem',
+                              fontWeight: '700',
+                              padding: '0.15rem 0.5rem',
+                              borderRadius: '4px',
+                              border: '1px solid #CBD5E1',
+                            }}
+                          >
+                            {d.tagPrincipal || (d.tags && d.tags[0]) || 'Oficial EPT'}
+                          </span>
+                          <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
+                            Ano {d.anoPublicacao}
+                          </span>
+                          {d.formato && (
+                            <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
+                              • {d.formato} {d.paginas ? `(${d.paginas} págs)` : ''}
+                            </span>
+                          )}
+                        </div>
+                        <h4 style={{ fontSize: '1.05rem', fontWeight: '700', color: '#0F172A', margin: '0 0 0.35rem' }}>
+                          {d.titulo}
+                        </h4>
+                        <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: '1.5', margin: '0 0 0.5rem' }}>
+                          {d.descricao}
+                        </p>
+                        {d.orgaoEmissor && (
+                          <span style={{ fontSize: '0.75rem', color: '#64748B', fontStyle: 'italic' }}>
+                            Órgão Emissor: {d.orgaoEmissor}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <a
+                      href={d.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-doc-access"
+                      style={{
+                        padding: '0.55rem 1rem',
+                        fontSize: '0.82rem',
+                        fontWeight: '600',
+                        background: '#064E3B',
+                        color: '#FFFFFF',
+                        border: 'none',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                        textDecoration: 'none',
+                        alignSelf: 'center',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <span>Acessar Documento</span>
+                      <ExternalLink size={14} />
+                    </a>
                   </div>
                 </div>
-                <button className="btn-doc-access" onClick={() => alert(`Acessando documento: ${d.titulo}`)}>
-                  <span>Acessar</span>
-                  <ExternalLink size={14} />
-                </button>
-              </div>
-            ))}
+              ))}
+            </div>
+          )}
+
+          {/* Alerta Ético Obrigatório PPGEM / UFJF */}
+          <div style={{ marginTop: '2rem', padding: '1rem 1.25rem', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '10px' }}>
+            <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.8rem', color: '#064E3B' }}>
+              <Info size={16} style={{ flexShrink: 0 }} />
+              <span>
+                <strong>Aviso de Governança Docente:</strong> Os documentos oficiais reunidos no acervo da Plataforma IAprofEPT subsidiam o planejamento pedagógico crítico e a contextualização curricular na Educação Profissional e Tecnológica.
+              </span>
+            </div>
           </div>
         </div>
       )}
 
       {/* ====================================================================
-           4. ABA: IAS & E-BOOK DE PROMPTS
+           4. ABA: IAS & E-BOOK DE PROMPTS (GET /api/formativo/ebook-prompts)
            ==================================================================== */}
       {activeSubTab === 'ebook' && (
         <div className="formativo-tab-content">
-          <div className="prompts-cards-grid">
-            {PROMPTS_EBOOK_DATA.map((p) => (
-              <div key={p.id} className="prompt-ebook-card">
-                <div className="prompt-card-header">
-                  <span className="prompt-category-badge">{p.categoria}</span>
-                  <button className="btn-copy-prompt" onClick={() => handleCopyPrompt(p.template)}>
-                    <Copy size={13} /> Copiar
-                  </button>
-                </div>
-                <h4>{p.titulo}</h4>
-                <div className="prompt-code-snippet">{p.template}</div>
+          {/* Cabeçalho e Filtros do E-book de Prompts */}
+          <div style={{ marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+              <div>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <BookMarked size={20} color="#064E3B" />
+                  E-book de Modelos Estruturados de Prompts para Educação Matemática
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.2rem' }}>
+                  Templates parametrizados para planejamento de aulas, metodologias ativas, contextualização BNCC x CNCT e avaliação formativa.
+                </p>
               </div>
-            ))}
+
+              {/* Campo de Busca de Prompts */}
+              <div style={{ position: 'relative', minWidth: '260px' }}>
+                <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
+                <input
+                  type="text"
+                  placeholder="Buscar modelo de prompt..."
+                  value={buscaPrompt}
+                  onChange={(e) => setBuscaPrompt(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.45rem 0.85rem 0.45rem 2.1rem',
+                    fontSize: '0.85rem',
+                    border: '1px solid #CBD5E1',
+                    borderRadius: '8px',
+                    outline: 'none',
+                    background: '#FFFFFF',
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Pílulas de Categorias de Prompts */}
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: '600', color: '#475569', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <Tag size={13} /> Categoria:
+              </span>
+              {[
+                { label: 'Todos os Modelos', val: '' },
+                { label: 'Diagnóstico', val: 'Diagnóstico' },
+                { label: 'Contextualização', val: 'Contextualização' },
+                { label: 'Metodologia Ativa', val: 'Metodologia Ativa' },
+                { label: 'Feedback', val: 'Feedback' },
+                { label: 'Sequência Didática', val: 'Sequência Didática' },
+                { label: 'Modelagem APL', val: 'Modelagem Matemática' },
+                { label: 'Avaliação Formativa', val: 'Avaliação Formativa' },
+              ].map((c) => {
+                const ativo = categoriaPromptSelecionada === c.val;
+                return (
+                  <button
+                    key={c.val}
+                    type="button"
+                    onClick={() => setCategoriaPromptSelecionada(c.val)}
+                    style={{
+                      padding: '0.35rem 0.75rem',
+                      fontSize: '0.8rem',
+                      fontWeight: ativo ? '700' : '500',
+                      borderRadius: '999px',
+                      cursor: 'pointer',
+                      border: ativo ? '1px solid #064E3B' : '1px solid #E2E8F0',
+                      background: ativo ? '#064E3B' : '#F8FAFC',
+                      color: ativo ? '#FFFFFF' : '#475569',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    {c.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Grid de Modelos Estruturados */}
+          {loadingPrompts ? (
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#64748B' }}>
+              Carregando modelos estruturados de prompts...
+            </div>
+          ) : promptsEbook.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem', background: '#F8FAFC', borderRadius: '12px', border: '1px dashed #CBD5E1' }}>
+              <BookMarked size={32} color="#94A3B8" style={{ margin: '0 auto 0.5rem' }} />
+              <p style={{ color: '#475569', fontWeight: '600' }}>Nenhum modelo de prompt encontrado com os critérios.</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setCategoriaPromptSelecionada('');
+                  setBuscaPrompt('');
+                }}
+                style={{
+                  marginTop: '0.75rem',
+                  padding: '0.4rem 0.9rem',
+                  fontSize: '0.8rem',
+                  background: '#064E3B',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                }}
+              >
+                Limpar filtros
+              </button>
+            </div>
+          ) : (
+            <div className="prompts-cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1.25rem' }}>
+              {promptsEbook.map((p) => {
+                const foiCopiado = promptCopiadoId === p.id;
+                return (
+                  <div
+                    key={p.id}
+                    className="prompt-ebook-card"
+                    style={{
+                      background: '#FFFFFF',
+                      border: '1px solid #E2E8F0',
+                      borderRadius: '12px',
+                      padding: '1.25rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                    }}
+                  >
+                    <div>
+                      {/* Topo do Card: Categoria e Botão de Copiar */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                          <span
+                            className="prompt-category-badge"
+                            style={{
+                              background: '#ECFDF5',
+                              color: '#065F46',
+                              fontSize: '0.72rem',
+                              fontWeight: '700',
+                              padding: '0.2rem 0.55rem',
+                              borderRadius: '4px',
+                              border: '1px solid #A7F3D0',
+                            }}
+                          >
+                            {p.categoria}
+                          </span>
+                          {p.codigo && (
+                            <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: '600' }}>
+                              #{p.codigo}
+                            </span>
+                          )}
+                        </div>
+
+                        <button
+                          type="button"
+                          className="btn-copy-prompt"
+                          onClick={() => handleCopyPrompt(p.template, p.id)}
+                          style={{
+                            padding: '0.35rem 0.65rem',
+                            fontSize: '0.75rem',
+                            fontWeight: '600',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.35rem',
+                            border: foiCopiado ? '1px solid #86EFAC' : '1px solid #CBD5E1',
+                            background: foiCopiado ? '#DCFCE7' : '#FFFFFF',
+                            color: foiCopiado ? '#166534' : '#475569',
+                            transition: 'all 0.2s ease',
+                          }}
+                        >
+                          {foiCopiado ? (
+                            <>
+                              <Check size={13} color="#166534" />
+                              <span>Copiado!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy size={13} />
+                              <span>Copiar Modelo</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Título e Descrição */}
+                      <h4 style={{ fontSize: '1rem', fontWeight: '700', color: '#0F172A', margin: '0 0 0.5rem' }}>
+                        {p.titulo}
+                      </h4>
+                      <p style={{ fontSize: '0.82rem', color: '#475569', lineHeight: '1.45', margin: '0 0 0.85rem' }}>
+                        {p.descricao}
+                      </p>
+
+                      {/* Snippet do Template Monoespaçado */}
+                      <div
+                        className="prompt-code-snippet"
+                        style={{
+                          background: '#0F172A',
+                          color: '#F8FAFC',
+                          padding: '0.85rem',
+                          borderRadius: '8px',
+                          fontSize: '0.78rem',
+                          fontFamily: 'Consolas, Monaco, monospace',
+                          lineHeight: '1.5',
+                          whiteSpace: 'pre-wrap',
+                          maxHeight: '140px',
+                          overflowY: 'auto',
+                          marginBottom: '0.85rem',
+                          border: '1px solid #334155',
+                        }}
+                      >
+                        {p.template}
+                      </div>
+
+                      {/* Dica Docente */}
+                      {p.dicaDocente && (
+                        <div
+                          style={{
+                            background: '#F0FDF4',
+                            borderLeft: '3px solid #10B981',
+                            padding: '0.5rem 0.75rem',
+                            borderRadius: '4px',
+                            fontSize: '0.75rem',
+                            color: '#065F46',
+                            marginBottom: '0.75rem',
+                            lineHeight: '1.4',
+                          }}
+                        >
+                          <strong>Dica Docente:</strong> {p.dicaDocente}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Rodapé com Eixos Recomendados */}
+                    {p.eixosRecomendados && p.eixosRecomendados.length > 0 && (
+                      <div style={{ paddingTop: '0.5rem', borderTop: '1px solid #F1F5F9', display: 'flex', gap: '0.35rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <span style={{ fontSize: '0.7rem', color: '#94A3B8' }}>Eixos:</span>
+                        {p.eixosRecomendados.map((eixo, i) => (
+                          <span
+                            key={i}
+                            style={{
+                              fontSize: '0.68rem',
+                              color: '#64748B',
+                              background: '#F8FAFC',
+                              padding: '0.1rem 0.4rem',
+                              borderRadius: '4px',
+                              border: '1px solid #E2E8F0',
+                            }}
+                          >
+                            {eixo}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Alerta Ético Obrigatório PPGEM / UFJF */}
+          <div style={{ marginTop: '2rem', padding: '1rem 1.25rem', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '10px' }}>
+            <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.8rem', color: '#064E3B' }}>
+              <Info size={16} style={{ flexShrink: 0 }} />
+              <span>
+                <strong>Aviso Ético Obrigatório:</strong> Este material foi gerado por Inteligência Artificial e deve ser revisado, validado e adaptado pela autoridade docente antes de sua aplicação em sala de aula.
+              </span>
+            </div>
           </div>
         </div>
       )}

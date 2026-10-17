@@ -26,6 +26,9 @@ Documentos formais que fundamentam as escolhas técnicas do software à luz da p
 - 📄 [ADR-013: Roteador Inteligente de IA, Padrão Circuit Breaker com Timeout de 10s e Mecanismo de Fallback Automático entre Motores (Groq vs Gemini)](./ADR_013_ROTEADOR_INTELIGENTE_CIRCUIT_BREAKER_FALLBACK_ENTRE_MOTORES.md)
 - 📄 [ADR-014: Motor de Roteamento Balanceado para o Experimento Piloto A/B de 30 Dias (Groq vs Gemini)](./ADR_014_MOTOR_ROTEAMENTO_BALANCEADO_EXPERIMENTO_AB_30_DIAS.md)
 - 📄 [ADR-015: Instrumentação de Avaliação Docente por Estrelas (1 a 5) e Feedback Qualitativo da Telemetria A/B](./ADR_015_AVALIACAO_DOCENTE_POR_ESTRELAS_E_FEEDBACK_QUALITATIVO.md)
+- 📄 [ADR-016: Consolidação Estatística e Exportação Analítica para a Tese de Doutorado](./ADR_016_CONSOLIDACAO_ESTATISTICA_E_EXPORTACAO_TESE_DOUTORADO.md)
+- 📄 [ADR-017: API de Trilhas Formativas, Módulos e Rastreamento de Progresso Docente](./ADR_017_API_TRILHAS_FORMATIVAS_E_RASTREAMENTO_PROGRESSO_DOCENTE.md)
+- 📄 [ADR-018: API de Gestão do Acervo de Documentos Oficiais e E-book de Prompts para Educação Matemática na EPT](./ADR_018_ACERVO_DOCUMENTOS_OFICIAIS_E_EBOOK_PROMPTS.md)
 
 ---
 
