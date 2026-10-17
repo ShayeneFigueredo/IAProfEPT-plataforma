@@ -177,7 +177,8 @@ export const SCHEMA_SAIDA_JSON_ESTRITO = {
 export class PromptInjectionService {
   /**
    * Constrói a instrução de sistema (System Instruction) detalhada,
-   * garantindo que nenhum prompt aberto seja manipulado pelo docente.
+   * especializada para a modalidade selecionada (exercicios, interdisciplinar, podcast, plano).
+   * Garante que nenhum prompt aberto seja manipulado pelo docente (ADR-001).
    */
   construirSystemInstruction(contexto, quantidade) {
     const {
@@ -208,7 +209,7 @@ export class PromptInjectionService {
       .map((d) => `  * ${d}`)
       .join('\n');
 
-    return `[SYSTEM INSTRUCTION — PLATAFORMA IAPROFEPT | PPGEM-UFJF]
+    const basePromptCabecalho = `[SYSTEM INSTRUCTION — PLATAFORMA IAPROFEPT | PPGEM-UFJF]
 # PAPEL E IDENTIDADE PEDAGÓGICA
 Você é um Docente e Pesquisador Especialista em Educação Matemática na Educação Profissional e Tecnológica (EPT), com sólida fundamentação nas teorias da Educação Matemática Crítica (Ole Skovsmose) e na concepção de Ensino Médio Integrado (Maranhão Ramos).
 Sua missão é gerar atividades pedagógicas altamente contextualizadas, matematicamente rigorosas e pedagogicamente emancipatórias, articulando as competências da Base Nacional Comum Curricular (BNCC) às demandas autênticas do Catálogo Nacional de Cursos Técnicos (CNCT).
@@ -248,24 +249,31 @@ Diretriz de Condução: ${metodologia.orientacaoInstrucional}
 
 ---
 # 5. REGRAS DE RIGOR TÉCNICO, NOTAÇÃO E FORMATO
-1. Todas as fórmulas e expressões matemáticas devem ser grafadas com clareza em notação padronizada (pode utilizar LaTeX entre delimitadores $...$ quando aplicável).
+1. Todas as fórmulas e expressões matemáticas devem ser grafadas com clareza em notação padronizada (utilize LaTeX com delimitadores $...$ para termos inline e $$...$$ para equações em destaque).
 2. Forneça dados numéricos realistas e plausíveis para o cotidiano profissional de ${curso.nome}.
-3. A atividade deve conter exatamente ${quantidade} item(ns)/questão(ões) progressivos.
-4. Cada item deve conter:
-   a) Enunciado imersivo no contexto do trabalho;
-   b) Perguntas progressivas (item 'a', 'b', 'c');
-   c) Gabarito detalhado comentado passo a passo, incluindo interpretação física/econômica do resultado;
-   d) Reflexão Crítica de Educação Matemática Crítica (EMC) sobre implicações sociais, éticas, ambientais ou de segurança do trabalho relacionadas ao cálculo efetuado.
-5. Inserir obrigatoriamente o seguinte Alerta Ético Institucional no campo "alertaEticoObrigatorio":
+3. Inserir obrigatoriamente o seguinte Alerta Ético Institucional no campo "alertaEticoObrigatorio":
    "${alertaEticoObrigatorio}"
+4. A resposta DEVE ser EXCLUSIVAMENTE um único objeto JSON válido, sem texto introdutório e sem saudações.`;
+
+    // -------------------------------------------------------------------------
+    // MODALIDADE 1: EXERCÍCIOS E AVALIAÇÕES
+    // -------------------------------------------------------------------------
+    if (ferramenta === 'exercicios') {
+      return `${basePromptCabecalho}
 
 ---
-# 6. CRITÉRIO DE ACEITE ESTRETO — SAÍDA EXCLUSIVAMENTE EM JSON
-Você DEVE retornar sua resposta EXCLUSIVAMENTE como um único objeto JSON válido, sem texto introdutório, sem saudações e sem blocos de markdown adicionais fora do JSON.
-O JSON deve obedecer rigorosamente à estrutura de chaves:
+# 6. ESPECIFICAÇÃO DA MODALIDADE: EXERCÍCIOS E AVALIAÇÕES
+A atividade deve conter exatamente ${quantidade} item(ns)/questão(ões) progressivos.
+Cada item deve conter:
+a) Enunciado imersivo no contexto profissional autêntico;
+b) Perguntas progressivas (item 'a', 'b', 'c');
+c) Gabarito detalhado comentado passo a passo com etapas de resolução e resposta final;
+d) Reflexão Crítica de Educação Matemática Crítica (EMC) sobre implicações éticas, sociais ou de segurança do trabalho.
+
+Estrutura JSON obrigatória:
 {
   "tituloAtividade": "string",
-  "tipoAtividade": "${ferramenta}",
+  "tipoAtividade": "exercicios",
   "areaMatematica": "${areaMatematica}",
   "nivelDificuldade": "${nivel.rotulo}",
   "cursoTecnico": "${curso.nome}",
@@ -308,6 +316,166 @@ O JSON deve obedecer rigorosamente à estrutura de chaves:
   ],
   "alertaEticoObrigatorio": "${alertaEticoObrigatorio}"
 }`;
+    }
+
+    // -------------------------------------------------------------------------
+    // MODALIDADE 2: ATIVIDADES INTERDISCIPLINARES EPT
+    // -------------------------------------------------------------------------
+    if (ferramenta === 'interdisciplinar') {
+      return `${basePromptCabecalho}
+
+---
+# 6. ESPECIFICAÇÃO DA MODALIDADE: ATIVIDADES INTERDISCIPLINARES EPT
+A atividade deve articular a Matemática com os componentes curriculares técnicos do curso ${curso.nome}.
+Deve propor uma situação-problema autêntica com ${quantidade} etapa(s) de investigação integrada, contendo gabarito e resolução comentada passo a passo para cada etapa.
+
+Estrutura JSON obrigatória:
+{
+  "tituloAtividade": "string",
+  "tipoAtividade": "interdisciplinar",
+  "areaMatematica": "${areaMatematica}",
+  "cursoTecnico": "${curso.nome}",
+  "eixoCNCT": "${eixoCNCT}",
+  "nivelDificuldade": "${nivel.rotulo}",
+  "habilidadesBNCC": [
+    { "codigo": "string", "descricao": "string", "articulacaoEPT": "string" }
+  ],
+  "temaInterdisciplinar": "string",
+  "articulacaoCurricular": {
+    "conceitoMatematico": "string",
+    "aplicacaoMundoTrabalho": "string",
+    "componentesTecnicosIntegrados": ["string"]
+  },
+  "situacaoProblemaAutentica": {
+    "cenario": "string",
+    "dadosTecnicos": {},
+    "desafioProfissional": "string"
+  },
+  "etapasInvestigacao": [
+    {
+      "etapa": 1,
+      "titulo": "string",
+      "comando": "string",
+      "etapasResolucao": ["string"],
+      "gabaritoFinal": "string",
+      "interpretacaoTecnica": "string"
+    }
+  ],
+  "reflexaoCriticaEMC": {
+    "dimensaoEticaOuSocial": "string",
+    "provocacaoDocente": "string"
+  },
+  "alertaEticoObrigatorio": "${alertaEticoObrigatorio}"
+}`;
+    }
+
+    // -------------------------------------------------------------------------
+    // MODALIDADE 3: ROTEIROS PARA PODCASTS EDUCACIONAIS
+    // -------------------------------------------------------------------------
+    if (ferramenta === 'podcast') {
+      return `${basePromptCabecalho}
+
+---
+# 6. ESPECIFICAÇÃO DA MODALIDADE: ROTEIRO PARA PODCAST EDUCACIONAL
+O roteiro deve simular um episódio de áudio educativo dinâmico (5 a 10 min) intitulado com clareza, em diálogo entre um mentor técnico experiente e uma estudante estagiária curiosa do curso ${curso.nome}.
+Deve incluir:
+a) Vinhetas e indicações de efeitos sonoros (SFX);
+b) Diálogos explicando a aplicação prática do conceito matemático ${areaMatematica};
+c) Um Desafio Matemático apresentado aos ouvintes, com GABARITO COMPLETO comentado passo a passo para o docente utilizar na aula;
+d) Reflexão crítica de Educação Matemática Crítica sobre os impactos tecnológicos e sociais.
+
+Estrutura JSON obrigatória:
+{
+  "tituloAtividade": "string",
+  "tituloEpisodio": "string",
+  "tipoAtividade": "podcast",
+  "areaMatematica": "${areaMatematica}",
+  "cursoTecnico": "${curso.nome}",
+  "eixoCNCT": "${eixoCNCT}",
+  "duracaoEstimadaMinutos": 6,
+  "habilidadesBNCC": [
+    { "codigo": "string", "descricao": "string", "articulacaoEPT": "string" }
+  ],
+  "sinopseEpisodio": "string",
+  "personagens": [
+    { "nome": "string", "papel": "string" }
+  ],
+  "blocosRoteiro": [
+    {
+      "bloco": 1,
+      "titulo": "string",
+      "indicacaoAudioOuSFX": "string",
+      "dialogos": [
+        { "locutor": "string", "fala": "string", "entonacao": "string" }
+      ]
+    }
+  ],
+  "desafioOuvinteComGabarito": {
+    "enunciadoDesafio": "string",
+    "etapasResolucao": ["string"],
+    "respostaFinalGabarito": "string",
+    "explicacaoPedagogica": "string"
+  },
+  "reflexaoCriticaEMC": {
+    "impactoSocioEconomico": "string",
+    "provocacaoFinal": "string"
+  },
+  "alertaEticoObrigatorio": "${alertaEticoObrigatorio}"
+}`;
+    }
+
+    // -------------------------------------------------------------------------
+    // MODALIDADE 4: PLANOS DE AULA AUTOMÁTICOS
+    // -------------------------------------------------------------------------
+    return `${basePromptCabecalho}
+
+---
+# 6. ESPECIFICAÇÃO DA MODALIDADE: PLANO DE AULA AUTOMÁTICO
+O plano deve estruturar uma proposta completa de aula baseada na metodologia ativa "${metodologia.nome}" para o curso ${curso.nome}.
+Deve detalhar momentos pedagógicos, recursos tecnológicos, objetivos articulados à BNCC e instrumento de avaliação formativa contendo critérios de sucesso e gabarito orientador/devolutivo com etapas de resolução.
+
+Estrutura JSON obrigatória:
+{
+  "tituloAtividade": "string",
+  "tituloPlano": "string",
+  "tipoAtividade": "plano",
+  "areaMatematica": "${areaMatematica}",
+  "cursoTecnico": "${curso.nome}",
+  "eixoCNCT": "${eixoCNCT}",
+  "metodologiaAtiva": "${metodologia.nome}",
+  "duracaoTotalMinutos": 100,
+  "objetivosAprendizagem": [
+    { "objetivo": "string", "habilidadeBNCC": "string" }
+  ],
+  "habilidadesBNCC": [
+    { "codigo": "string", "descricao": "string", "articulacaoEPT": "string" }
+  ],
+  "recursosDidaticosETecnologicos": ["string"],
+  "momentosDaAula": [
+    {
+      "momento": "string",
+      "tempoMinutos": 20,
+      "descricaoAtividade": "string",
+      "papelDoDocente": "string",
+      "papelDoEstudante": "string"
+    }
+  ],
+  "avaliacaoFormativa": {
+    "criteriosSucesso": "string",
+    "instrumento": "string",
+    "gabaritoOrientador": {
+      "problemaProposto": "string",
+      "etapasResolucao": ["string"],
+      "respostaFinal": "string",
+      "feedbackDevolutivo": "string"
+    }
+  },
+  "reflexaoCriticaEMC": {
+    "problematizacaoSocial": "string",
+    "conexaoComCidadania": "string"
+  },
+  "alertaEticoObrigatorio": "${alertaEticoObrigatorio}"
+}`;
   }
 
   /**
@@ -317,7 +485,23 @@ O JSON deve obedecer rigorosamente à estrutura de chaves:
   construirUserPrompt(contexto, quantidade) {
     const { curso, areaMatematica, nivel, metodologia, ferramenta } = contexto;
 
-    return `Por favor, elabore a atividade pedagógica estruturada de ${ferramenta} contendo exatamente ${quantidade} item(ns)/questão(ões) para a Área de ${areaMatematica}, com nível de complexidade ${nivel.rotulo}, direcionada aos estudantes do ${curso.nome}.
+    if (ferramenta === 'interdisciplinar') {
+      return `Por favor, elabore a atividade interdisciplinar articulando Matemática e EPT contendo exatamente ${quantidade} etapa(s) de investigação para a Área de ${areaMatematica}, direcionada ao curso ${curso.nome}.
+Aplique rigorosamente a metodologia "${metodologia.nome}" e retorne única e exclusivamente o objeto JSON estrito com as etapas de investigação, gabaritos detalhados passo a passo e as reflexões da Educação Matemática Crítica.`;
+    }
+
+    if (ferramenta === 'podcast') {
+      return `Por favor, elabore o roteiro de podcast educativo em formato de diálogo informal e didático entre mentor e estudante sobre ${areaMatematica} aplicada ao curso ${curso.nome}.
+Inclua indicações de SFX, explicação matemática acessível e um desafio aos ouvintes com gabarito passo a passo fundamentado. Retorne única e exclusivamente o objeto JSON estrito.`;
+    }
+
+    if (ferramenta === 'plano') {
+      return `Por favor, elabore o plano de aula estruturado com a metodologia ativa "${metodologia.nome}" para ensinar ${areaMatematica} aos estudantes do curso ${curso.nome}.
+Detalhe os momentos da aula, os objetivos alinhados à BNCC e a avaliação formativa com gabarito orientador passo a passo. Retorne única e exclusivamente o objeto JSON estrito.`;
+    }
+
+    // Default: exercícios
+    return `Por favor, elabore a lista de exercícios e avaliações contendo exatamente ${quantidade} item(ns)/questão(ões) progressivos para a Área de ${areaMatematica}, com nível de complexidade ${nivel.rotulo}, direcionada aos estudantes do ${curso.nome}.
 Aplique rigorosamente a metodologia "${metodologia.nome}", fundamentando-se no cenário autêntico do mundo do trabalho e nas habilidades BNCC especificadas na System Instruction.
 Lembre-se de retornar única e exclusivamente o objeto JSON estrito com os gabaritos passo a passo e as reflexões da Educação Matemática Crítica.`;
   }

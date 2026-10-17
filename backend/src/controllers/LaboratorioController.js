@@ -15,8 +15,11 @@ import { telemetryAsyncService } from '../services/TelemetryAsyncService.js';
 export class LaboratorioController {
   /**
    * POST /api/laboratorio/gerar
-   * Rota Unificada e Resiliente: gera atividade ou plano de aula utilizando o
-   * orquestrador balanceado A/B, Circuit Breaker e fallback automático transparente entre Groq e Gemini.
+   * Rota Unificada e Resiliente do Laboratório de IA:
+   * Gerencia as 4 modalidades: 1) Exercícios e Avaliações; 2) Atividades Interdisciplinares EPT;
+   * 3) Roteiros para Podcasts Educacionais; 4) Planos de Aula Automáticos.
+   * Orquestra a montagem do prompt oculto, aciona a IA pelo teste A/B com Circuit Breaker,
+   * persiste telemetria no PostgreSQL e retorna resposta estruturada com gabarito, BNCC e banner ético.
    */
   async gerarAtividadeResiliente(req, res, next) {
     try {
@@ -31,9 +34,70 @@ export class LaboratorioController {
         manterConsistenciaUsuario: req.body.manterConsistenciaUsuario !== undefined ? Boolean(req.body.manterConsistenciaUsuario) : undefined,
         dataReferencia: req.body.dataReferencia || null,
         semente: req.body.semente || null,
+        gravarBanco: req.body.gravarBanco !== undefined ? Boolean(req.body.gravarBanco) : true,
       });
 
-      return res.status(200).json(resultado);
+      // Extrai e normaliza o gabarito para consumo estruturado conforme a modalidade
+      const atividade = resultado.atividade || resultado.plano || resultado.podcast || {};
+      let gabarito = null;
+
+      if (Array.isArray(atividade.itens)) {
+        // Modalidade 1: Exercícios e Avaliações
+        gabarito = atividade.itens.map((item) => ({
+          numero: item.numero,
+          tituloItem: item.tituloItem || `Questão ${item.numero}`,
+          perguntas: item.perguntas || [],
+          gabaritoComentadoPassoAPasso: item.gabaritoComentadoPassoAPasso || [],
+        }));
+      } else if (Array.isArray(atividade.etapasInvestigacao)) {
+        // Modalidade 2: Atividades Interdisciplinares
+        gabarito = atividade.etapasInvestigacao.map((etapa) => ({
+          etapa: etapa.etapa,
+          titulo: etapa.titulo,
+          comando: etapa.comando,
+          etapasResolucao: etapa.etapasResolucao || [],
+          gabaritoFinal: etapa.gabaritoFinal,
+          interpretacaoTecnica: etapa.interpretacaoTecnica,
+        }));
+      } else if (atividade.desafioOuvinteComGabarito) {
+        // Modalidade 3: Roteiro de Podcast
+        gabarito = {
+          enunciado: atividade.desafioOuvinteComGabarito.enunciadoDesafio,
+          etapasResolucao: atividade.desafioOuvinteComGabarito.etapasResolucao || [],
+          respostaFinal: atividade.desafioOuvinteComGabarito.respostaFinalGabarito,
+          explicacaoPedagogica: atividade.desafioOuvinteComGabarito.explicacaoPedagogica,
+        };
+      } else if (atividade.avaliacaoFormativa) {
+        // Modalidade 4: Plano de Aula
+        gabarito = atividade.avaliacaoFormativa.gabaritoOrientador || atividade.avaliacaoFormativa;
+      }
+
+      // Habilidades da BNCC articuladas à EPT
+      const habilidadesBNCC =
+        resultado.curriculoInjetado?.habilidadesBNCC ||
+        atividade.habilidadesBNCC ||
+        [];
+
+      // Alerta Ético Obrigatório da UFJF
+      const alertaEtico =
+        resultado.alertaEticoCompleto ||
+        resultado.alertaEtico ||
+        atividade.alertaEticoObrigatorio ||
+        'Este material foi gerado por Inteligência Artificial e deve ser revisado, validado e adaptado pela autoridade docente antes de sua aplicação em sala de aula.';
+
+      // Normalização canônica da modalidade
+      const modalidade =
+        atividade.tipoAtividade ||
+        (req.body.ferramenta === 'plano_aula' ? 'plano' : req.body.ferramenta) ||
+        'exercicios';
+
+      return res.status(200).json({
+        ...resultado,
+        modalidade,
+        gabarito,
+        habilidadesBNCC,
+        alertaEtico,
+      });
     } catch (err) {
       next(err);
     }

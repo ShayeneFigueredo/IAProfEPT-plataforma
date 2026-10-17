@@ -29,6 +29,7 @@ Documentos formais que fundamentam as escolhas técnicas do software à luz da p
 - 📄 [ADR-016: Consolidação Estatística e Exportação Analítica para a Tese de Doutorado](./ADR_016_CONSOLIDACAO_ESTATISTICA_E_EXPORTACAO_TESE_DOUTORADO.md)
 - 📄 [ADR-017: API de Trilhas Formativas, Módulos e Rastreamento de Progresso Docente](./ADR_017_API_TRILHAS_FORMATIVAS_E_RASTREAMENTO_PROGRESSO_DOCENTE.md)
 - 📄 [ADR-018: API de Gestão do Acervo de Documentos Oficiais e E-book de Prompts para Educação Matemática na EPT](./ADR_018_ACERVO_DOCUMENTOS_OFICIAIS_E_EBOOK_PROMPTS.md)
+- 📄 [ADR-019: Endpoint Unificado de Geração Parametrizada do Laboratório de IA (POST /api/laboratorio/gerar)](./ADR_019_ENDPOINT_UNIFICADO_GERACAO_PARAMETRIZADA_LABORATORIO.md)
 
 ---
 

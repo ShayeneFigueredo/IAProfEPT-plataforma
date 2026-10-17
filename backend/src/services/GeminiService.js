@@ -178,6 +178,108 @@ export const ESQUEMA_PLANO_AULA = {
 };
 
 /**
+ * Esquema JSON Estruturado para Roteiros de Podcasts Educacionais (Gemini)
+ */
+export const ESQUEMA_ROTEIRO_PODCAST = {
+  type: 'object',
+  required: [
+    'tituloAtividade',
+    'tituloEpisodio',
+    'tipoAtividade',
+    'areaMatematica',
+    'cursoTecnico',
+    'eixoCNCT',
+    'duracaoEstimadaMinutos',
+    'habilidadesBNCC',
+    'sinopseEpisodio',
+    'personagens',
+    'blocosRoteiro',
+    'desafioOuvinteComGabarito',
+    'reflexaoCriticaEMC',
+    'alertaEticoObrigatorio',
+  ],
+  properties: {
+    tituloAtividade: { type: 'string' },
+    tituloEpisodio: { type: 'string' },
+    tipoAtividade: { type: 'string', enum: ['podcast'] },
+    areaMatematica: { type: 'string' },
+    cursoTecnico: { type: 'string' },
+    eixoCNCT: { type: 'string' },
+    duracaoEstimadaMinutos: { type: 'integer' },
+    habilidadesBNCC: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['codigo', 'descricao'],
+        properties: {
+          codigo: { type: 'string' },
+          descricao: { type: 'string' },
+          articulacaoEPT: { type: 'string' },
+        },
+      },
+    },
+    sinopseEpisodio: { type: 'string' },
+    personagens: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['nome', 'papel'],
+        properties: {
+          nome: { type: 'string' },
+          papel: { type: 'string' },
+        },
+      },
+    },
+    blocosRoteiro: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['bloco', 'titulo', 'dialogos'],
+        properties: {
+          bloco: { type: 'integer' },
+          titulo: { type: 'string' },
+          indicacaoAudioOuSFX: { type: 'string' },
+          dialogos: {
+            type: 'array',
+            items: {
+              type: 'object',
+              required: ['locutor', 'fala', 'entonacao'],
+              properties: {
+                locutor: { type: 'string' },
+                fala: { type: 'string' },
+                entonacao: { type: 'string' },
+              },
+            },
+          },
+        },
+      },
+    },
+    desafioOuvinteComGabarito: {
+      type: 'object',
+      required: ['enunciadoDesafio', 'etapasResolucao', 'respostaFinalGabarito'],
+      properties: {
+        enunciadoDesafio: { type: 'string' },
+        etapasResolucao: {
+          type: 'array',
+          items: { type: 'string' },
+        },
+        respostaFinalGabarito: { type: 'string' },
+        explicacaoPedagogica: { type: 'string' },
+      },
+    },
+    reflexaoCriticaEMC: {
+      type: 'object',
+      required: ['impactoSocioEconomico', 'provocacaoFinal'],
+      properties: {
+        impactoSocioEconomico: { type: 'string' },
+        provocacaoFinal: { type: 'string' },
+      },
+    },
+    alertaEticoObrigatorio: { type: 'string' },
+  },
+};
+
+/**
  * Cliente de Integração com a API do Google Gemini SDK (Gemini 1.5 Flash / Pro)
  * Plataforma IAprofEPT — PPGEM / UFJF
  * 
@@ -628,7 +730,83 @@ A resposta DEVE retornar no seguinte formato JSON estrito:
       modeloUtilizado: resultadoGemini.modeloUtilizado,
       fallbackUtilizado: resultadoGemini.fallbackUtilizado,
       latenciaMs: resultadoGemini.latenciaMs,
+      atividade: conteudoJson,
       plano: conteudoJson,
+      curriculoInjetado,
+      alertaEtico: conteudoJson.alertaEticoObrigatorio,
+      alocacaoAB: opcoes.alocacaoAB || null,
+      telemetriaId: registroPersistido?.telemetriaId || null,
+      requisicaoId: registroPersistido?.requisicaoId || promptMontado.promptId,
+      usage: resultadoGemini.usage,
+    });
+  }
+
+  /**
+   * Gera um Roteiro de Podcast Pedagógico estruturado (diálogos, SFX, desafio e gabarito)
+   * 
+   * @param {Object} parametros - { areaMatematica, nivel, quantidade, cursoTecnico, metodologia }
+   * @param {Object} [opcoes] - { usuarioId, modelo, temperature, gravarBanco }
+   */
+  async gerarRoteiroPodcast(parametros, opcoes = {}) {
+    const promptMontado = promptInjectionService.montarPrompt({
+      ...parametros,
+      ferramenta: 'podcast',
+    });
+
+    const { systemInstruction, userPrompt, curriculoInjetado } = promptMontado;
+
+    const resultadoGemini = await this.executarComResiliencia({
+      modeloAlvo: opcoes.modelo || this.primaryModel,
+      systemInstruction,
+      prompt: userPrompt,
+      temperature: opcoes.temperature || this.defaultTemperature,
+      maxOutputTokens: this.defaultMaxTokens,
+      tipoModelo: 'flash',
+    });
+
+    const conteudoJson = resultadoGemini.conteudoJson;
+    conteudoJson.alertaEticoObrigatorio = ALERTA_ETICO_PADRAO;
+
+    // Persistência no PostgreSQL
+    let registroPersistido = null;
+    if (opcoes.gravarBanco !== false) {
+      try {
+        registroPersistido = telemetryAsyncService.registrarGeracaoAssincrona({
+          usuarioId: opcoes.usuarioId || null,
+          ferramenta: 'podcast',
+          parametrosEntrada: parametros,
+          conteudoGerado: conteudoJson,
+          formatoSaida: { tipo: 'json_estrito', ferramenta: 'podcast' },
+          habilidadesBncc: curriculoInjetado.habilidadesBNCC || [],
+          avisoEticoInjetado: true,
+          telemetria: {
+            motorIa: 'gemini',
+            modeloEspecifico: resultadoGemini.modeloUtilizado,
+            latenciaMs: resultadoGemini.latenciaMs,
+            tokensPrompt: resultadoGemini.usage.promptTokens,
+            tokensCompletion: resultadoGemini.usage.completionTokens,
+            totalTokens: resultadoGemini.usage.totalTokens,
+            statusExecucao: 'sucesso',
+            fallbackUtilizado: resultadoGemini.fallbackUtilizado,
+            grupoExperimental: opcoes.alocacaoAB?.grupo || 'B',
+            chaveAlocacao: opcoes.alocacaoAB?.chaveAlocacao || null,
+            criterioAlocacao: opcoes.alocacaoAB?.criterioAlocacao || 'padrao_gemini',
+            experimentoAtivo: opcoes.alocacaoAB?.experimentoAtivo !== undefined ? opcoes.alocacaoAB.experimentoAtivo : true,
+          },
+        });
+      } catch (err) {
+        console.error('[GeminiService] Advertência ao enfileirar telemetria assíncrona:', err.message);
+      }
+    }
+
+    return aiPostProcessor.processar({
+      sucesso: true,
+      motor: 'gemini',
+      modeloUtilizado: resultadoGemini.modeloUtilizado,
+      fallbackUtilizado: resultadoGemini.fallbackUtilizado,
+      latenciaMs: resultadoGemini.latenciaMs,
+      atividade: conteudoJson,
+      podcast: conteudoJson,
       curriculoInjetado,
       alertaEtico: conteudoJson.alertaEticoObrigatorio,
       alocacaoAB: opcoes.alocacaoAB || null,
@@ -650,6 +828,10 @@ A resposta DEVE retornar no seguinte formato JSON estrito:
 
     if (ferramenta === 'plano') {
       return this.gerarPlanoAula(parametros, opcoes);
+    }
+
+    if (ferramenta === 'podcast') {
+      return this.gerarRoteiroPodcast(parametros, opcoes);
     }
 
     // Default: exercícios & avaliações

@@ -88,8 +88,16 @@ const promptParametrosSchema = z
       .max(120, 'O parâmetro "metodologia" não pode exceder 120 caracteres.'),
 
     ferramenta: z
-      .enum(['exercicios', 'interdisciplinar', 'podcast', 'plano'], {
-        invalid_type_error: 'A ferramenta informada não é suportada.',
+      .union([
+        z.enum(['exercicios', 'interdisciplinar', 'podcast', 'plano', 'plano_aula']),
+        z.string(),
+      ])
+      .transform((val) => {
+        const v = String(val).toLowerCase().trim();
+        if (v === 'plano_aula' || v === 'planos' || v === 'plano') return 'plano';
+        if (v === 'podcast' || v === 'podcasts' || v === 'roteiro_podcast') return 'podcast';
+        if (v === 'interdisciplinar' || v === 'atividades_interdisciplinares') return 'interdisciplinar';
+        return 'exercicios';
       })
       .default('exercicios'),
 
@@ -111,8 +119,19 @@ const promptParametrosSchema = z
       .union([z.number(), z.string()])
       .transform((val) => (typeof val === 'string' ? parseFloat(val) : val))
       .optional(),
+
+    eixoTecnologico: z.string().optional(),
+    eixo: z.string().optional(),
+    chaveAlocacao: z.string().optional(),
+    forcarExperimentoAB: z.boolean().optional(),
+    estrategiaAB: z.string().optional(),
+    manterConsistenciaUsuario: z.boolean().optional(),
+    dataReferencia: z.union([z.string(), z.date()]).optional(),
+    semente: z.union([z.string(), z.number()]).optional(),
+    gravarBanco: z.boolean().optional(),
+    duracaoMinutos: z.union([z.number(), z.string()]).optional(),
   })
-  .strict(); // Rejeita propriedades adicionais não mapeadas para reforçar segurança
+  .strict(); // Rejeita propriedades não mapeadas para impedir injeção de prompt em branco
 
 /**
  * Validador de Parâmetros Curriculares

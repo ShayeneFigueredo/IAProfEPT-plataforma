@@ -417,6 +417,13 @@ export class TelemetryAsyncService {
   }
 
   /**
+   * Alias para aguardarProcessamentoFila
+   */
+  async descarregarFilaImediatamente(timeoutMs = 10000) {
+    return this.aguardarProcessamentoFila(timeoutMs);
+  }
+
+  /**
    * Retorna métricas diagnósticas de desempenho e sobrecarga em tempo real
    */
   obterMetricas() {
