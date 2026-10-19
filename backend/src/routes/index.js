@@ -10,6 +10,7 @@ import repositorioRoutes from './repositorioRoutes.js';
 import exportRoutes from './exportRoutes.js';
 import reflexaoRoutes from './reflexaoRoutes.js';
 import maiconRoutes from './maiconRoutes.js';
+import suporteRoutes from './suporteRoutes.js';
 
 const apiRouter = Router();
 
@@ -84,6 +85,7 @@ apiRouter.use('/metricas', metricasRoutes);
 apiRouter.use('/export', exportRoutes);
 apiRouter.use('/reflexao', reflexaoRoutes);
 apiRouter.use('/maicon', maiconRoutes);
+apiRouter.use('/suporte', suporteRoutes);
 
 export default apiRouter;
 
