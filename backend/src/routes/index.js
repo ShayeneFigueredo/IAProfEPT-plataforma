@@ -6,6 +6,8 @@ import metricasRoutes from './metricasRoutes.js';
 import laboratorioRoutes from './laboratorioRoutes.js';
 import telemetriaRoutes from './telemetriaRoutes.js';
 import formativoRoutes from './formativoRoutes.js';
+import repositorioRoutes from './repositorioRoutes.js';
+import exportRoutes from './exportRoutes.js';
 
 const apiRouter = Router();
 
@@ -39,6 +41,20 @@ apiRouter.get('/', (req, res) => {
       laboratorioGerarGemini: 'POST /api/laboratorio/gerar-gemini',
       laboratorioGeminiBenchmark: 'GET /api/laboratorio/gemini-benchmark',
       laboratorioParametros: 'GET /api/laboratorio/parametros-curriculares',
+      repositorioCriarPratica: 'POST /api/repositorio/praticas [Autenticado - Compartilhamento]',
+      repositorioListarPraticas: 'GET /api/repositorio/praticas [Listagem Paginada, Filtros e Busca]',
+      repositorioBuscar: 'GET /api/repositorio/buscar [Busca Avançada: Curso Técnico, BNCC, pg_trgm < 100ms]',
+      repositorioPraticaDetalhes: 'GET /api/repositorio/praticas/:id [Detalhes com Gabarito]',
+      repositorioAtualizarPratica: 'PUT /api/repositorio/praticas/:id [Autenticado - Autor ou Admin]',
+      repositorioDeletarPratica: 'DELETE /api/repositorio/praticas/:id [Autenticado - Soft Delete]',
+      repositorioUploadAnexo: 'POST /api/repositorio/anexos [Autenticado - Multipart/form-data, 15MB, SHA-256]',
+      repositorioDetalhesAnexo: 'GET /api/repositorio/anexos/:id [Metadados e Integridade]',
+      repositorioDownloadAnexo: 'GET /api/repositorio/anexos/:id/download [Download Protegido com ETag SHA-256]',
+      repositorioDeletarAnexo: 'DELETE /api/repositorio/anexos/:id [Autenticado - Soft Delete]',
+      repositorioCurtir: 'POST /api/repositorio/praticas/:id/curtir [Autenticado - Toggle Atômico]',
+      repositorioFavoritar: 'POST /api/repositorio/praticas/:id/favoritar [Autenticado - Toggle Atômico]',
+      repositorioComentarios: 'POST /api/repositorio/praticas/:id/comentarios [Autenticado - Comentários e Relatos EPT]',
+      repositorioListarComentarios: 'GET /api/repositorio/praticas/:id/comentarios [Listagem Paginada]',
       telemetriaAvaliacao: 'POST /api/telemetria/avaliacao [1 a 5 Estrelas, Tags Qualitativas & Feedback Docente]',
       telemetriaAvaliacaoEstatisticas: 'GET /api/telemetria/avaliacao/estatisticas [Consolidação A/B para Tese]',
       telemetriaRelatorioTese: 'GET /api/telemetria/relatorio-tese [Consolidação Estatística e Exportação JSON/CSV - RBAC: pesquisador_doutorado, administrador_ufjf]',
@@ -59,9 +75,11 @@ apiRouter.use('/', healthRoutes);
 apiRouter.use('/auth', authRoutes);
 apiRouter.use('/formativo', formativoRoutes);
 apiRouter.use('/laboratorio', laboratorioRoutes);
+apiRouter.use('/repositorio', repositorioRoutes);
 apiRouter.use('/telemetria', telemetriaRoutes);
 apiRouter.use('/admin', adminRoutes);
 apiRouter.use('/metricas', metricasRoutes);
+apiRouter.use('/export', exportRoutes);
 
 export default apiRouter;
 
