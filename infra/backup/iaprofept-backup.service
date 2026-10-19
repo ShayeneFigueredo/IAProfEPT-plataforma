@@ -1,0 +1,14 @@
+[Unit]
+Description=Rotina de Backup Diário do Banco de Dados IAProfEPT (PostgreSQL)
+After=network.target postgresql.service
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+# Variáveis de ambiente com as credenciais, que podem estar num arquivo env seguro
+EnvironmentFile=/etc/iaprofept/backup.env
+ExecStart=/bin/bash /opt/iaprofept/infra/backup/backup.sh
+
+[Install]
+WantedBy=multi-user.target
