@@ -55,7 +55,9 @@
     "reflexao:test": "node backend/src/test-reflexao.js",
     "test:reflexao": "node backend/src/test-reflexao.js",
     "reflexao-conteudos:test": "node backend/src/test-reflexao-conteudos.js",
-    "test:reflexao-conteudos": "node backend/src/test-reflexao-conteudos.js"
+    "test:reflexao-conteudos": "node backend/src/test-reflexao-conteudos.js",
+    "maicon:test": "node backend/src/test-maicon.js",
+    "test:maicon": "node backend/src/test-maicon.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

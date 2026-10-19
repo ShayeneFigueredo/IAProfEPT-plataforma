@@ -9,6 +9,7 @@ import formativoRoutes from './formativoRoutes.js';
 import repositorioRoutes from './repositorioRoutes.js';
 import exportRoutes from './exportRoutes.js';
 import reflexaoRoutes from './reflexaoRoutes.js';
+import maiconRoutes from './maiconRoutes.js';
 
 const apiRouter = Router();
 
@@ -82,6 +83,7 @@ apiRouter.use('/admin', adminRoutes);
 apiRouter.use('/metricas', metricasRoutes);
 apiRouter.use('/export', exportRoutes);
 apiRouter.use('/reflexao', reflexaoRoutes);
+apiRouter.use('/maicon', maiconRoutes);
 
 export default apiRouter;
 
