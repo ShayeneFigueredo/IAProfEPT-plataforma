@@ -562,6 +562,355 @@ export const HABILIDADES_BNCC_DETALHADAS = {
 };
 
 /**
+ * Catálogo de Cursos Técnicos e Mapeamento de Aliases Homologados
+ */
+export const ALIASES_CURSOS_TECNICOS = [
+  {
+    nomeOficial: 'Técnico em Enfermagem / Saúde',
+    aliases: [
+      'enfermagem',
+      'saude',
+      'enfermeiro',
+      'enfermeira',
+      'tecnico em enfermagem',
+      'tecnico em enfermagem / saude',
+    ],
+  },
+  {
+    nomeOficial: 'Técnico em Agropecuária / Agricultura',
+    aliases: [
+      'agropecuaria',
+      'agricultura',
+      'agro',
+      'agronomia',
+      'tecnico em agropecuaria',
+      'tecnico em agropecuaria / agricultura',
+    ],
+  },
+  {
+    nomeOficial: 'Técnico em Informática / Desenvolvimento de Sistemas',
+    aliases: [
+      'informatica',
+      'desenvolvimento de sistemas',
+      'computacao',
+      'software',
+      'ti',
+      'desenvolvimento',
+      'tecnico em informatica',
+      'tecnico em informatica / desenvolvimento de sistemas',
+    ],
+  },
+  {
+    nomeOficial: 'Técnico em Administração / Logística',
+    aliases: [
+      'administracao',
+      'logistica',
+      'gestao',
+      'adm',
+      'administracao / gestao',
+      'tecnico em administracao',
+      'tecnico em administracao / gestao',
+      'tecnico em administracao / logistica',
+    ],
+  },
+  {
+    nomeOficial: 'Técnico em Edificações / Construção Civil',
+    aliases: [
+      'edificacoes',
+      'construcao civil',
+      'edificacao',
+      'construcao',
+      'tecnico em edificacoes',
+      'tecnico em edificacoes / construcao civil',
+    ],
+  },
+  {
+    nomeOficial: 'Técnico em Eletrotécnica / Automação',
+    aliases: [
+      'eletrotecnica',
+      'automacao',
+      'eletrica',
+      'eletro',
+      'tecnico em eletrotecnica',
+      'tecnico em eletrotecnica / automacao',
+    ],
+  },
+  {
+    nomeOficial: 'Técnico em Química / Meio Ambiente',
+    aliases: [
+      'quimica',
+      'meio ambiente',
+      'tecnico em quimica',
+      'tecnico em quimica / meio ambiente',
+    ],
+  },
+  {
+    nomeOficial: 'Técnico em Mecânica Industrial',
+    aliases: [
+      'mecanica',
+      'mecanica industrial',
+      'usinagem',
+      'tecnico em mecanica',
+      'tecnico em mecanica industrial',
+    ],
+  },
+];
+
+/**
+ * Catálogo de Áreas Matemáticas BNCC e Mapeamento de Aliases Homologados
+ */
+export const ALIASES_AREAS_MATEMATICA = [
+  {
+    nomeOficial: 'Funções Afins e Quadráticas',
+    aliases: [
+      'funcoes afins e quadraticas',
+      'funcoes',
+      'funcoes afins',
+      'funcoes quadraticas',
+      'algebra e funcoes',
+      'funcoes e algebra',
+      'afins e quadraticas',
+      'algebra',
+    ],
+  },
+  {
+    nomeOficial: 'Geometria Espacial e Volume',
+    aliases: [
+      'geometria espacial e volume',
+      'geometria espacial',
+      'volume',
+      'espacial',
+      'geometria espacial e metricas',
+      'cubagem',
+      'solidos geometricos',
+    ],
+  },
+  {
+    nomeOficial: 'Geometria Plana e Trigonometria',
+    aliases: [
+      'geometria plana e trigonometria',
+      'geometria plana',
+      'trigonometria',
+      'trigonometria e angulos',
+      'plana e trigonometria',
+      'angulos',
+      'trigonometria basica',
+    ],
+  },
+  {
+    nomeOficial: 'Matemática Financeira e Juros',
+    aliases: [
+      'matematica financeira e juros',
+      'matematica financeira',
+      'financeira',
+      'juros',
+      'juros e amortizacao',
+      'amortizacao',
+      'juros simples e compostos',
+    ],
+  },
+  {
+    nomeOficial: 'Matrizes, Vetores e Sistemas Lineares',
+    aliases: [
+      'matrizes, vetores e sistemas lineares',
+      'matrizes',
+      'sistemas lineares',
+      'vetores',
+      'matrizes e sistemas',
+      'matrizes e sistemas lineares',
+      'sistemas',
+    ],
+  },
+  {
+    nomeOficial: 'Análise Combinatória e Lógica',
+    aliases: [
+      'analise combinatoria e logica',
+      'analise combinatoria',
+      'combinatoria',
+      'logica',
+      'logica e combinatoria',
+      'contagem',
+      'tabelas-verdade',
+    ],
+  },
+  {
+    nomeOficial: 'Estatística Descritiva e Amostragem',
+    aliases: [
+      'estatistica descritiva e amostragem',
+      'estatistica descritiva',
+      'estatistica',
+      'amostragem',
+      'estatistica e amostragem',
+      'estatistica e probabilidade',
+    ],
+  },
+  {
+    nomeOficial: 'Probabilidade e Análise de Risco',
+    aliases: [
+      'probabilidade e analise de risco',
+      'probabilidade',
+      'analise de risco',
+      'risco',
+      'probabilidade e risco',
+    ],
+  },
+  {
+    nomeOficial: 'Progressões (PA e PG)',
+    aliases: [
+      'progressoes (pa e pg)',
+      'progressoes',
+      'pa e pg',
+      'progressao aritmetica',
+      'progressao geometrica',
+      'sequencias',
+      'pa',
+      'pg',
+    ],
+  },
+  {
+    nomeOficial: 'Aritmética e Proporcionalidade',
+    aliases: [
+      'aritmetica e proporcionalidade',
+      'aritmetica',
+      'proporcionalidade',
+      'razoes e proporcoes',
+      'regra de tres',
+      'razao e proporcao',
+    ],
+  },
+];
+
+/**
+ * Catálogo de Metodologias Homologadas
+ */
+export const ALIASES_METODOLOGIAS = [
+  {
+    nomeOficial: 'Aprendizagem Baseada em Problemas (PBL)',
+    aliases: [
+      'aprendizagem baseada em problemas (pbl)',
+      'aprendizagem baseada em problemas',
+      'pbl',
+      'problemas',
+      'resolucao de problemas',
+      'metodologia do erro produtivo (borasi)',
+      'erro produtivo',
+      'borasi',
+    ],
+  },
+  {
+    nomeOficial: 'Modelagem Matemática da Realidade',
+    aliases: [
+      'modelagem matematica da realidade',
+      'modelagem matematica',
+      'modelagem',
+      'mmr',
+    ],
+  },
+  {
+    nomeOficial: 'Sala de Aula Invertida',
+    aliases: [
+      'sala de aula invertida',
+      'sala invertida',
+      'flipped classroom',
+      'flip',
+      'ensino sob medida (just-in-time teaching)',
+      'ensino sob medida',
+      'just-in-time teaching',
+      'jitt',
+    ],
+  },
+  {
+    nomeOficial: 'Aprendizagem Baseada em Projetos Integradores',
+    aliases: [
+      'aprendizagem baseada em projetos integradores',
+      'aprendizagem baseada em projetos',
+      'projetos integradores',
+      'projetos',
+      'abpr',
+      'metodologias ativas e design thinking',
+      'design thinking',
+      'metodologias ativas',
+    ],
+  },
+  {
+    nomeOficial: 'Ensino Híbrido e Gamificação',
+    aliases: [
+      'ensino hibrido e gamificacao',
+      'ensino hibrido',
+      'gamificacao',
+      'ehg',
+    ],
+  },
+  {
+    nomeOficial: 'Estudo de Casos Autênticos da EPT',
+    aliases: [
+      'estudo de casos autenticos da ept',
+      'estudo de casos autenticos',
+      'estudo de casos',
+      'casos autenticos',
+      'casos',
+      'estudo de caso e resolucao de problemas',
+      'estudo de caso',
+    ],
+  },
+];
+
+/**
+ * Catálogo de Níveis de Dificuldade Homologados
+ */
+export const ALIASES_NIVEIS = [
+  {
+    nomeOficial: 'Inicial (1º Ano Integrado)',
+    aliases: [
+      'inicial (1º ano integrado)',
+      'inicial',
+      '1º ano',
+      '1o ano',
+      '1 ano',
+      '1',
+      'basico',
+      '1º ano integrado',
+      '1o ano integrado',
+      'primeiro ano',
+    ],
+  },
+  {
+    nomeOficial: 'Intermediário (2º Ano Integrado)',
+    aliases: [
+      'intermediario (2º ano integrado)',
+      'intermediario',
+      '2º ano',
+      '2o ano',
+      '2 ano',
+      '2',
+      'medio',
+      '2º ano integrado',
+      '2o ano integrado',
+      'segundo ano',
+      'medio / tecnico integrado',
+      'medio/tecnico integrado',
+      'tecnico integrado',
+      'ensino medio integrado',
+    ],
+  },
+  {
+    nomeOficial: 'Avançado (3º Ano / Subsequente)',
+    aliases: [
+      'avancado (3º ano / subsequente)',
+      'avancado',
+      '3º ano',
+      '3o ano',
+      '3 ano',
+      '3',
+      'subsequente',
+      '3º ano integrado',
+      '3o ano integrado',
+      'terceiro ano',
+    ],
+  },
+];
+
+/**
  * Função utilitária para normalizar strings de entrada (remover acentos, converter em minúsculas)
  * para buscas resilientes nos catálogos.
  */
@@ -572,6 +921,181 @@ export function normalizarChave(texto) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .trim();
+}
+
+/**
+ * Resolve e valida um curso técnico contra o catálogo oficial do CNCT.
+ * Retorna o objeto de dados do curso ou null caso não conste no catálogo.
+ */
+export function resolverCursoCatalogo(cursoTecnico) {
+  if (!cursoTecnico || typeof cursoTecnico !== 'string') return null;
+  const cursoNorm = normalizarChave(cursoTecnico);
+  if (!cursoNorm) return null;
+
+  // Busca direta no objeto CURSOS_TECNICOS_DETALHADOS
+  for (const [nomeOficial, dados] of Object.entries(CURSOS_TECNICOS_DETALHADOS)) {
+    if (normalizarChave(nomeOficial) === cursoNorm) {
+      return dados;
+    }
+  }
+
+  // Busca nos aliases catalogados
+  for (const item of ALIASES_CURSOS_TECNICOS) {
+    const nomeNorm = normalizarChave(item.nomeOficial);
+    if (
+      nomeNorm === cursoNorm ||
+      item.aliases.some((alias) => normalizarChave(alias) === cursoNorm)
+    ) {
+      return CURSOS_TECNICOS_DETALHADOS[item.nomeOficial] || null;
+    }
+  }
+
+  // Busca por inclusão se tiver pelo menos 4 caracteres para evitar falso-positivo
+  if (cursoNorm.length >= 4) {
+    for (const item of ALIASES_CURSOS_TECNICOS) {
+      for (const alias of item.aliases) {
+        const aliasNorm = normalizarChave(alias);
+        if (aliasNorm.length >= 4 && (cursoNorm.includes(aliasNorm) || aliasNorm.includes(cursoNorm))) {
+          return CURSOS_TECNICOS_DETALHADOS[item.nomeOficial] || null;
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Resolve e valida uma área da Matemática contra as habilidades cadastradas da BNCC.
+ * Retorna o nome oficial da área ou null caso não conste no catálogo.
+ */
+export function resolverAreaCatalogo(areaMatematica) {
+  if (!areaMatematica || typeof areaMatematica !== 'string') return null;
+  const areaNorm = normalizarChave(areaMatematica);
+  if (!areaNorm) return null;
+
+  // Busca direta em HABILIDADES_BNCC_DETALHADAS
+  for (const nomeArea of Object.keys(HABILIDADES_BNCC_DETALHADAS)) {
+    if (normalizarChave(nomeArea) === areaNorm) {
+      return nomeArea;
+    }
+  }
+
+  // Busca nos aliases catalogados
+  for (const item of ALIASES_AREAS_MATEMATICA) {
+    const nomeNorm = normalizarChave(item.nomeOficial);
+    if (
+      nomeNorm === areaNorm ||
+      item.aliases.some((alias) => normalizarChave(alias) === areaNorm)
+    ) {
+      return item.nomeOficial;
+    }
+  }
+
+  // Busca por inclusão se tiver pelo menos 4 caracteres
+  if (areaNorm.length >= 4) {
+    for (const item of ALIASES_AREAS_MATEMATICA) {
+      for (const alias of item.aliases) {
+        const aliasNorm = normalizarChave(alias);
+        if (aliasNorm.length >= 4 && (areaNorm.includes(aliasNorm) || aliasNorm.includes(areaNorm))) {
+          return item.nomeOficial;
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Resolve e valida uma metodologia pedagógica contra o catálogo homologado.
+ * Retorna o objeto de dados da metodologia ou null caso não conste no catálogo.
+ */
+export function resolverMetodologiaCatalogo(metodologia) {
+  if (!metodologia || typeof metodologia !== 'string') return null;
+  const metNorm = normalizarChave(metodologia);
+  if (!metNorm) return null;
+
+  // Busca direta em METODOLOGIAS_PEDAGOGICAS
+  for (const [nomeMet, dados] of Object.entries(METODOLOGIAS_PEDAGOGICAS)) {
+    if (normalizarChave(nomeMet) === metNorm) {
+      return dados;
+    }
+  }
+
+  // Busca nos aliases catalogados
+  for (const item of ALIASES_METODOLOGIAS) {
+    const nomeNorm = normalizarChave(item.nomeOficial);
+    if (
+      nomeNorm === metNorm ||
+      item.aliases.some((alias) => normalizarChave(alias) === metNorm)
+    ) {
+      return METODOLOGIAS_PEDAGOGICAS[item.nomeOficial] || null;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Resolve e valida um nível de dificuldade contra os anos integrados/subsequentes homologados.
+ * Retorna o objeto de dados do nível ou null caso não conste no catálogo.
+ */
+export function resolverNivelCatalogo(nivel) {
+  if (!nivel || typeof nivel !== 'string') return null;
+  const nivelNorm = normalizarChave(nivel);
+  if (!nivelNorm) return null;
+
+  // Busca direta em NIVEIS_DIFICULDADE
+  for (const [nomeNivel, dados] of Object.entries(NIVEIS_DIFICULDADE)) {
+    if (normalizarChave(nomeNivel) === nivelNorm) {
+      return dados;
+    }
+  }
+
+  // Busca nos aliases catalogados
+  for (const item of ALIASES_NIVEIS) {
+    const nomeNorm = normalizarChave(item.nomeOficial);
+    if (
+      nomeNorm === nivelNorm ||
+      item.aliases.some((alias) => normalizarChave(alias) === nivelNorm)
+    ) {
+      return NIVEIS_DIFICULDADE[item.nomeOficial] || null;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Resolve e valida um eixo tecnológico CNCT.
+ * Retorna a chave oficial do eixo ou null caso não conste no catálogo.
+ */
+export function resolverEixoCatalogo(eixo) {
+  if (!eixo || typeof eixo !== 'string') return null;
+  const eixoNorm = normalizarChave(eixo);
+  if (!eixoNorm) return null;
+
+  for (const nomeEixo of Object.keys(EIXOS_CNCT)) {
+    if (normalizarChave(nomeEixo) === eixoNorm || normalizarChave(nomeEixo).includes(eixoNorm)) {
+      return nomeEixo;
+    }
+  }
+  return null;
+}
+
+/**
+ * Retorna lista estruturada dos catálogos permitidos na plataforma.
+ */
+export function obterCatalogosPermitidos() {
+  return {
+    cursosTecnicos: Object.keys(CURSOS_TECNICOS_DETALHADOS),
+    areasMatematica: Object.keys(HABILIDADES_BNCC_DETALHADAS),
+    metodologias: Object.keys(METODOLOGIAS_PEDAGOGICAS),
+    niveisDificuldade: Object.keys(NIVEIS_DIFICULDADE),
+    eixosCNCT: Object.keys(EIXOS_CNCT),
+    ferramentasPermitidas: ['exercicios', 'interdisciplinar', 'podcast', 'plano', 'plano_aula'],
+  };
 }
 
 /**
@@ -586,76 +1110,43 @@ export function resolverContextoCurricular({
   ferramenta = 'exercicios',
 }) {
   // 1. Resolução do Curso Técnico
-  let cursoResolvido = null;
-  const cursoNorm = normalizarChave(cursoTecnico);
-
-  for (const [nomeCompleto, dadosCurso] of Object.entries(CURSOS_TECNICOS_DETALHADOS)) {
-    const nomeNorm = normalizarChave(nomeCompleto);
-    if (nomeNorm.includes(cursoNorm) || cursoNorm.includes(nomeNorm)) {
-      cursoResolvido = dadosCurso;
-      break;
-    }
-  }
-
+  let cursoResolvido = resolverCursoCatalogo(cursoTecnico);
   if (!cursoResolvido) {
-    // Fallback gracioso para Enfermagem se não reconhecido
     cursoResolvido = CURSOS_TECNICOS_DETALHADOS['Técnico em Enfermagem / Saúde'];
   }
 
   // 2. Resolução da Área Matemática
-  let areaResolvida = null;
-  const areaNorm = normalizarChave(areaMatematica);
-
-  for (const nomeArea of Object.keys(HABILIDADES_BNCC_DETALHADAS)) {
-    const areaKeyNorm = normalizarChave(nomeArea);
-    if (areaKeyNorm.includes(areaNorm) || areaNorm.includes(areaKeyNorm)) {
-      areaResolvida = nomeArea;
-      break;
-    }
-  }
-
+  let areaResolvida = resolverAreaCatalogo(areaMatematica);
   if (!areaResolvida) {
     areaResolvida = 'Funções Afins e Quadráticas';
   }
 
   // 3. Resolução das Habilidades BNCC
-  const habilidadesBNCC = HABILIDADES_BNCC_DETALHADAS[areaResolvida] || HABILIDADES_BNCC_DETALHADAS['Funções Afins e Quadráticas'];
+  const habilidadesBNCC =
+    HABILIDADES_BNCC_DETALHADAS[areaResolvida] ||
+    HABILIDADES_BNCC_DETALHADAS['Funções Afins e Quadráticas'];
 
   // 4. Resolução do Cenário Autêntico do Mundo do Trabalho
   const cenariosCurso = cursoResolvido.cenariosTrabalho || {};
-  const cenarioTrabalho = cenariosCurso[areaResolvida] || cenariosCurso.padrao || {
-    titulo: `Aplicação Prática no ${cursoResolvido.nome}`,
-    descricao: `Situação autêntica de tomada de decisão técnica fundamentada em conceitos de ${areaResolvida}.`,
-    grandezas: ['Variável dependente', 'Variável independente', 'Parâmetro de controle'],
-    normaOuReferencia: 'Práticas do Mundo do Trabalho e Normas Técnicas da EPT.',
-  };
+  const cenarioTrabalho =
+    cenariosCurso[areaResolvida] ||
+    cenariosCurso.padrao || {
+      titulo: `Aplicação Prática no ${cursoResolvido.nome}`,
+      descricao: `Situação autêntica de tomada de decisão técnica fundamentada em conceitos de ${areaResolvida}.`,
+      grandezas: ['Variável dependente', 'Variável independente', 'Parâmetro de controle'],
+      normaOuReferencia: 'Práticas do Mundo do Trabalho e Normas Técnicas da EPT.',
+    };
 
   // 5. Resolução da Metodologia
-  let metodologiaResolvida = METODOLOGIAS_PEDAGOGICAS[metodologia];
-  if (!metodologiaResolvida) {
-    const metNorm = normalizarChave(metodologia);
-    for (const [nomeMet, dadosMet] of Object.entries(METODOLOGIAS_PEDAGOGICAS)) {
-      if (normalizarChave(nomeMet).includes(metNorm) || metNorm.includes(normalizarChave(nomeMet))) {
-        metodologiaResolvida = dadosMet;
-        break;
-      }
-    }
-  }
+  let metodologiaResolvida = resolverMetodologiaCatalogo(metodologia);
   if (!metodologiaResolvida) {
     metodologiaResolvida = METODOLOGIAS_PEDAGOGICAS['Aprendizagem Baseada em Problemas (PBL)'];
   }
 
   // 6. Resolução do Nível
-  let nivelResolvido = NIVEIS_DIFICULDADE[nivel];
+  let nivelResolvido = resolverNivelCatalogo(nivel);
   if (!nivelResolvido) {
-    const nivelNorm = normalizarChave(nivel);
-    if (nivelNorm.includes('inicial') || nivelNorm.includes('basico') || nivelNorm.includes('1')) {
-      nivelResolvido = NIVEIS_DIFICULDADE['Inicial (1º Ano Integrado)'];
-    } else if (nivelNorm.includes('avancado') || nivelNorm.includes('3') || nivelNorm.includes('subsequente')) {
-      nivelResolvido = NIVEIS_DIFICULDADE['Avançado (3º Ano / Subsequente)'];
-    } else {
-      nivelResolvido = NIVEIS_DIFICULDADE['Intermediário (2º Ano Integrado)'];
-    }
+    nivelResolvido = NIVEIS_DIFICULDADE['Intermediário (2º Ano Integrado)'];
   }
 
   return {
@@ -671,3 +1162,4 @@ export function resolverContextoCurricular({
     alertaEticoObrigatorio: ALERTA_ETICO_PADRAO,
   };
 }
+

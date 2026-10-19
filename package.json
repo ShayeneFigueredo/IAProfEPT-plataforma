@@ -39,7 +39,9 @@
     "telemetria:test": "node backend/src/test-telemetria-assincrona.js",
     "test:telemetria": "node backend/src/test-telemetria-assincrona.js",
     "avaliacao:test": "node backend/src/test-avaliacao-telemetria.js",
-    "test:avaliacao": "node backend/src/test-avaliacao-telemetria.js"
+    "test:avaliacao": "node backend/src/test-avaliacao-telemetria.js",
+    "matriz:test": "node backend/src/test-matriz-anti-prompt.js",
+    "test:matriz": "node backend/src/test-matriz-anti-prompt.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

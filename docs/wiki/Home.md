@@ -30,6 +30,7 @@ Documentos formais que fundamentam as escolhas técnicas do software à luz da p
 - 📄 [ADR-017: API de Trilhas Formativas, Módulos e Rastreamento de Progresso Docente](./ADR_017_API_TRILHAS_FORMATIVAS_E_RASTREAMENTO_PROGRESSO_DOCENTE.md)
 - 📄 [ADR-018: API de Gestão do Acervo de Documentos Oficiais e E-book de Prompts para Educação Matemática na EPT](./ADR_018_ACERVO_DOCUMENTOS_OFICIAIS_E_EBOOK_PROMPTS.md)
 - 📄 [ADR-019: Endpoint Unificado de Geração Parametrizada do Laboratório de IA (POST /api/laboratorio/gerar)](./ADR_019_ENDPOINT_UNIFICADO_GERACAO_PARAMETRIZADA_LABORATORIO.md)
+- 📄 [ADR-020: Validação Server-side contra a Matriz Curricular BNCC x EPT e Bloqueio Estrito Anti-Prompt Livre](./ADR_020_VALIDACAO_SERVER_SIDE_MATRIZ_BNCC_EPT_ANTI_PROMPT.md)
 
 ---
 

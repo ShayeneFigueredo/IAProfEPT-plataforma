@@ -1,18 +1,19 @@
 import { Router } from 'express';
 import { laboratorioController } from '../controllers/LaboratorioController.js';
 import { optionalAuthenticateToken } from '../middlewares/authMiddleware.js';
+import { validarMatrizCurricularMiddleware } from '../middlewares/matrizCurricularMiddleware.js';
 
 const laboratorioRoutes = Router();
 
 /**
  * POST /api/laboratorio/gerar
  * Rota Unificada de Geração Resiliente com Circuit Breaker e Fallback Automático.
- * Se o motor primário falhar, timeout (> 10s) ou erro de cota (429), chaveia
- * automaticamente para o motor secundário sem interromper a experiência do docente.
+ * Interceptada pelo middleware de validação estrita da Matriz BNCC x EPT (Anti-Prompt Livre).
  */
 laboratorioRoutes.post(
   '/gerar',
   optionalAuthenticateToken,
+  validarMatrizCurricularMiddleware,
   laboratorioController.gerarAtividadeResiliente.bind(laboratorioController)
 );
 
@@ -47,11 +48,12 @@ laboratorioRoutes.get(
 /**
  * POST /api/laboratorio/montar-prompt
  * Monta o prompt pedagógico oculto em estrutura JSON estrita pronta para Groq e Gemini.
- * Nunca recebe campos de prompt em branco ou texto cru.
+ * Interceptado pelo middleware Anti-Prompt Livre (rejeição de texto cru e validação de catálogos).
  */
 laboratorioRoutes.post(
   '/montar-prompt',
   optionalAuthenticateToken,
+  validarMatrizCurricularMiddleware,
   laboratorioController.montarPrompt.bind(laboratorioController)
 );
 
@@ -63,6 +65,7 @@ laboratorioRoutes.post(
 laboratorioRoutes.post(
   '/gerar-groq',
   optionalAuthenticateToken,
+  validarMatrizCurricularMiddleware,
   laboratorioController.gerarAtividadeGroq.bind(laboratorioController)
 );
 
@@ -73,7 +76,7 @@ laboratorioRoutes.post(
 laboratorioRoutes.get(
   '/groq-benchmark',
   laboratorioController.benchmarkGroq.bind(laboratorioController)
- );
+);
 
 /**
  * POST /api/laboratorio/gerar-gemini
@@ -83,6 +86,7 @@ laboratorioRoutes.get(
 laboratorioRoutes.post(
   '/gerar-gemini',
   optionalAuthenticateToken,
+  validarMatrizCurricularMiddleware,
   laboratorioController.gerarAtividadeGemini.bind(laboratorioController)
 );
 
