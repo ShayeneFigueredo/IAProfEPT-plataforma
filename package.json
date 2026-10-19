@@ -51,7 +51,9 @@
     "interacoes:test": "node backend/src/test-interacoes-repositorio.js",
     "test:interacoes": "node backend/src/test-interacoes-repositorio.js",
     "export:test": "node backend/src/test-export.js",
-    "test:export": "node backend/src/test-export.js"
+    "test:export": "node backend/src/test-export.js",
+    "reflexao:test": "node backend/src/test-reflexao.js",
+    "test:reflexao": "node backend/src/test-reflexao.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

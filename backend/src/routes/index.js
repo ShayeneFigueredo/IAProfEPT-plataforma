@@ -8,6 +8,7 @@ import telemetriaRoutes from './telemetriaRoutes.js';
 import formativoRoutes from './formativoRoutes.js';
 import repositorioRoutes from './repositorioRoutes.js';
 import exportRoutes from './exportRoutes.js';
+import reflexaoRoutes from './reflexaoRoutes.js';
 
 const apiRouter = Router();
 
@@ -80,6 +81,7 @@ apiRouter.use('/telemetria', telemetriaRoutes);
 apiRouter.use('/admin', adminRoutes);
 apiRouter.use('/metricas', metricasRoutes);
 apiRouter.use('/export', exportRoutes);
+apiRouter.use('/reflexao', reflexaoRoutes);
 
 export default apiRouter;
 
