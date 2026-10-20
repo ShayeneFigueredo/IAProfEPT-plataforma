@@ -42,3 +42,7 @@ logs/
 # Jira Backlog CSVs temporários
 *.csv
 docs/*.csv
+
+# Uploads locais de arquivos
+uploads/
+

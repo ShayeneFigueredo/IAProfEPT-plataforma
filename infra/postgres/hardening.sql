@@ -43,3 +43,4 @@ host    iaprofept_db    iaprofept_user  ::1/128                 scram-sha-256
 # Rejeitar o resto
 host    all             all             0.0.0.0/0               reject
 */
+

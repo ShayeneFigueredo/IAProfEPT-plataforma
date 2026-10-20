@@ -25,3 +25,4 @@ A leitura e o registro de progresso nos artigos fortalecem o perfil formador do 
 
 ## 4. Verificação de Acessibilidade & UX
 O atributo `tempo_leitura_minutos` está sendo trafegado para o frontend, propiciando à interface a habilidade de exibir *badges* do tipo "Leitura Rápida: 2 min", melhorando drasticamente o engajamento e a UX da listagem dos artigos.
+

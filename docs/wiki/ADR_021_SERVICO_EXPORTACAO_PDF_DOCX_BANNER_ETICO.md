@@ -24,3 +24,4 @@ Foi desenvolvida uma rota (`/api/export`) responsável por processar requisiçõ
 - O layout gerado em PDF utiliza contraste adequado para impressão em preto e branco.
 - O aviso ético é fixado no rodapé com fundo destacado (Vermelho `#DC2626` e texto branco `#F8FAFC`).
 - As tags matemáticas (LaTeX/MathJax) são convertidas via avaliação no Puppeteer para exibição correta sem dependência de processamento no frontend.
+

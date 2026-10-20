@@ -12,3 +12,4 @@ ExecStart=/bin/bash /opt/iaprofept/infra/backup/backup.sh
 
 [Install]
 WantedBy=multi-user.target
+

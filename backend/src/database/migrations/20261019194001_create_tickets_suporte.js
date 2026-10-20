@@ -40,3 +40,4 @@ export async function down(knex) {
   await knex.raw('DROP TRIGGER IF EXISTS trg_tickets_suporte_updated_at ON tickets_suporte;');
   await knex.schema.dropTableIfExists('tickets_suporte');
 }
+

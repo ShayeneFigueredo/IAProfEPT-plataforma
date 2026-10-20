@@ -23,6 +23,7 @@ export default function RegisterModal({ isOpen, onClose, onRegisterSuccess }) {
   const [senha, setSenha] = useState('');
   const [uf, setUf] = useState('MG');
   const [instituicao, setInstituicao] = useState('IFNMG - Instituto Federal do Norte de Minas Gerais');
+  const [outraRede, setOutraRede] = useState('');
   const [campus, setCampus] = useState('');
   const [areaMatematica, setAreaMatematica] = useState(AREAS_MATEMATICA[0]);
   const [cursosSelecionados, setCursosSelecionados] = useState(['Informática', 'Agropecuária']);
@@ -73,6 +74,10 @@ export default function RegisterModal({ isOpen, onClose, onRegisterSuccess }) {
       setErro('Por favor, informe seu Campus de Lotação / Unidade.');
       return;
     }
+    if (instituicao === 'Outra Instituição da Rede Federal (RFEPCT)' && !outraRede.trim()) {
+      setErro('Por favor, informe o nome da sua Instituição da Rede Federal.');
+      return;
+    }
     if (cursosSelecionados.length === 0) {
       setErro('Selecione ao menos 1 curso técnico em que leciona.');
       return;
@@ -90,7 +95,9 @@ export default function RegisterModal({ isOpen, onClose, onRegisterSuccess }) {
       ? (nomesArray[0][0] + nomesArray[nomesArray.length - 1][0]).toUpperCase()
       : nome.substring(0, 2).toUpperCase();
 
-    const siglaInst = instituicao.split(' - ')[0] || 'RFEPCT';
+    const siglaInst = instituicao === 'Outra Instituição da Rede Federal (RFEPCT)' 
+      ? (outraRede.substring(0, 8).toUpperCase() + '...')
+      : (instituicao.split(' - ')[0] || 'RFEPCT');
 
     // Cria o perfil do novo docente cadastrado
     const novoUsuario = {
@@ -99,7 +106,8 @@ export default function RegisterModal({ isOpen, onClose, onRegisterSuccess }) {
       matricula: matricula.trim(),
       uf: uf,
       instituicao: siglaInst,
-      instituicaoCompleta: instituicao,
+      instituicaoCompleta: instituicao === 'Outra Instituição da Rede Federal (RFEPCT)' ? outraRede.trim() : instituicao,
+      outra_rede: instituicao === 'Outra Instituição da Rede Federal (RFEPCT)' ? outraRede.trim() : null,
       campus: campus.trim(),
       cargo: `Docente de Matemática · ${siglaInst} (${campus.trim()} - ${uf})`,
       areaMatematica: areaMatematica,
@@ -279,6 +287,19 @@ export default function RegisterModal({ isOpen, onClose, onRegisterSuccess }) {
                   ))}
                 </optgroup>
               </select>
+              {instituicao === 'Outra Instituição da Rede Federal (RFEPCT)' && (
+                <div style={{ marginTop: '0.75rem' }}>
+                  <label className="auth-label">Qual a Instituição? *</label>
+                  <input
+                    type="text"
+                    className="auth-input"
+                    placeholder="Especifique o nome da sua Instituição da RFEPCT"
+                    value={outraRede}
+                    onChange={(e) => setOutraRede(e.target.value)}
+                    required
+                  />
+                </div>
+              )}
               <small className="auth-help-hint">
                 Abrange Institutos Federais (IFs), Centros Federais (CEFETs) e Colégios Técnicos Vinculados.
               </small>

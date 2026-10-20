@@ -506,3 +506,78 @@ AFTER INSERT ON usuarios
 DEFERRABLE INITIALLY DEFERRED
 FOR EACH ROW
 EXECUTE FUNCTION check_usuario_consentimento_tcle();
+
+-- ============================================================================
+-- 13. ANEXOS DO REPOSITÓRIO (PDFs, DOCX, IMAGENS COM HASH SHA-256)
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS anexos_repositorio (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pratica_id UUID REFERENCES praticas_repositorio(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    usuario_id UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    nome_original VARCHAR(255) NOT NULL,
+    nome_armazenado VARCHAR(255) NOT NULL UNIQUE,
+    mime_type VARCHAR(100) NOT NULL,
+    extensao VARCHAR(20) NOT NULL,
+    tamanho_bytes BIGINT NOT NULL,
+    hash_sha256 VARCHAR(64) NOT NULL,
+    storage_tipo VARCHAR(20) NOT NULL DEFAULT 'local',
+    caminho_storage TEXT NOT NULL,
+    url_protegida TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_anexos_usuario ON anexos_repositorio (usuario_id);
+CREATE INDEX IF NOT EXISTS idx_anexos_pratica ON anexos_repositorio (pratica_id);
+CREATE INDEX IF NOT EXISTS idx_anexos_hash_sha256 ON anexos_repositorio (hash_sha256);
+CREATE INDEX IF NOT EXISTS idx_anexos_deleted_at ON anexos_repositorio (deleted_at);
+
+-- ============================================================================
+-- 14. CURTIDAS NAS PRÁTICAS DO REPOSITÓRIO (TOGGLE ATÔMICO)
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS curtidas_praticas (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pratica_id UUID NOT NULL REFERENCES praticas_repositorio(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    usuario_id UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_curtidas_pratica_usuario UNIQUE (pratica_id, usuario_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_curtidas_pratica ON curtidas_praticas (pratica_id);
+CREATE INDEX IF NOT EXISTS idx_curtidas_usuario ON curtidas_praticas (usuario_id);
+
+-- ============================================================================
+-- 15. FAVORITOS DAS PRÁTICAS DO REPOSITÓRIO (TOGGLE ATÔMICO)
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS favoritos_praticas (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pratica_id UUID NOT NULL REFERENCES praticas_repositorio(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    usuario_id UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_favoritos_pratica_usuario UNIQUE (pratica_id, usuario_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_favoritos_pratica ON favoritos_praticas (pratica_id);
+CREATE INDEX IF NOT EXISTS idx_favoritos_usuario ON favoritos_praticas (usuario_id);
+
+-- ============================================================================
+-- 16. COMENTÁRIOS E RELATOS DE EXPERIÊNCIA EM SALA DE AULA
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS comentarios_praticas (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pratica_id UUID NOT NULL REFERENCES praticas_repositorio(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    usuario_id UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    texto TEXT NOT NULL,
+    relato_experiencia BOOLEAN NOT NULL DEFAULT FALSE,
+    turma_contexto VARCHAR(150),
+    nota_estrelas INT CHECK (nota_estrelas BETWEEN 1 AND 5),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_comentarios_pratica ON comentarios_praticas (pratica_id);
+CREATE INDEX IF NOT EXISTS idx_comentarios_usuario ON comentarios_praticas (usuario_id);
+CREATE INDEX IF NOT EXISTS idx_comentarios_relato ON comentarios_praticas (relato_experiencia);
+
+

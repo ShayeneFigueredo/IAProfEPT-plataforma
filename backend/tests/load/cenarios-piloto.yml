@@ -1,0 +1,65 @@
+config:
+  target: "http://localhost:3001"
+  phases:
+    - duration: 20
+      arrivalRate: 5
+      name: "Fase 1: Warm up"
+    - duration: 30
+      arrivalRate: 10
+      rampTo: 30
+      name: "Fase 2: Ramp up - Carga Média"
+    - duration: 30
+      arrivalRate: 30
+      name: "Fase 3: Pico de Teste Piloto (Dezenas de Professores)"
+  plugins:
+    expect: {}
+scenarios:
+  - name: "Docente - Fluxo Principal do Laboratório e Banco de Dados"
+    weight: 100
+    flow:
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+      - think: 1
+      - get:
+          url: "/api/laboratorio/parametros-curriculares"
+          expect:
+            - statusCode: 200
+      - think: 2
+      - post:
+          url: "/api/laboratorio/montar-prompt"
+          json:
+            cursoTecnico: "Técnico em Informática"
+            eixoCNCT: "Informação e Comunicação"
+            areaMatematica: "Álgebra"
+            nivelDificuldade: "Médio"
+            metodologia: "Sala de Aula Invertida"
+          expect:
+            - statusCode: 200
+      - think: 1
+      - get:
+          url: "/api/laboratorio/telemetria-status"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/api/laboratorio/circuit-breaker-status"
+          expect:
+            - statusCode: 200
+  - name: "Docente - Avaliação e Navegação Básica"
+    weight: 50
+    flow:
+      - get:
+          url: "/api"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/api/repositorio/buscar"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/api/repositorio/praticas"
+          expect:
+            - statusCode: 200
+      - think: 2
+

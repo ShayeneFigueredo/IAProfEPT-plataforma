@@ -40,3 +40,4 @@ echo "[$(date +'%Y-%m-%d %H:%M:%S')] Limpando backups mais antigos que $RETENTIO
 find "$BACKUP_DIR" -type f -name "iaprofept_backup_*.sql.gz" -mtime +$RETENTION_DAYS -exec rm -f {} \;
 
 echo "[$(date +'%Y-%m-%d %H:%M:%S')] Rotina de backup concluída."
+

@@ -95,6 +95,13 @@ export const registerDocenteSchema = z.object({
     .max(255)
     .optional(),
 
+  outraRede: z
+    .string()
+    .trim()
+    .max(255)
+    .optional()
+    .nullable(),
+
   instituicaoId: z
     .string()
     .uuid('ID da instituição inválido (deve ser UUID).')
@@ -294,6 +301,9 @@ export function validateBody(schema) {
     const normalizedBody = { ...req.body };
     if ('instituicao_origem' in req.body && !normalizedBody.instituicaoOrigem) {
       normalizedBody.instituicaoOrigem = req.body.instituicao_origem;
+    }
+    if ('outra_rede' in req.body && !normalizedBody.outraRede) {
+      normalizedBody.outraRede = req.body.outra_rede;
     }
     if ('instituicao_id' in req.body && !normalizedBody.instituicaoId) {
       normalizedBody.instituicaoId = req.body.instituicao_id;

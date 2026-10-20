@@ -99,7 +99,7 @@ export class UserRepository extends BaseRepository {
    * Cria registro completo de Docente (usuarios + perfis_docentes + consentimentos_tcle) de forma atômica
    * @param {object} params
    * @param {object} params.userData - { nome, email, senhaHash, role, status }
-   * @param {object} params.profileData - { instituicaoId, uf, matriculaSiape, areaAtuacao, cursosTecnicos, termoEticoAceito, ipOrigem }
+   * @param {object} params.profileData - { instituicaoId, uf, matriculaSiape, areaAtuacao, cursosTecnicos, termoEticoAceito, ipOrigem, outraRede }
    * @param {object} [params.consentData] - { versaoTermo, ipAnonimizado, userAgent, dispositivoMeta }
    * @returns {Promise<{ usuario: object, perfil: object, consentimento: object }>}
    */
@@ -138,12 +138,13 @@ export class UserRepository extends BaseRepository {
            cursos_tecnicos,
            termo_etico_aceito,
            termo_etico_versao,
-           ip_aceite_termo
+           ip_aceite_termo,
+           outra_rede
          )
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
          RETURNING id, usuario_id, instituicao_id, uf, matricula_siape, 
                    area_atuacao, cursos_tecnicos, termo_etico_aceito, 
-                   termo_etico_versao, data_aceite_termo, created_at, updated_at;`,
+                   termo_etico_versao, data_aceite_termo, outra_rede, created_at, updated_at;`,
         [
           usuario.id,
           profileData.instituicaoId || null,
@@ -154,6 +155,7 @@ export class UserRepository extends BaseRepository {
           profileData.termoEticoAceito !== false,
           profileData.termoEticoVersao || '1.0',
           profileData.ipOrigem || null,
+          profileData.outraRede || null,
         ]
       );
       const perfil = profileRes.rows[0];
@@ -246,6 +248,7 @@ export class UserRepository extends BaseRepository {
          pd.matricula_siape,
          pd.area_atuacao,
          pd.cursos_tecnicos,
+         pd.outra_rede,
          pd.termo_etico_aceito,
          pd.termo_etico_versao,
          pd.data_aceite_termo,
@@ -277,6 +280,7 @@ export class UserRepository extends BaseRepository {
         matriculaSiape: row.matricula_siape,
         areaAtuacao: row.area_atuacao,
         cursosTecnicos: row.cursos_tecnicos,
+        outraRede: row.outra_rede,
         termoEtico: {
           aceito: row.termo_etico_aceito,
           versao: row.termo_etico_versao,

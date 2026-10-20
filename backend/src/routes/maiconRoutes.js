@@ -8,3 +8,4 @@ const maiconRoutes = Router();
 maiconRoutes.post('/chat', optionalAuthenticateToken, maiconController.chat);
 
 export default maiconRoutes;
+

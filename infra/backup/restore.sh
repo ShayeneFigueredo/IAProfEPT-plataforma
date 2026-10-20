@@ -45,3 +45,4 @@ else
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] ❌ ERRO ao restaurar o banco de dados!" >&2
   exit 1
 fi
+

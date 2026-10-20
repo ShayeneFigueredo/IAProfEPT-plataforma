@@ -38,7 +38,30 @@ export function errorHandler(err, req, res, next) {
     });
   }
 
-  // 3. Erros inesperados / 500 Internal Server Error
+  // 3. Erros de processamento de Upload (Multer)
+  if (err.name === 'MulterError' || err.code === 'LIMIT_FILE_SIZE') {
+    res.setHeader('Content-Type', 'application/problem+json');
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({
+        type: 'https://iaprofept.ufjf.br/errors/payload-too-large',
+        title: 'Arquivo Muito Grande',
+        status: 413,
+        detail: 'O arquivo enviado excede o limite máximo permitido de 15MB.',
+        instance,
+        timestamp: new Date().toISOString(),
+      });
+    }
+    return res.status(400).json({
+      type: 'https://iaprofept.ufjf.br/errors/upload-error',
+      title: 'Erro no Upload do Arquivo',
+      status: 400,
+      detail: `Falha no processamento do anexo multipart: ${err.message}`,
+      instance,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  // 4. Erros inesperados / 500 Internal Server Error
   // CRÍTICO: Jamais expor stack trace ao cliente externo
   res.setHeader('Content-Type', 'application/problem+json');
   return res.status(500).json({

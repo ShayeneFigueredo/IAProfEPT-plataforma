@@ -20,3 +20,4 @@ Para garantir uma experiência interativa e semelhante ao ChatGPT, era mandatór
 ## 4. Verificação de Acessibilidade & UX
 - A ausência de buffering (`X-Accel-Buffering: no` no Nginx/Express) faz com que a interface seja responsiva instantaneamente.
 - Em nossos testes unitários, o tempo até o primeiro token ocorreu próximo de 150-500ms dependendo da proximidade geográfica do servidor com o endpoint da Groq e acionamento ou não do Fallback. 
+

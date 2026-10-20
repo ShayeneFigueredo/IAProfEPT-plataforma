@@ -11,9 +11,8 @@ import { UFS_LISTA } from '../data/instituicoesData';
  * Acolhimento de Docentes da Rede Federal (RFEPCT).
  */
 export default function LoginView({ onLogin, onOpenRegister }) {
-  const [email, setEmail] = useState('maycon.magalhaes@ifnmg.edu.br');
-  const [password, setPassword] = useState('123456');
-  const [uf, setUf] = useState('MG');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -45,7 +44,7 @@ export default function LoginView({ onLogin, onOpenRegister }) {
       } catch (e) {}
 
       if (cadastrado) {
-        onLogin({ ...cadastrado, uf: cadastrado.uf || uf });
+        onLogin({ ...cadastrado, uf: cadastrado.uf || 'MG' });
         return;
       }
 
@@ -61,10 +60,10 @@ export default function LoginView({ onLogin, onOpenRegister }) {
           nome: 'Visitante da RFEPCT',
           email: idLimpo.includes('@') ? idLimpo : 'visitante@rfepct.edu.br',
           matricula: !idLimpo.includes('@') ? email.trim() : 'VISITANTE',
-          uf: uf,
+          uf: 'MG',
           instituicao: 'Rede Federal de EPCT',
-          campus: `Campus Visitante (${uf})`,
-          cargo: `Docente Visitante · RFEPCT (${uf})`,
+          campus: `Campus Visitante`,
+          cargo: `Docente Visitante · RFEPCT`,
           iniciais: 'VI',
           areaMatematica: 'Matemática na EPT',
           cursosAtendidos: ['Informática', 'Eletrotécnica']
@@ -95,10 +94,10 @@ export default function LoginView({ onLogin, onOpenRegister }) {
         nome: nomeFormatado || 'Docente RFEPCT',
         email: idLimpo.includes('@') ? idLimpo : `${idLimpo}@instituto.edu.br`,
         matricula: !idLimpo.includes('@') ? email.trim() : '',
-        uf: uf,
+        uf: 'MG',
         instituicao: 'Rede Federal de EPCT',
-        campus: `Campus Local (${uf})`,
-        cargo: `Docente de Matemática · RFEPCT (${uf})`,
+        campus: `Campus Local`,
+        cargo: `Docente de Matemática · RFEPCT`,
         iniciais: iniciais,
         areaMatematica: 'Matemática na EPT',
         cursosAtendidos: ['Informática', 'Agropecuária']
@@ -107,33 +106,7 @@ export default function LoginView({ onLogin, onOpenRegister }) {
     }, 400);
   };
 
-  const handleQuickLoginMaycon = () => {
-    setEmail('maycon.magalhaes@ifnmg.edu.br');
-    setPassword('123456');
-    setUf('MG');
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      onLogin({ ...USER_DATA, uf: 'MG' });
-    }, 300);
-  };
 
-  const handleQuickLoginGuest = () => {
-    setUf('SP');
-    const guestUser = {
-      nome: 'Prof. Visitante da RFEPCT',
-      email: 'professor.visitante@ifs.edu.br',
-      uf: 'SP',
-      instituicao: 'Instituto Federal de São Paulo (IFSP)',
-      campus: 'Campus São Paulo',
-      cargo: 'Docente de Matemática na EPT · IFSP (SP)',
-      iniciais: 'PV',
-      areaMatematica: 'Matemática Aplicada na EPT',
-      cursosAtendidos: ['Informática', 'Eletrotécnica', 'Edificações'],
-      foto: null
-    };
-    onLogin(guestUser, true); // true para disparar onboarding
-  };
 
   return (
     <div className="auth-page-container">
@@ -218,27 +191,7 @@ export default function LoginView({ onLogin, onOpenRegister }) {
 
           {/* Formulário de Login */}
           <form onSubmit={handleSubmit} className="auth-form">
-            <div className="auth-grid-2col">
-              <div className="auth-field-group">
-                <label htmlFor="auth-uf" className="auth-label">
-                  UF (Estado) *
-                </label>
-                <div className="auth-input-wrapper">
-                  <MapPin size={18} className="auth-input-icon" />
-                  <select
-                    id="auth-uf"
-                    className="auth-input"
-                    value={uf}
-                    onChange={(e) => setUf(e.target.value)}
-                  >
-                    {UFS_LISTA.map((item) => (
-                      <option key={item.sigla} value={item.sigla}>
-                        {item.sigla} — {item.nome}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
+            <div className="auth-grid-1col">
 
               <div className="auth-field-group">
                 <label htmlFor="auth-email" className="auth-label">
@@ -324,51 +277,7 @@ export default function LoginView({ onLogin, onOpenRegister }) {
             </button>
           </form>
 
-          {/* Divisor Visual */}
-          <div className="auth-divider">
-            <span>ou acesso rápido para avaliação</span>
-          </div>
 
-          {/* Acessos Rápidos de Demonstração / Piloto */}
-          <div className="auth-quick-actions">
-            <button
-              type="button"
-              className="btn-auth-quick primary"
-              onClick={handleQuickLoginMaycon}
-              title="Acessar com a conta do pesquisador Maycon Magalhães"
-            >
-              <div className="quick-btn-left">
-                <div className="quick-avatar-mini">MM</div>
-                <div className="quick-btn-text">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <strong>Entrar como Prof. Maycon Magalhães</strong>
-                    <span style={{ fontSize: '0.65rem', fontWeight: 800, padding: '0.1rem 0.35rem', borderRadius: '4px', background: 'var(--primary-soft-bg)', color: 'var(--primary-green)', border: '1px solid var(--primary-border)' }}>MG</span>
-                  </div>
-                  <small>Docente IFNMG (MG) · Pesquisador PPGEM-UFJF</small>
-                </div>
-              </div>
-              <ArrowRight size={16} />
-            </button>
-
-            <button
-              type="button"
-              className="btn-auth-quick secondary"
-              onClick={handleQuickLoginGuest}
-              title="Acessar como novo docente e ver o Onboarding"
-            >
-              <div className="quick-btn-left">
-                <div className="quick-avatar-mini guest">RF</div>
-                <div className="quick-btn-text">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <strong>Entrar como Docente Convidado da RFEPCT</strong>
-                    <span style={{ fontSize: '0.65rem', fontWeight: 800, padding: '0.1rem 0.35rem', borderRadius: '4px', background: '#EAF3FF', color: '#1E5FB0', border: '1px solid #BFDBFE' }}>SP</span>
-                  </div>
-                  <small>Docente IFSP (SP) · Experimentar acolhimento</small>
-                </div>
-              </div>
-              <ArrowRight size={16} />
-            </button>
-          </div>
 
           {/* Rodapé do Formulário: Link para Criação de Conta */}
           <div className="auth-card-footer">

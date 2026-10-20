@@ -70,6 +70,10 @@ export async function runKnexMigrate(action = 'latest') {
       'refresh_tokens',
       'tokens_recuperacao_senha',
       'consentimentos_tcle',
+      'anexos_repositorio',
+      'curtidas_praticas',
+      'favoritos_praticas',
+      'comentarios_praticas',
     ];
 
     for (const table of tables) {

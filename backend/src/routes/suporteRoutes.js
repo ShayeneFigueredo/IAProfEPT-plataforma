@@ -10,3 +10,4 @@ suporteRoutes.get('/metricas-docente', optionalAuthenticateToken, suporteControl
 suporteRoutes.post('/ticket', optionalAuthenticateToken, suporteController.criarTicket);
 
 export default suporteRoutes;
+

@@ -28,3 +28,4 @@ As tabelas `topicos_forum` e `respostas_forum` já haviam sido provisionadas pel
 
 ## 4. Verificação de Acessibilidade & UX
 A devolução no formato em árvore (`[{ id, conteudo, respostas: [...] }]`) facilita a construção de componentes recursivos e alinhados em níveis de indentação no frontend. A CTE ordena previamente as respostas cronologicamente pelo caminho gerado (`caminho_ordenacao`), preservando o fio lógico da conversa.
+

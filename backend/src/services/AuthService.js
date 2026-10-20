@@ -82,6 +82,7 @@ export class AuthService {
         termoEticoAceito: docenteData.termoEticoAceito !== false,
         termoEticoVersao: '1.0',
         ipOrigem: meta.ip || null,
+        outraRede: docenteData.outraRede || null,
       },
       consentData: {
         versaoTermo: '1.0',
@@ -114,6 +115,7 @@ export class AuthService {
         matriculaSiape: perfil.matricula_siape,
         areaAtuacao: perfil.area_atuacao,
         cursosTecnicos: perfil.cursos_tecnicos,
+        outraRede: perfil.outra_rede,
         termoEtico: {
           aceito: perfil.termo_etico_aceito,
           versao: perfil.termo_etico_versao,

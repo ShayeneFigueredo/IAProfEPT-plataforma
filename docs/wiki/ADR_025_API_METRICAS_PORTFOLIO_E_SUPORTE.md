@@ -21,3 +21,4 @@ Esses endpoints instrumentalizam os dashboards do painel inicial de cada docente
 
 ## 4. Verificação de Acessibilidade & UX
 O endpoint retorna os dados planos e já tipados como inteiros (`trilhasConcluidas`, `materiaisGerados`, `praticasCompartilhadas`, `participacaoForuns`), poupando os clientes frontend de precisarem somar strings retornadas do `COUNT()` do PostgreSQL, agilizando a renderização e reduzindo bugs de tipagem no lado do cliente.
+

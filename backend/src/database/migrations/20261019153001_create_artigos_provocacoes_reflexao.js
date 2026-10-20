@@ -86,3 +86,4 @@ export async function down(knex) {
   await knex.schema.dropTableIfExists('provocacoes_reflexao');
   await knex.schema.dropTableIfExists('artigos_reflexao');
 }
+

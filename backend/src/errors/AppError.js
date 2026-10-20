@@ -110,9 +110,16 @@ export class RateLimitError extends AppError {
   }
 }
 
+export class PayloadTooLargeError extends AppError {
+  constructor(detail = 'O arquivo enviado excede o limite máximo permitido de 15MB.') {
+    super('Arquivo Muito Grande', 413, detail, 'https://iaprofept.ufjf.br/errors/payload-too-large');
+  }
+}
+
 export class InternalServerError extends AppError {
   constructor(detail = 'Ocorreu um erro interno no servidor.') {
     super('Erro Interno do Servidor', 500, detail, 'https://iaprofept.ufjf.br/errors/internal-error');
     this.isOperational = false;
   }
 }
+
