@@ -18,3 +18,4 @@ export async function down(knex) {
     table.dropColumn('outra_rede');
   });
 }
+
