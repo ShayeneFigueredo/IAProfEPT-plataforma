@@ -1,3 +1,4 @@
+import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
 import {
@@ -27,6 +28,7 @@ app.use(apiRateLimiter);
 app.use(cookieParser());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 app.use(requestLogger);
 
 // 3. ROTA RAIZ INFORMATIVA

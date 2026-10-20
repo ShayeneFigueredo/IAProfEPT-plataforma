@@ -25,8 +25,9 @@ import {
 } from 'lucide-react';
 import { TRILHAS_DATA, DOCUMENTOS_DATA, PROMPTS_EBOOK_DATA, VIDEOS_DATA } from '../data/mockData';
 
-export default function FormativoView() {
+export default function FormativoView({ setTab }) {
   const [activeSubTab, setActiveSubTab] = useState('trilhas');
+  const [videos, setVideos] = useState(VIDEOS_DATA);
   const [selectedVideo, setSelectedVideo] = useState(VIDEOS_DATA[0]);
 
   // Estado das Trilhas e Progresso Conectado à API
@@ -67,6 +68,31 @@ export default function FormativoView() {
       carregarPromptsEbook();
     }
   }, [activeSubTab, categoriaPromptSelecionada, buscaPrompt]);
+
+  // Carrega vídeos dinamicamente ao abrir a aba de vídeos
+  useEffect(() => {
+    if (activeSubTab === 'videos') {
+      carregarVideos();
+    }
+  }, [activeSubTab]);
+
+  const carregarVideos = async () => {
+    try {
+      const res = await fetch('/api/formativo/videos');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.videos && data.videos.length > 0) {
+          setVideos(data.videos);
+          setSelectedVideo((prev) => {
+            const found = data.videos.find((v) => v.id === prev?.id);
+            return found || data.videos[0];
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('Erro ao sincronizar vídeos da API:', e);
+    }
+  };
 
   const carregarDocumentos = async () => {
     try {
@@ -678,43 +704,64 @@ export default function FormativoView() {
             <div className="videos-header-left">
               <Video size={20} className="icon-video-green" />
               <h2>Vídeos do ambiente formativo</h2>
-              <span className="videos-count-badge">1 vídeo</span>
+              <span className="videos-count-badge">{videos.length} {videos.length === 1 ? 'vídeo' : 'vídeos'}</span>
             </div>
-            <button className="btn-add-video" onClick={() => alert('Abrir modal para adicionar vídeo')}>
+            <button 
+              className="btn-add-video" 
+              onClick={() => {
+                if (setTab) {
+                  setTab('studio');
+                  try {
+                    window.history.pushState({}, '', '/studio?tab=videos');
+                  } catch (e) {}
+                } else {
+                  window.location.href = '/studio?tab=videos';
+                }
+              }}
+              title="Acessar Studio para upload de novos vídeos"
+            >
               <Upload size={16} />
-              <span>Adicionar vídeo</span>
+              <span>Adicionar vídeo (Studio)</span>
             </button>
           </div>
 
           <div className="videos-main-grid">
             <div className="video-player-card">
               <div className="video-iframe-container">
-                <iframe
-                  src={`https://www.youtube.com/embed/${selectedVideo.youtubeId}?autoplay=0&rel=0&enablejsapi=1`}
-                  title={selectedVideo.titulo}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
+                {selectedVideo ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${selectedVideo.youtubeId}?autoplay=0&rel=0&enablejsapi=1`}
+                    title={selectedVideo.titulo || 'Vídeo do Ambiente Formativo'}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  />
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748B' }}>
+                    Nenhum vídeo selecionado
+                  </div>
+                )}
               </div>
               <div className="video-details-footer">
                 <div className="video-meta-tags-line">
-                  <span className="badge-video-cat">{selectedVideo.categoria}</span>
-                  <span className="video-author-text">{selectedVideo.autor}</span>
+                  <span className="badge-video-cat">{selectedVideo?.categoria || 'Geral'}</span>
+                  <span className="video-author-text">{selectedVideo?.autor || 'IAprofEPT'}</span>
                 </div>
-                <h3 className="video-current-title">{selectedVideo.titulo}</h3>
-                <p className="video-current-desc">{selectedVideo.descricao}</p>
+                <h3 className="video-current-title">{selectedVideo?.titulo || 'Vídeo Formativo'}</h3>
+                <p className="video-current-desc">{selectedVideo?.descricao || ''}</p>
                 <div className="video-player-actions">
-                  <a
-                    href={`https://www.youtube.com/watch?v=${selectedVideo.youtubeId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-open-youtube"
-                  >
-                    <Youtube size={16} color="#DC2626" />
-                    <span>Assistir no YouTube</span>
-                    <ExternalLink size={13} />
-                  </a>
+                  {selectedVideo?.youtubeId && (
+                    <a
+                      href={`https://www.youtube.com/watch?v=${selectedVideo.youtubeId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-open-youtube"
+                    >
+                      <Youtube size={16} color="#DC2626" />
+                      <span>Assistir no YouTube</span>
+                      <ExternalLink size={13} />
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -725,8 +772,8 @@ export default function FormativoView() {
                 <span>Lista de reprodução</span>
               </div>
               <div className="playlist-items-list">
-                {VIDEOS_DATA.map((v) => {
-                  const isPlaying = selectedVideo.id === v.id;
+                {videos.map((v) => {
+                  const isPlaying = selectedVideo?.id === v.id;
                   return (
                     <div
                       key={v.id}
@@ -776,24 +823,59 @@ export default function FormativoView() {
                 </p>
               </div>
 
-              {/* Campo de Busca Rápida */}
-              <div style={{ position: 'relative', minWidth: '260px' }}>
-                <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
-                <input
-                  type="text"
-                  placeholder="Buscar no acervo..."
-                  value={buscaDoc}
-                  onChange={(e) => setBuscaDoc(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '0.45rem 0.85rem 0.45rem 2.1rem',
-                    fontSize: '0.85rem',
-                    border: '1px solid #CBD5E1',
-                    borderRadius: '8px',
-                    outline: 'none',
-                    background: '#FFFFFF',
+              {/* Ações e Campo de Busca Rápida */}
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="btn-add-video"
+                  onClick={() => {
+                    if (setTab) {
+                      setTab('studio');
+                      try {
+                        window.history.pushState({}, '', '/studio?tab=documentos');
+                      } catch (e) {}
+                    } else {
+                      window.location.href = '/studio?tab=documentos';
+                    }
                   }}
-                />
+                  title="Acessar o Studio IAprofEPT para subir documentos PDF no ambiente formativo"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    padding: '0.5rem 0.9rem',
+                    background: '#064E3B',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '0.82rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 4px rgba(6, 78, 59, 0.2)'
+                  }}
+                >
+                  <Upload size={15} />
+                  <span>Subir Documento (Studio)</span>
+                </button>
+
+                <div style={{ position: 'relative', minWidth: '220px' }}>
+                  <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
+                  <input
+                    type="text"
+                    placeholder="Buscar no acervo..."
+                    value={buscaDoc}
+                    onChange={(e) => setBuscaDoc(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.45rem 0.85rem 0.45rem 2.1rem',
+                      fontSize: '0.85rem',
+                      border: '1px solid #CBD5E1',
+                      borderRadius: '8px',
+                      outline: 'none',
+                      background: '#FFFFFF',
+                    }}
+                  />
+                </div>
               </div>
             </div>
 

@@ -1,8 +1,10 @@
-﻿import React, { useState } from 'react';
-import { Download, CheckCircle, Award } from 'lucide-react';
+import React, { useState } from 'react';
+import { Download, CheckCircle, Award, Loader2, Sparkles } from 'lucide-react';
 import { USER_DATA } from '../data/mockData';
+import { useToast } from './ToastProvider';
 
 export default function CertificateGenerator() {
+  const toast = useToast();
   const [userName, setUserName] = useState(() => {
     try {
       const user = JSON.parse(localStorage.getItem('iaprofept_user'));
@@ -15,14 +17,58 @@ export default function CertificateGenerator() {
   const [courseName, setCourseName] = useState('Letramento em Inteligência Artificial na Educação Matemática');
   const [generated, setGenerated] = useState(false);
 
-  const handleGenerate = (e) => {
+  const handleGenerate = async (e) => {
     e.preventDefault();
+    if (!userName.trim()) {
+      toast.warning('Por favor, informe o nome do aluno/professor.');
+      return;
+    }
+
     setGenerated(true);
-    // Em uma implementação real, chamaria a rota do backend de geração de PDF (Puppeteer/PDFKit)
-    setTimeout(() => {
-      alert(Certificado gerado com sucesso para: );
+
+    try {
+      const res = await fetch('/api/formativo/certificados/gerar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          alunoNome: userName.trim(),
+          cursoNome: courseName.trim(),
+          cargaHoraria: '40 horas',
+          dataConclusao: new Date().toISOString(),
+        }),
+      });
+
+      if (!res.ok) {
+        const erroMsg = await res.text();
+        throw new Error(`Falha na emissão (${res.status}): ${erroMsg}`);
+      }
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      const sanitizado = userName.trim().replace(/[^a-zA-Z0-9]/g, '_');
+      link.download = `Certificado_${sanitizado}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+
+      toast.success(
+        `Certificado oficial em PDF gerado e baixado com sucesso para ${userName}!`,
+        'Certificado Emitido com Sucesso'
+      );
+    } catch (err) {
+      console.error('Erro na emissão do certificado:', err);
+      toast.error(
+        'Erro ao emitir o certificado em PDF via backend. Verifique o servidor e tente novamente.',
+        'Falha na Emissão'
+      );
+    } finally {
       setGenerated(false);
-    }, 1500);
+    }
   };
 
   return (

@@ -16,9 +16,40 @@ import SuporteView from './views/SuporteView';
 import StudioView from './views/StudioView';
 import { USER_DATA } from './data/mockData';
 
+const VALID_TABS = ['inicio', 'formativo', 'laboratorio', 'repositorio', 'reflexao', 'suporte', 'studio'];
+
+const getTabFromUrl = () => {
+  try {
+    const path = window.location.pathname.replace(/^\/|\/$/g, '').toLowerCase();
+    if (VALID_TABS.includes(path)) return path;
+    const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+    if (VALID_TABS.includes(hash)) return hash;
+  } catch (e) {}
+  return 'inicio';
+};
+
 export default function App() {
-  const [currentTab, setCurrentTab] = useState('inicio');
+  const [currentTab, setCurrentTab] = useState(getTabFromUrl);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleTabChange = (newTab) => {
+    setCurrentTab(newTab);
+    try {
+      const targetPath = newTab === 'inicio' ? '/' : `/${newTab}`;
+      const search = window.location.search || '';
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState({ tab: newTab }, '', targetPath + search);
+      }
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentTab(getTabFromUrl());
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Estado de Autenticação com persistência em localStorage
   const [currentUser, setCurrentUser] = useState(() => {
@@ -120,9 +151,10 @@ export default function App() {
   const handleLogout = () => {
     try {
       localStorage.removeItem('iaprofept_user');
+      sessionStorage.removeItem('iaprofept_studio_auth');
     } catch (e) {}
     setCurrentUser(null);
-    setCurrentTab('inicio');
+    handleTabChange('inicio');
   };
 
   const handleCompleteOnboarding = () => {
@@ -170,7 +202,7 @@ export default function App() {
       {/* Sidebar Lateral (Desktop fixa / Mobile gaveta retrátil com backdrop) */}
       <Sidebar
         currentTab={currentTab}
-        setTab={setCurrentTab}
+        setTab={handleTabChange}
         mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
         currentUser={currentUser}
@@ -190,13 +222,13 @@ export default function App() {
 
         <div className="app-content-body">
           {/* Renderização Condicional da View Ativa */}
-          {currentTab === 'inicio' && <HomeView setTab={setCurrentTab} currentUser={currentUser} />}
-          {currentTab === 'formativo' && <FormativoView />}
+          {currentTab === 'inicio' && <HomeView setTab={handleTabChange} currentUser={currentUser} />}
+          {currentTab === 'formativo' && <FormativoView setTab={handleTabChange} />}
           {currentTab === 'laboratorio' && <LaboratorioView />}
           {currentTab === 'repositorio' && <RepositorioView />}
           {currentTab === 'reflexao' && <ReflexaoView />}
           {currentTab === 'suporte' && <SuporteView />}
-          {currentTab === 'studio' && <StudioView />}
+          {currentTab === 'studio' && <StudioView currentUser={currentUser} setTab={handleTabChange} />}
         </div>
       </main>
 

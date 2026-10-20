@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
 import {
   DOCUMENTOS_OFICIAIS_ACERVO,
   TAGS_DOCUMENTOS_CANONICAS,
@@ -8,6 +11,8 @@ import {
   MODELOS_EBOOK_PROMPTS,
   CATEGORIAS_PROMPTS_CANONICAS,
 } from '../config/ebookPromptsContent.js';
+
+import { VIDEOS_FORMATIVO_INICIAIS } from '../config/videosFormativo.js';
 
 /**
  * Normaliza strings removendo acentos e convertendo para minúsculas
@@ -30,8 +35,68 @@ function normalizarTexto(str) {
  */
 export class AcervoFormativoRepository {
   constructor() {
-    this.documentos = DOCUMENTOS_OFICIAIS_ACERVO;
-    this.promptsEbook = MODELOS_EBOOK_PROMPTS;
+    this.persistencePath = path.resolve(process.cwd(), 'uploads', 'custom_acervo.json');
+    this.documentos = [...DOCUMENTOS_OFICIAIS_ACERVO];
+    this.promptsEbook = [...MODELOS_EBOOK_PROMPTS];
+    this.videos = [...VIDEOS_FORMATIVO_INICIAIS];
+    this.customDocs = [];
+    this.customVideos = [];
+    
+    this.carregarDadosPersistidos();
+  }
+
+  /**
+   * Carrega acervo customizado salvo em disco
+   */
+  carregarDadosPersistidos() {
+    try {
+      if (fs.existsSync(this.persistencePath)) {
+        const raw = fs.readFileSync(this.persistencePath, 'utf8');
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.customDocs)) {
+          this.customDocs = parsed.customDocs;
+          // Anexa os customizados garantindo que não há duplicidade de id
+          const idsExistentes = new Set(this.documentos.map(d => d.id));
+          for (const doc of this.customDocs) {
+            if (!idsExistentes.has(doc.id)) {
+              this.documentos.unshift(doc);
+              idsExistentes.add(doc.id);
+            }
+          }
+        }
+        if (Array.isArray(parsed.customVideos)) {
+          this.customVideos = parsed.customVideos;
+          const idsExistentes = new Set(this.videos.map(v => v.id));
+          for (const vid of this.customVideos) {
+            if (!idsExistentes.has(vid.id)) {
+              this.videos.unshift(vid);
+              idsExistentes.add(vid.id);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('[AcervoFormativoRepository] Aviso ao carregar acervo customizado:', e.message);
+    }
+  }
+
+  /**
+   * Salva dados customizados em disco de forma síncrona/atômica
+   */
+  salvarDadosPersistidos() {
+    try {
+      const dir = path.dirname(this.persistencePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(
+        this.persistencePath,
+        JSON.stringify({ customDocs: this.customDocs, customVideos: this.customVideos }, null, 2),
+        'utf8'
+      );
+    } catch (e) {
+      console.error('[AcervoFormativoRepository] Erro ao salvar acervo customizado:', e.message);
+    }
   }
 
   /**
@@ -204,6 +269,157 @@ export class AcervoFormativoRepository {
       categoriasDisponiveis: CATEGORIAS_PROMPTS_CANONICAS,
       contagemPorCategoria,
     };
+  }
+
+  /* ========================================================================
+     MÉTODOS DE GERÊNCIA E CRUD PARA O STUDIO IAprofEPT (DOCUMENTOS)
+     ======================================================================== */
+
+  buscarDocumentoPorId(id) {
+    return this.documentos.find((d) => String(d.id) === String(id)) || null;
+  }
+
+  adicionarDocumento(docData) {
+    const id = docData.id || `doc-custom-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    const novoDoc = {
+      id,
+      titulo: docData.titulo,
+      descricao: docData.descricao || '',
+      orgaoEmissor: docData.orgaoEmissor || 'UFJF / IAprofEPT',
+      anoPublicacao: parseInt(docData.anoPublicacao, 10) || new Date().getFullYear(),
+      tagPrincipal: docData.tagPrincipal || docData.categoria || 'Legislação EPT',
+      tags: docData.tags || [docData.tagPrincipal || docData.categoria || 'Legislação EPT'],
+      url: docData.url || '',
+      formato: docData.formato || 'PDF',
+      paginas: docData.paginas || 0,
+      tamanhoEstimado: docData.tamanhoEstimado || '1.0 MB',
+      arquivoNome: docData.arquivoNome || null,
+      ativo: true,
+      criadoEm: new Date().toISOString(),
+      atualizadoEm: new Date().toISOString(),
+    };
+
+    this.documentos.unshift(novoDoc);
+    this.customDocs.unshift(novoDoc);
+    this.salvarDadosPersistidos();
+    return novoDoc;
+  }
+
+  atualizarDocumento(id, docData) {
+    const index = this.documentos.findIndex((d) => String(d.id) === String(id));
+    if (index === -1) return null;
+
+    const docExistente = this.documentos[index];
+    const docAtualizado = {
+      ...docExistente,
+      titulo: docData.titulo !== undefined ? docData.titulo : docExistente.titulo,
+      descricao: docData.descricao !== undefined ? docData.descricao : docExistente.descricao,
+      orgaoEmissor: docData.orgaoEmissor !== undefined ? docData.orgaoEmissor : docExistente.orgaoEmissor,
+      anoPublicacao: docData.anoPublicacao !== undefined ? parseInt(docData.anoPublicacao, 10) : docExistente.anoPublicacao,
+      tagPrincipal: docData.tagPrincipal || docData.categoria || docExistente.tagPrincipal,
+      tags: docData.tags || docExistente.tags,
+      url: docData.url !== undefined ? docData.url : docExistente.url,
+      formato: docData.formato !== undefined ? docData.formato : docExistente.formato,
+      tamanhoEstimado: docData.tamanhoEstimado !== undefined ? docData.tamanhoEstimado : docExistente.tamanhoEstimado,
+      arquivoNome: docData.arquivoNome !== undefined ? docData.arquivoNome : docExistente.arquivoNome,
+      atualizadoEm: new Date().toISOString(),
+    };
+
+    this.documentos[index] = docAtualizado;
+
+    // Atualiza também na lista de customizados (se já for customizado ou insere para persistir)
+    const customIdx = this.customDocs.findIndex((d) => String(d.id) === String(id));
+    if (customIdx >= 0) {
+      this.customDocs[customIdx] = docAtualizado;
+    } else {
+      this.customDocs.unshift(docAtualizado);
+    }
+
+    this.salvarDadosPersistidos();
+    return docAtualizado;
+  }
+
+  excluirDocumento(id) {
+    const index = this.documentos.findIndex((d) => String(d.id) === String(id));
+    if (index === -1) return false;
+
+    this.documentos.splice(index, 1);
+    this.customDocs = this.customDocs.filter((d) => String(d.id) !== String(id));
+    this.salvarDadosPersistidos();
+    return true;
+  }
+
+  /* ========================================================================
+     MÉTODOS DE GERÊNCIA E CRUD PARA O STUDIO IAprofEPT (VÍDEOS)
+     ======================================================================== */
+
+  listarVideos() {
+    return this.videos;
+  }
+
+  buscarVideoPorId(id) {
+    return this.videos.find((v) => String(v.id) === String(id)) || null;
+  }
+
+  adicionarVideo(videoData) {
+    const id = videoData.id || `vid-${Date.now()}`;
+    const novoVideo = {
+      id,
+      titulo: videoData.titulo,
+      youtubeId: videoData.youtubeId,
+      duracao: videoData.duracao || '10 min',
+      autor: videoData.autor || 'Prof. Maycon Magalhães',
+      categoria: videoData.categoria || 'Fundamentos',
+      descricao: videoData.descricao || '',
+      objetivoPedagogico: videoData.objetivoPedagogico || '',
+      ativo: true,
+      dataCriacao: new Date().toISOString(),
+    };
+
+    this.videos.unshift(novoVideo);
+    this.customVideos.unshift(novoVideo);
+    this.salvarDadosPersistidos();
+    return novoVideo;
+  }
+
+  atualizarVideo(id, videoData) {
+    const index = this.videos.findIndex((v) => String(v.id) === String(id));
+    if (index === -1) return null;
+
+    const videoExistente = this.videos[index];
+    const videoAtualizado = {
+      ...videoExistente,
+      titulo: videoData.titulo !== undefined ? videoData.titulo : videoExistente.titulo,
+      youtubeId: videoData.youtubeId !== undefined ? videoData.youtubeId : videoExistente.youtubeId,
+      duracao: videoData.duracao !== undefined ? videoData.duracao : videoExistente.duracao,
+      autor: videoData.autor !== undefined ? videoData.autor : videoExistente.autor,
+      categoria: videoData.categoria !== undefined ? videoData.categoria : videoExistente.categoria,
+      descricao: videoData.descricao !== undefined ? videoData.descricao : videoExistente.descricao,
+      objetivoPedagogico: videoData.objetivoPedagogico !== undefined ? videoData.objetivoPedagogico : videoExistente.objetivoPedagogico,
+      atualizadoEm: new Date().toISOString(),
+    };
+
+    this.videos[index] = videoAtualizado;
+
+    const customIdx = this.customVideos.findIndex((v) => String(v.id) === String(id));
+    if (customIdx >= 0) {
+      this.customVideos[customIdx] = videoAtualizado;
+    } else {
+      this.customVideos.unshift(videoAtualizado);
+    }
+
+    this.salvarDadosPersistidos();
+    return videoAtualizado;
+  }
+
+  excluirVideo(id) {
+    const index = this.videos.findIndex((v) => String(v.id) === String(id));
+    if (index === -1) return false;
+
+    this.videos.splice(index, 1);
+    this.customVideos = this.customVideos.filter((v) => String(v.id) !== String(id));
+    this.salvarDadosPersistidos();
+    return true;
   }
 }
 

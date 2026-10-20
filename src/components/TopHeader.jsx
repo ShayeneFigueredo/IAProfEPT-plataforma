@@ -7,7 +7,8 @@ const TITULOS_MAP = {
   laboratorio: 'Laboratório de IA',
   repositorio: 'Repositório de Práticas',
   reflexao: 'Reflexão Crítica',
-  suporte: 'Acompanhamento e Suporte'
+  suporte: 'Acompanhamento e Suporte',
+  studio: 'Studio IAprofEPT (Gestão de Materiais)'
 };
 
 export default function TopHeader({

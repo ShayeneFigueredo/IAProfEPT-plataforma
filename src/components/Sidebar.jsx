@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, BookOpen, FlaskConical, FolderGit2, Scale, HelpCircle, LogOut, X, Settings } from 'lucide-react';
+import { Home, BookOpen, FlaskConical, FolderGit2, Scale, HelpCircle, LogOut, X, Settings, Upload } from 'lucide-react';
 import { USER_DATA } from '../data/mockData';
 
 export default function Sidebar({
@@ -126,6 +126,19 @@ export default function Sidebar({
             <div className="sidebar-nav-left">
               <HelpCircle size={18} />
               <span>Suporte</span>
+            </div>
+          </button>
+
+          <div className="sidebar-cat-label" style={{ marginTop: '1.25rem' }}>Gestão & Autoria</div>
+
+          <button
+            className={`sidebar-nav-item ${currentTab === 'studio' ? 'active' : ''}`}
+            onClick={() => handleNavClick('studio')}
+            title="Studio de Upload de Vídeos, Documentos e Certificados"
+          >
+            <div className="sidebar-nav-left">
+              <Upload size={18} />
+              <span>Studio Formativo</span>
             </div>
           </button>
         </nav>
