@@ -13,6 +13,7 @@ import LaboratorioView from './views/LaboratorioView';
 import RepositorioView from './views/RepositorioView';
 import ReflexaoView from './views/ReflexaoView';
 import SuporteView from './views/SuporteView';
+import StudioView from './views/StudioView';
 import { USER_DATA } from './data/mockData';
 
 export default function App() {
@@ -195,6 +196,7 @@ export default function App() {
           {currentTab === 'repositorio' && <RepositorioView />}
           {currentTab === 'reflexao' && <ReflexaoView />}
           {currentTab === 'suporte' && <SuporteView />}
+          {currentTab === 'studio' && <StudioView />}
         </div>
       </main>
 
@@ -223,3 +225,4 @@ export default function App() {
     </div>
   );
 }
+

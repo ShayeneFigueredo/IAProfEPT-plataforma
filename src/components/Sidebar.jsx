@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, BookOpen, FlaskConical, FolderGit2, Scale, HelpCircle, LogOut, X } from 'lucide-react';
+import { Home, BookOpen, FlaskConical, FolderGit2, Scale, HelpCircle, LogOut, X, Settings } from 'lucide-react';
 import { USER_DATA } from '../data/mockData';
 
 export default function Sidebar({
@@ -191,3 +191,5 @@ export default function Sidebar({
   </>
   );
 }
+
+
