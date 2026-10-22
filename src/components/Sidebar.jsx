@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, BookOpen, FlaskConical, FolderGit2, Scale, HelpCircle, LogOut, X, Settings, Upload } from 'lucide-react';
+import { Home, BookOpen, FlaskConical, FolderGit2, Scale, HelpCircle, LogOut, X, Settings, Upload, MessageSquare } from 'lucide-react';
 import { USER_DATA } from '../data/mockData';
 
 export default function Sidebar({
@@ -96,6 +96,16 @@ export default function Sidebar({
             <div className="sidebar-nav-left">
               <FlaskConical size={18} />
               <span>Laboratório de IA</span>
+            </div>
+          </button>
+
+          <button
+            className={`sidebar-nav-item ${currentTab === 'chat' ? 'active' : ''}`}
+            onClick={() => handleNavClick('chat')}
+          >
+            <div className="sidebar-nav-left">
+              <MessageSquare size={18} />
+              <span>Chat IA</span>
             </div>
           </button>
 
@@ -204,5 +214,6 @@ export default function Sidebar({
   </>
   );
 }
+
 
 

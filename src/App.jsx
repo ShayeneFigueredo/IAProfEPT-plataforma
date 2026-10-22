@@ -14,9 +14,10 @@ import RepositorioView from './views/RepositorioView';
 import ReflexaoView from './views/ReflexaoView';
 import SuporteView from './views/SuporteView';
 import StudioView from './views/StudioView';
+import ChatView from './views/ChatView';
 import { USER_DATA } from './data/mockData';
 
-const VALID_TABS = ['inicio', 'formativo', 'laboratorio', 'repositorio', 'reflexao', 'suporte', 'studio'];
+const VALID_TABS = ['inicio', 'formativo', 'laboratorio', 'repositorio', 'reflexao', 'suporte', 'studio', 'chat'];
 
 const getTabFromUrl = () => {
   try {
@@ -225,6 +226,7 @@ export default function App() {
           {currentTab === 'inicio' && <HomeView setTab={handleTabChange} currentUser={currentUser} />}
           {currentTab === 'formativo' && <FormativoView setTab={handleTabChange} />}
           {currentTab === 'laboratorio' && <LaboratorioView />}
+          {currentTab === 'chat' && <ChatView currentUser={currentUser} />}
           {currentTab === 'repositorio' && <RepositorioView />}
           {currentTab === 'reflexao' && <ReflexaoView />}
           {currentTab === 'suporte' && <SuporteView />}

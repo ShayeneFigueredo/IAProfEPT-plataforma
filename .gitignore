@@ -46,3 +46,4 @@ docs/*.csv
 # Uploads locais de arquivos
 uploads/
 
+.vercel
